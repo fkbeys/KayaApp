@@ -19,7 +19,7 @@ namespace KayaApp.Views
         private async void Button_Clicked(object sender, System.EventArgs e)
         {
              await HelpME.MessageShow("bilgi", DataClass._LSTMANAGER.ACTIVEUSER.USERS_NAME, "okk");
-            await HelpME.MessageShow("bilgi", LoginVM._LSTMANAGER.ACTIVEUSER.USERS_NAME, "okk");
+              await HelpME.MessageShow("bilgi", LoginVM._LSTMANAGER.ACTIVEUSER.USERS_NAME, "okk");
 
         }
     }
