@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:Fim="clr-namespace:KayaApp.Fonts"
+             xmlns:dil="clr-namespace:KayaApp.Language"
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             mc:Ignorable="d"
+             NavigationPage.HasNavigationBar="False"
+             x:Class="KayaApp.Views.LoginPage"
+             Visual="Material"  >
+ 
+    <ContentPage.Content>
+
+        <ScrollView>
+
+           
+            <yummy:PancakeView BackgroundGradientAngle="0"  BackgroundGradientStartColor="LightGray" BackgroundGradientEndColor="LightSlateGray">
+            <Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto" ColumnDefinitions="*">
+
+                    <Image  Grid.Row="0" Grid.Column="0" x:Name="LogoImage" Source="logo.png" Margin="10" />
+                    <Entry Grid.Row="1" Grid.Column="0" Placeholder="{x:Static dil:AppResources.userscompanyname}" Text="{Binding UserCompanyName}" TextColor="WhiteSmoke" />
+                    <Entry Grid.Row="2" Grid.Column="0" Placeholder="{x:Static dil:AppResources.usersusername}" Text="{Binding UserName}"  TextColor="WhiteSmoke" />
+                    <Entry Grid.Row="3" Grid.Column="0" Placeholder="{x:Static dil:AppResources.userspass}"  Text="{Binding UserPass}" IsPassword="True"  TextColor="WhiteSmoke" />
+                    <StackLayout Grid.Row="4" Orientation="Horizontal" Padding="10">
+
+                        <Label Text="{x:Static dil:AppResources.userspassremeber}" TextColor="White"  VerticalOptions="Center"/>
+                        <Switch IsToggled="{Binding remeberpassword}"     VerticalOptions="Center"  />
+                    </StackLayout>
+                    
+                    <Button Grid.Row="5" x:Name="BtnLogin"  Text="{x:Static dil:AppResources.loginbtn}"  Command="{Binding LoginCommand}"
+                     IsEnabled="{Binding IsLoginActive}"  BackgroundColor="#28a745"   TextColor="White"  Clicked="BtnLogin_Clicked"  FontSize="Medium"   
+                                
+                     ImageSource="{FontImage FontFamily=FontAwsome,Glyph={x:Static Fim:IconFont.Login},Size=Title,Color=White}" />
+
+                    <Button Grid.Row="6" Grid.Column="0" Text="{x:Static dil:AppResources.demobtn}" Command="{Binding DemoCommand}"  FontSize="Medium" BackgroundColor="IndianRed"
+                              ImageSource="{FontImage FontFamily=FontAwsome,Glyph={x:Static Fim:IconFont.ArrowRightDropCircle},Size=Title,Color=White}" />
+                    <Label Grid.Row="7" Grid.Column="0" Text="www.mikronerp.com" HorizontalOptions="Center" TextColor="WhiteSmoke"/>
+                </Grid>
+            </yummy:PancakeView>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
