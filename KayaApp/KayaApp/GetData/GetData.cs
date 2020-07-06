@@ -479,13 +479,7 @@ namespace KayaApp.GetData
                 await LocalSQL<DovizKurlariModel>.DELETEALL();
                 await LocalSQL<KurIsimleriFullKurusModel>.DELETEALL();
                 await LocalSQL<IzinlerModel>.DELETEALL();
-
-                //biz verialisverisine baslamadan once, SYNC ID yi aliyoruzki, bizim islemimiz sirasinda bir degisiklik olursa,kaybetmeyelim diye.
-                await LocalSQL<SyncModel>.DELETEALL();
-                List<SyncModel> mysync = new List<SyncModel>();
-                mysync.Add(new SyncModel { LastSyncID = durumLastSyncID[0].LastSyncID });
-                await LocalSQL<SyncModel>.DBINSERTALL(mysync);
-
+                  
                 //her data aktariminda doviz kurlari ve kur isimlerini silip, tekrardan yeni veri insert ediyorz
                 //bunun sebebi ise, kurlar v15 in altinda tutuluyor. ayrica yeni bir doviz kaydi eklendigi zaman, sync tablosuna dunya kadar kayit atiyor. 
                 //bildigin bas agrisi. o yuzden en guzel yontem budur...
@@ -509,6 +503,16 @@ namespace KayaApp.GetData
                     foreach (var item in durumStokMiktarlari.ToList())
                     {
                         durumSTOCK.Where(x => x.sto_kod == item.sto_kod).FirstOrDefault().sto_eldeki_miktar = item.sto_eldeki_miktar;
+                    }
+                }
+
+
+                //fotograflarla ilgili bir degisiklik vs varsa, burda cash i sifirliyoruz. lazim oldugu zaman, zaten cash otomatik olarak alim yapacaktir.
+                if (durumStokResimleriList.Count > 0)
+                {
+                    foreach (var item in durumStokResimleriList)
+                    {
+                        //  await ImageService.Instance.InvalidateCacheEntryAsync(item.STOK_RESIMURL, FFImageLoading.Cache.CacheType.All, removeSimilar: true);
                     }
                 }
 
@@ -539,7 +543,7 @@ namespace KayaApp.GetData
                 await LocalSQL<KampanyalarModel>.DBINSERTALL(durumKampanyalar);
                 await LocalSQL<IzinlerModel>.DBINSERTALL(durumIzinler);
 
-
+                 
                 _LSTMANAGER.ACTIVEUSER = MyUser;
                 _LSTMANAGER.ACTIVECOMPANY = Mycompany;
 
@@ -611,17 +615,6 @@ namespace KayaApp.GetData
                 var PARTILOTS = await LocalSQL<PartiLotModel>.GETLISTALL();
                 _LSTMANAGER.PartiLotList = new ObservableCollection<PartiLotModel>(PARTILOTS);
 
-
-
-                //fotograflarla ilgili bir degisiklik vs varsa, burda cash i sifirliyoruz. lazim oldugu zaman, zaten cash otomatik olarak alim yapacaktir.
-                if (durumStokResimleriList.Count > 0)
-                {
-                    foreach (var item in durumStokResimleriList)
-                    {
-                        //  await ImageService.Instance.InvalidateCacheEntryAsync(item.STOK_RESIMURL, FFImageLoading.Cache.CacheType.All, removeSimilar: true);
-                    }
-                }
-
                 var KAMPANYALAR = await LocalSQL<KampanyalarModel>.GETLISTALL();
                 _LSTMANAGER.KampanyalarList = new ObservableCollection<KampanyalarModel>(KAMPANYALAR);
 
@@ -632,6 +625,9 @@ namespace KayaApp.GetData
                 _LSTMANAGER.Projeler.Insert(0, new ProjeModel { pro_adi = "", pro_kodu = "" });
                 _LSTMANAGER.OdemePlanlari.Insert(0, new OdemePlanlariModel { odp_no = 0, odp_adi = AppResources.Nakit });
 
+
+
+
                 foreach (var item in _LSTMANAGER.STOCKLIST)
                 {
                     //stok kartlarina stok resimlerinin url lerini getiriyoruz...
@@ -641,12 +637,95 @@ namespace KayaApp.GetData
                     //await ImageService.Instance.InvalidateCacheEntryAsync(item.stok_resim_url, FFImageLoading.Cache.CacheType.All, removeSimilar: true);
                 }
 
+                //biz verialisverisine baslamadan once, SYNC ID yi aliyoruzki, bizim islemimiz sirasinda bir degisiklik olursa,kaybetmeyelim diye.
+                //inserti en sona koydumki, eger aktarim sirasinda, bir hata yasarsak, bu koda gelmeyecegi icin tekrar kayit olusturmayacaktir.
+                //tekrar eden kayit varmi yokmu diye kontrol eden bir clas yazmamiz lazim
+                await LocalSQL<SyncModel>.DELETEALL();
+                List<SyncModel> mysync = new List<SyncModel>();
+                mysync.Add(new SyncModel { LastSyncID = durumLastSyncID[0].LastSyncID });
+                await LocalSQL<SyncModel>.DBINSERTALL(mysync);
+
             }
 
-            //internet yoksa burdan devam edecek
+            //internet yoksa herseyi oldugu gibi veritabanindan celkip veriyporuz
             else
             {
+                _LSTMANAGER.ACTIVEUSER = MyUser;
+                _LSTMANAGER.ACTIVECOMPANY = Mycompany;
 
+                var STOCKS = await LocalSQL<StockModel>.GETLISTALL();
+                _LSTMANAGER.STOCKLIST = new ObservableCollection<StockModel>(STOCKS);
+
+                var CUSTOMERS = await LocalSQL<CustomerModel>.GETLISTALL();
+                _LSTMANAGER.CUSTOMERLIST = new ObservableCollection<CustomerModel>(CUSTOMERS);
+
+
+                var BARCODES = await LocalSQL<BarcodeModel>.GETLISTALL();
+                _LSTMANAGER.BARCODELIST = new ObservableCollection<BarcodeModel>(BARCODES);
+
+                var MASRAFS = await LocalSQL<MasrafModel>.GETLISTALL();
+                _LSTMANAGER.MASRAFLIST = new ObservableCollection<MasrafModel>(MASRAFS);
+
+                var DEPOS = await LocalSQL<DepoIsimleriModel>.GETLISTALL();
+                _LSTMANAGER.DEPOISIMLERILIST = new ObservableCollection<DepoIsimleriModel>(DEPOS);
+
+                var KURLAR = await LocalSQL<DovizKurlariModel>.GETLISTALL();
+                _LSTMANAGER.KURLARLISTE = new ObservableCollection<DovizKurlariModel>(KURLAR.ToList());
+
+                var STOK_FIYAT_LISTELERI = await LocalSQL<StokListeTanimlamalariModel>.GETLISTALL();
+                _LSTMANAGER.STOKLISTETANIMLAMALARILISTE = new ObservableCollection<StokListeTanimlamalariModel>(STOK_FIYAT_LISTELERI);
+
+                var SEKTORS = await LocalSQL<StokSektorlariModel>.GETLISTALL();
+                _LSTMANAGER.STOK_SEKTORLARI_LIST = new ObservableCollection<StokSektorlariModel>(SEKTORS);
+
+                var CARI_BOLGELERS = await LocalSQL<CariHesapBolgeleriModel>.GETLISTALL();
+                _LSTMANAGER.CARI_HESAP_BOLGELERI = new ObservableCollection<CariHesapBolgeleriModel>(CARI_BOLGELERS);
+
+                var CARI_GRUPS = await LocalSQL<CariHesapGruplariModel>.GETLISTALL();
+                _LSTMANAGER.CARI_HESAP_GRUPLARI = new ObservableCollection<CariHesapGruplariModel>(CARI_GRUPS);
+
+                var CARI_PERSONELS = await LocalSQL<CariPersonelTanimlariModel>.GETLISTALL();
+                _LSTMANAGER.CARI_PERSONEL_TANIMLARI_LIST = new ObservableCollection<CariPersonelTanimlariModel>(CARI_PERSONELS);
+
+                var KUR_ISIMLERI = await LocalSQL<KurIsimleriFullKurusModel>.GETLISTALL();
+                _LSTMANAGER.KurIsimleriFullKurus = new ObservableCollection<KurIsimleriFullKurusModel>(KUR_ISIMLERI);
+
+                var FIRMAS = await LocalSQL<FirmalarModel>.GETLISTALL();
+                _LSTMANAGER.FirmalarList = new ObservableCollection<FirmalarModel>(FIRMAS);
+
+                var SUBES = await LocalSQL<SubelerModel>.GETLISTALL();
+                _LSTMANAGER.SubelerList = new ObservableCollection<SubelerModel>(SUBES);
+
+                var RENKS = await LocalSQL<RenkModel>.GETLISTALL();
+                _LSTMANAGER.Renkler = new ObservableCollection<RenkModel>(RENKS);
+
+                var BEDENS = await LocalSQL<BedenModel>.GETLISTALL();
+                _LSTMANAGER.Bedenler = new ObservableCollection<BedenModel>(BEDENS);
+
+                var PROJES = await LocalSQL<ProjeModel>.GETLISTALL();
+                _LSTMANAGER.Projeler = new ObservableCollection<ProjeModel>(PROJES);
+
+                var SORUMLULUKS = await LocalSQL<SorumlulukModel>.GETLISTALL();
+                _LSTMANAGER.Sorumluluklar = new ObservableCollection<SorumlulukModel>(SORUMLULUKS);
+
+                var BANKS = await LocalSQL<BankaModel>.GETLISTALL();
+                _LSTMANAGER.Bankalar = new ObservableCollection<BankaModel>(BANKS);
+
+                var KASAS = await LocalSQL<KasaModel>.GETLISTALL();
+                _LSTMANAGER.Kasalar = new ObservableCollection<KasaModel>(KASAS);
+
+                var ODEMEPLANS = await LocalSQL<OdemePlanlariModel>.GETLISTALL();
+                _LSTMANAGER.OdemePlanlari = new ObservableCollection<OdemePlanlariModel>(ODEMEPLANS);
+
+
+                var PARTILOTS = await LocalSQL<PartiLotModel>.GETLISTALL();
+                _LSTMANAGER.PartiLotList = new ObservableCollection<PartiLotModel>(PARTILOTS);
+
+                var KAMPANYALAR = await LocalSQL<KampanyalarModel>.GETLISTALL();
+                _LSTMANAGER.KampanyalarList = new ObservableCollection<KampanyalarModel>(KAMPANYALAR);
+
+                var IZINLER = await LocalSQL<IzinlerModel>.GETLISTALL();
+                _LSTMANAGER.IzinlerList = new ObservableCollection<IzinlerModel>(IZINLER);
             }
             return _LSTMANAGER;
         }
