@@ -1,8 +1,6 @@
 ﻿using KayaApp.Helpers;
 using KayaApp.Language;
 using KayaApp.Models;
-using KayaApp.Models.DataModels;
-using KayaApp.Models.GetDataModels;
 using Plugin.Connectivity;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,8 +13,9 @@ namespace KayaApp.GetData
     public static class DataClass
     {
         public static LISTMANAGER _LSTMANAGER;
-        public static async Task<LISTMANAGER> GetData(CompanyModel Mycompany, UsersModel MyUser)
+        public static async Task<bool> GetData(CompanyModel Mycompany, UsersModel MyUser)
         {
+
             if (_LSTMANAGER == null)
             {
                 _LSTMANAGER = new LISTMANAGER();
@@ -33,23 +32,26 @@ namespace KayaApp.GetData
                 }
 
                 #region  URL Tanimlamalari
+
+                var urluserdatacheck = SabitUrl.USERCHANGEDCHECK(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
+
                 var urlx = SabitUrl.GetLastsyncID(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME);
 
                 var url0 = SabitUrl.SilinenKayitlar_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
                 var url1 = SabitUrl.Stockurl_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), MyUser.USERS_DEFAULT_FIYATLISTESI, Mycompany.COMPANY_DB_NAME, MyUser.USERS_DEFAULT_KAYNAKDEPO, SyncID);
 
-                var url2 = SabitUrl.CustomerURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url2 = SabitUrl.CustomerURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
                 var url3 = SabitUrl.BarcodeURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
-                var url4 = SabitUrl.MasrafURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url4 = SabitUrl.MasrafURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
-                var url5 = SabitUrl.DepoIsimleriURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url5 = SabitUrl.DepoIsimleriURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
                 var url6 = SabitUrl.DovizKurlariURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
-                var url7 = SabitUrl.StokListeFiyatTanimlamalariURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url7 = SabitUrl.StokListeFiyatTanimlamalariURL_(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
                 var url8 = SabitUrl.Stok_Sektorlari(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
@@ -57,29 +59,29 @@ namespace KayaApp.GetData
 
                 var url10 = SabitUrl.Cari_Hesap_Guruplari(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
-                var url11 = SabitUrl.Cari_Personel_Tanimlari(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url11 = SabitUrl.Cari_Personel_Tanimlari(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
                 var url12 = SabitUrl.KurIsimleriFull(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
-                var url13 = SabitUrl.Firmalar(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url13 = SabitUrl.Firmalar(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
-                var url14 = SabitUrl.Subeler(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url14 = SabitUrl.Subeler(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
                 var url15 = SabitUrl.Renkler(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
                 var url16 = SabitUrl.Bedenler(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
-                var url17 = SabitUrl.SorumlulukMerk(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url17 = SabitUrl.SorumlulukMerk(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
-                var url18 = SabitUrl.Projeler(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url18 = SabitUrl.Projeler(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
-                var url19 = SabitUrl.Bankalar(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url19 = SabitUrl.Bankalar(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
-                var url20 = SabitUrl.Kasalar(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url20 = SabitUrl.Kasalar(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
                 var url21 = SabitUrl.ODEMEPLANLARI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
-                var url22 = SabitUrl.CARIBAKIYELER(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                var url22 = SabitUrl.CARIBAKIYELER(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
                 var url23 = SabitUrl.STOKMIKTARLARI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, MyUser.USERS_DEFAULT_KAYNAKDEPO, SyncID);
 
@@ -91,9 +93,25 @@ namespace KayaApp.GetData
 
                 var url27 = SabitUrl.IZINLER(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID, MyUser.USERS_ID);
 
+                var url28 = SabitUrl.STOKFIYATLARI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+
                 #endregion
                 //-----------------------------------------------------------------------------------------------------
                 #region VeriAlimi Yapiliyor
+
+
+
+                //eger kullanici ayarlari degistirilirse, otomatik olarak, localdeki tum verileri silecek, login sayfasina tekrar yonlenecek.
+                //eger kullanici ayarlarinda bi oynama yoksa, skinti zaten yok
+                var durumUSERISCHANGED = await ApiBaglan<object>.VeriListeAl(urluserdatacheck);
+                var sonsyncidlocal = await LocalSQL<SyncModel>.GETLISTALL();
+                
+                    if (durumUSERISCHANGED.Count > 0 && sonsyncidlocal.Count > 0)
+                    {
+                        await DELETEALLDATA();
+                        return false;
+                    }
+               
 
                 var durumLastSyncID = await ApiBaglan<SyncModel>.VeriListeAl(urlx);
 
@@ -152,6 +170,8 @@ namespace KayaApp.GetData
                 var durumKampanyalar = await ApiBaglan<KampanyalarModel>.VeriListeAl(url26);
 
                 var durumIzinler = await ApiBaglan<IzinlerModel>.VeriListeAl(url27);
+
+                var durumStokFiyatlari = await ApiBaglan<StokFiyatlariModel>.VeriListeAl(url28);
 
                 #endregion
 
@@ -479,7 +499,7 @@ namespace KayaApp.GetData
                 await LocalSQL<DovizKurlariModel>.DELETEALL();
                 await LocalSQL<KurIsimleriFullKurusModel>.DELETEALL();
                 await LocalSQL<IzinlerModel>.DELETEALL();
-                  
+
                 //her data aktariminda doviz kurlari ve kur isimlerini silip, tekrardan yeni veri insert ediyorz
                 //bunun sebebi ise, kurlar v15 in altinda tutuluyor. ayrica yeni bir doviz kaydi eklendigi zaman, sync tablosuna dunya kadar kayit atiyor. 
                 //bildigin bas agrisi. o yuzden en guzel yontem budur...
@@ -494,7 +514,12 @@ namespace KayaApp.GetData
                 {
                     foreach (var item in durumCariBakiyeler.ToList())
                     {
-                        durumCARI.Where(x => x.cari_kod == item.cari_kod).FirstOrDefault().cari_bakiye = item.cari_bakiye;
+                        var car = durumCARI.Where(x => x.cari_kod == item.cari_kod);
+
+                        if (car != null && car.ToList().Count > 0)
+                        {
+                            car.FirstOrDefault().cari_bakiye = item.cari_bakiye;
+                        }
                     }
                 }
 
@@ -502,7 +527,11 @@ namespace KayaApp.GetData
                 {
                     foreach (var item in durumStokMiktarlari.ToList())
                     {
-                        durumSTOCK.Where(x => x.sto_kod == item.sto_kod).FirstOrDefault().sto_eldeki_miktar = item.sto_eldeki_miktar;
+                        var stck = durumSTOCK.Where(x => x.sto_kod == item.sto_kod);
+                        if (stck != null && stck.ToList().Count > 0)
+                        {
+                            stck.FirstOrDefault().sto_eldeki_miktar = item.sto_eldeki_miktar;
+                        }
                     }
                 }
 
@@ -542,8 +571,8 @@ namespace KayaApp.GetData
                 await LocalSQL<PartiLotModel>.DBINSERTALL(durumPartiLot);
                 await LocalSQL<KampanyalarModel>.DBINSERTALL(durumKampanyalar);
                 await LocalSQL<IzinlerModel>.DBINSERTALL(durumIzinler);
+                await LocalSQL<StokFiyatlariModel>.DBINSERTALL(durumStokFiyatlari);
 
-                 
                 _LSTMANAGER.ACTIVEUSER = MyUser;
                 _LSTMANAGER.ACTIVECOMPANY = Mycompany;
 
@@ -619,7 +648,11 @@ namespace KayaApp.GetData
                 _LSTMANAGER.KampanyalarList = new ObservableCollection<KampanyalarModel>(KAMPANYALAR);
 
                 var IZINLER = await LocalSQL<IzinlerModel>.GETLISTALL();
-                _LSTMANAGER.IzinlerList= new ObservableCollection<IzinlerModel>(IZINLER);
+                _LSTMANAGER.IzinlerList = new ObservableCollection<IzinlerModel>(IZINLER);
+
+                var STOKFIYATLARI = await LocalSQL<StokFiyatlariModel>.GETLISTALL();
+                _LSTMANAGER.STOKFIYATLARI = new ObservableCollection<StokFiyatlariModel>(STOKFIYATLARI);
+
 
                 _LSTMANAGER.Sorumluluklar.Insert(0, new SorumlulukModel { som_isim = "", som_kod = "" });
                 _LSTMANAGER.Projeler.Insert(0, new ProjeModel { pro_adi = "", pro_kodu = "" });
@@ -658,7 +691,6 @@ namespace KayaApp.GetData
 
                 var CUSTOMERS = await LocalSQL<CustomerModel>.GETLISTALL();
                 _LSTMANAGER.CUSTOMERLIST = new ObservableCollection<CustomerModel>(CUSTOMERS);
-
 
                 var BARCODES = await LocalSQL<BarcodeModel>.GETLISTALL();
                 _LSTMANAGER.BARCODELIST = new ObservableCollection<BarcodeModel>(BARCODES);
@@ -717,7 +749,6 @@ namespace KayaApp.GetData
                 var ODEMEPLANS = await LocalSQL<OdemePlanlariModel>.GETLISTALL();
                 _LSTMANAGER.OdemePlanlari = new ObservableCollection<OdemePlanlariModel>(ODEMEPLANS);
 
-
                 var PARTILOTS = await LocalSQL<PartiLotModel>.GETLISTALL();
                 _LSTMANAGER.PartiLotList = new ObservableCollection<PartiLotModel>(PARTILOTS);
 
@@ -727,7 +758,42 @@ namespace KayaApp.GetData
                 var IZINLER = await LocalSQL<IzinlerModel>.GETLISTALL();
                 _LSTMANAGER.IzinlerList = new ObservableCollection<IzinlerModel>(IZINLER);
             }
-            return _LSTMANAGER;
+            return true;
+        }
+
+        private static async Task DELETEALLDATA()
+        {
+            await LocalSQL<SyncModel>.DELETEALL();
+            await LocalSQL<SilinenKayitlar>.DELETEALL();
+            await LocalSQL<StockModel>.DELETEALL();
+            await LocalSQL<CustomerModel>.DELETEALL();
+            await LocalSQL<BarcodeModel>.DELETEALL();
+            await LocalSQL<MasrafModel>.DELETEALL();
+            await LocalSQL<DepoIsimleriModel>.DELETEALL();
+            await LocalSQL<DovizKurlariModel>.DELETEALL();
+            await LocalSQL<StokListeTanimlamalariModel>.DELETEALL();
+            await LocalSQL<StokSektorlariModel>.DELETEALL();
+            await LocalSQL<CariHesapBolgeleriModel>.DELETEALL();
+            await LocalSQL<CariHesapGruplariModel>.DELETEALL();
+            await LocalSQL<CariPersonelTanimlariModel>.DELETEALL();
+            await LocalSQL<KurIsimleriFullKurusModel>.DELETEALL();
+            await LocalSQL<FirmalarModel>.DELETEALL();
+            await LocalSQL<SubelerModel>.DELETEALL();
+            await LocalSQL<RenkModel>.DELETEALL();
+            await LocalSQL<BedenModel>.DELETEALL();
+            await LocalSQL<SorumlulukModel>.DELETEALL();
+            await LocalSQL<ProjeModel>.DELETEALL();
+            await LocalSQL<BankaModel>.DELETEALL();
+            await LocalSQL<KasaModel>.DELETEALL();
+            await LocalSQL<OdemePlanlariModel>.DELETEALL();
+            await LocalSQL<CariBakiyelerModel>.DELETEALL();
+            await LocalSQL<StokMiktarlariModel>.DELETEALL();
+            await LocalSQL<PartiLotModel>.DELETEALL();
+            await LocalSQL<StokResimleriModel>.DELETEALL();
+            await LocalSQL<KampanyalarModel>.DELETEALL();
+            await LocalSQL<IzinlerModel>.DELETEALL();
+            await LocalSQL<StokFiyatlariModel>.DELETEALL();
+            //  await HelpME.MessageShow("UYARI", "Sistem Yöneticiniz kullanıcı haklarınızda değişiklik yapmıştır. Bu sebeple,veritabanı güncellemesi yapılacaktır...", "");
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using KayaApp.GetData;
 using KayaApp.Models;
-using KayaApp.Models.GetDataModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -255,6 +254,26 @@ namespace KayaApp.Helpers
             set
             {
                 _STOKLISTETANIMLAMALARILISTE = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<StokFiyatlariModel> _STOKFIYATLARI;
+        public ObservableCollection<StokFiyatlariModel> STOKFIYATLARI
+        {
+            get
+            {
+                if (_STOKFIYATLARI == null)
+                {
+                    _STOKFIYATLARI = new ObservableCollection<StokFiyatlariModel>();
+                }
+
+                return _STOKFIYATLARI;
+            }
+
+            set
+            {
+                _STOKFIYATLARI = value;
                 INotifyPropertyChanged();
             }
         }

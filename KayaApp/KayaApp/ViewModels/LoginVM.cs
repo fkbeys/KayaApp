@@ -5,7 +5,6 @@ using KayaApp.Language;
 using KayaApp.Models;
 using KayaApp.Views;
 using Plugin.Connectivity;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +16,7 @@ namespace KayaApp.ViewModels
     public class LoginVM : BaseViewModel
     {
 
-       public static LISTMANAGER _LSTMANAGER;
+        public static LISTMANAGER _LSTMANAGER;
 
         private static CompanyModel GelenCompany;
         private static UsersModel GelenUser;
@@ -27,7 +26,7 @@ namespace KayaApp.ViewModels
         public LoginVM()
         {
 
-             
+
             LoginCommand = new Command(LoginGO);
             DemoCommand = new Command(DemoGO);
 
@@ -49,7 +48,7 @@ namespace KayaApp.ViewModels
 
         #region properties
 
-     
+
 
         private bool _IsLoginActive;
 
@@ -160,8 +159,17 @@ namespace KayaApp.ViewModels
 
             if (await LoginMethod())
             {
-                _LSTMANAGER = await DataClass.GetData(GelenCompany, GelenUser);
-                await HelpME.SayfaAc(new MainMenuPage());                
+                bool sonuc = await DataClass.GetData(GelenCompany, GelenUser);
+                if (sonuc)
+                {
+                    await HelpME.SayfaAc(new MainMenuPage());
+                }
+                else
+                {
+                    //  await HelpME.MessageShow("HATA", "Bir hata olustu lutfen tekrar deneyiniz", "ok");
+                     DELETEALLDATA();
+                }
+
             }
             else
             {
@@ -175,6 +183,43 @@ namespace KayaApp.ViewModels
             watch.Stop();
             await HelpME.MessageShow("Gecen Sure", watch.Elapsed.Seconds.ToString(), "ok");
             //*******************************************************
+
+        }
+        private static async void DELETEALLDATA()
+        {
+            
+            await LocalSQL<SyncModel>.DELETEALL();
+            await LocalSQL<SilinenKayitlar>.DELETEALL();
+            await LocalSQL<StockModel>.DELETEALL();
+            await LocalSQL<CustomerModel>.DELETEALL();
+            await LocalSQL<BarcodeModel>.DELETEALL();
+            await LocalSQL<MasrafModel>.DELETEALL();
+            await LocalSQL<DepoIsimleriModel>.DELETEALL();
+            await LocalSQL<DovizKurlariModel>.DELETEALL();
+            await LocalSQL<StokListeTanimlamalariModel>.DELETEALL();
+            await LocalSQL<StokSektorlariModel>.DELETEALL();
+            await LocalSQL<CariHesapBolgeleriModel>.DELETEALL();
+            await LocalSQL<CariHesapGruplariModel>.DELETEALL();
+            await LocalSQL<CariPersonelTanimlariModel>.DELETEALL();
+            await LocalSQL<KurIsimleriFullKurusModel>.DELETEALL();
+            await LocalSQL<FirmalarModel>.DELETEALL();
+            await LocalSQL<SubelerModel>.DELETEALL();
+            await LocalSQL<RenkModel>.DELETEALL();
+            await LocalSQL<BedenModel>.DELETEALL();
+            await LocalSQL<SorumlulukModel>.DELETEALL();
+            await LocalSQL<ProjeModel>.DELETEALL();
+            await LocalSQL<BankaModel>.DELETEALL();
+            await LocalSQL<KasaModel>.DELETEALL();
+            await LocalSQL<OdemePlanlariModel>.DELETEALL();
+            await LocalSQL<CariBakiyelerModel>.DELETEALL();
+            await LocalSQL<StokMiktarlariModel>.DELETEALL();
+            await LocalSQL<PartiLotModel>.DELETEALL();
+            await LocalSQL<StokResimleriModel>.DELETEALL();
+            await LocalSQL<KampanyalarModel>.DELETEALL();
+            await LocalSQL<IzinlerModel>.DELETEALL();
+            await LocalSQL<StokFiyatlariModel>.DELETEALL();
+          
+            await HelpME.MessageShow("UYARI", "Sistem Yöneticiniz kullanıcı haklarınızda değişiklik yapmıştır. Bu sebeple,veritabanı güncellemesi yapılacaktır...", "okk");
 
         }
 

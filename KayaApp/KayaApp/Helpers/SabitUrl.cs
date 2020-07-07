@@ -16,6 +16,12 @@ namespace KayaApp.Helpers
             return link;
         }
 
+        public static string USERCHANGEDCHECK(string ip, string port, String DB, int syncID, int UserID)
+        {
+            return "http://" + ip + ":" + port + "/Values/USERCHANGED?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
+        }
+
+
         public static string GetLastsyncID(string ip, string port, String DB)
         {
             return "http://" + ip + ":" + port + "/Values/GetLastsyncID?DB=" + DB + " ";
@@ -31,9 +37,9 @@ namespace KayaApp.Helpers
 
         }
 
-        public static string CustomerURL_(string ip, string port, String DB, int syncID)
+        public static string CustomerURL_(string ip, string port, String DB, int syncID,int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALLCUSTOMERS?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALLCUSTOMERS?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
 
         public static string BarcodeURL_(string ip, string port, String DB, int syncID)
@@ -41,22 +47,22 @@ namespace KayaApp.Helpers
             return "http://" + ip + ":" + port + "/Values/GETALLBARCODES?DB=" + DB + "&syncID=" + syncID + " ";
         }
 
-        public static string MasrafURL_(string ip, string port, String DB, int syncID)
+        public static string MasrafURL_(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALLMASRAF?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALLMASRAF?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
-        public static string DepoIsimleriURL_(string ip, string port, String DB, int syncID)
+        public static string DepoIsimleriURL_(string ip, string port, String DB, int syncID,int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALLDEPOISIMLERI?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALLDEPOISIMLERI?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
         public static string DovizKurlariURL_(string ip, string port, String DB, int syncID)
         {
             return "http://" + ip + ":" + port + "/Values/GETALLKURLAR?DB=" + DB + "&syncID=" + syncID + " ";
         }
 
-        public static string StokListeFiyatTanimlamalariURL_(string ip, string port, String DB, int syncID)
+        public static string StokListeFiyatTanimlamalariURL_(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALLSTOKLISTEFIYATTANIMLAMALARI?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALLSTOKLISTEFIYATTANIMLAMALARI?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
         public static string SendInvoice(string ip, string port, String DB)
         {
@@ -115,9 +121,9 @@ namespace KayaApp.Helpers
             return "http://" + ip + ":" + port + "/Values/GETALL_CARI_HESAP_GRUPLARI?DB=" + DB + "&syncID=" + syncID + " ";
         }
 
-        public static string Cari_Personel_Tanimlari(string ip, string port, String DB, int syncID)
+        public static string Cari_Personel_Tanimlari(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALL_CARI_PERSONEL_TANIMLARI?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALL_CARI_PERSONEL_TANIMLARI?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
 
         public static string KurIsimleriFull(string ip, string port, String DB, int syncID)
@@ -125,14 +131,14 @@ namespace KayaApp.Helpers
             return "http://" + ip + ":" + port + "/Values/GETALL_KUR_ISIMLERI?DB=" + DB + "&syncID=" + syncID + " ";
         }
 
-        public static string Firmalar(string ip, string port, String DB, int syncID)
+        public static string Firmalar(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALL_FIRMALAR?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALL_FIRMALAR?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
 
-        public static string Subeler(string ip, string port, String DB, int syncID)
+        public static string Subeler(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALL_SUBELER?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALL_SUBELER?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
 
         public static string Renkler(string ip, string port, String DB, int syncID)
@@ -145,33 +151,33 @@ namespace KayaApp.Helpers
             return "http://" + ip + ":" + port + "/Values/GETALL_BEDENLER?DB=" + DB + "&syncID=" + syncID + " ";
         }
 
-        public static string Projeler(string ip, string port, String DB, int syncID)
+        public static string Projeler(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALL_PROJELER?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALL_PROJELER?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
 
-        public static string SorumlulukMerk(string ip, string port, String DB, int syncID)
+        public static string SorumlulukMerk(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALL_SORUMLULUK?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALL_SORUMLULUK?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
 
-        public static string Bankalar(string ip, string port, String DB, int syncID)
+        public static string Bankalar(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALL_BANKALAR?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALL_BANKALAR?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
 
-        public static string Kasalar(string ip, string port, String DB, int syncID)
+        public static string Kasalar(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALL_KASALAR?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALL_KASALAR?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
         public static string ODEMEPLANLARI(string ip, string port, String DB, int syncID)
         {
             return "http://" + ip + ":" + port + "/Values/GETALL_ODEMEPLANLARI?DB=" + DB + "&syncID=" + syncID + " ";
         }
 
-        public static string CARIBAKIYELER(string ip, string port, String DB, int syncID)
+        public static string CARIBAKIYELER(string ip, string port, String DB, int syncID, int UserID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALLCARIBAKIYELER?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALLCARIBAKIYELER?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
 
         public static string STOKMIKTARLARI(string ip, string port, String DB, int depo, int syncID)
@@ -195,6 +201,10 @@ namespace KayaApp.Helpers
         {
             return "http://" + ip + ":" + port + "/Values/GETALL_IZINLER?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
-
+        public static string STOKFIYATLARI(string ip, string port, String DB, int syncID)
+        {
+            return "http://" + ip + ":" + port + "/Values/GETALL_STOKFIYATLARI?DB=" + DB + "&syncID=" + syncID + " ";
+        }
+        
     }
 }

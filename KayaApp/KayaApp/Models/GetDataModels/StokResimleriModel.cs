@@ -1,7 +1,7 @@
 ﻿using SQLite;
 using System;
 
-namespace KayaApp.Models.GetDataModels
+namespace KayaApp.Models
 {
     class StokResimleriModel
     {

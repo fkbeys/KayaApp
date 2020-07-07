@@ -39,5 +39,9 @@ namespace KayaApp.Models
         public string USERS_DEFAULT_SRM { get; set; }
         public int USERS_DEFAULT_ODEMEYON { get; set; }
         public string USERS_ODEMEYON { get; set; }
+        public string USERS_DEFAULT_TEMSILCI { get; set; }
+        public string USERS_TEMSILCI { get; set; }
+
+        public string USERS_MASRAF { get; set; }
     }
 }

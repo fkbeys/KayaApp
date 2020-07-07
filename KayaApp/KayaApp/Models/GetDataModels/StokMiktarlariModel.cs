@@ -1,7 +1,7 @@
 ﻿using SQLite;
 
 
-namespace KayaApp.Models.DataModels
+namespace KayaApp.Models
 {
 
     public class StokMiktarlariModel

@@ -1,6 +1,6 @@
 ﻿using SQLite;
 
-namespace KayaApp.Models.GetDataModels
+namespace KayaApp.Models
 {
    public class IzinlerModel
     {
