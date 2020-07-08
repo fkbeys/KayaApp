@@ -190,7 +190,7 @@ namespace KayaApp.Helpers
         }
         public static string STOKRESIMLERILIST(string ip, string port, String DB, int syncID)
         {
-            return "http://" + ip + ":" + port + "/Values/GETALL_PARTILOT?DB=" + DB + "&syncID=" + syncID + " ";
+            return "http://" + ip + ":" + port + "/Values/GETALL_STOKRESIMLERI?DB=" + DB + "&syncID=" + syncID + " ";
         }
         public static string KAMPANYALAR(string ip, string port, String DB, int syncID)
         {

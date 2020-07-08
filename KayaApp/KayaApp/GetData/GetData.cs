@@ -1,4 +1,5 @@
-﻿using KayaApp.Helpers;
+﻿using FFImageLoading;
+using KayaApp.Helpers;
 using KayaApp.Language;
 using KayaApp.Models;
 using Plugin.Connectivity;
@@ -535,15 +536,40 @@ namespace KayaApp.GetData
                     }
                 }
 
-
+                //mmx
                 //fotograflarla ilgili bir degisiklik vs varsa, burda cash i sifirliyoruz. lazim oldugu zaman, zaten cash otomatik olarak alim yapacaktir.
                 if (durumStokResimleriList.Count > 0)
                 {
                     foreach (var item in durumStokResimleriList)
                     {
-                        //  await ImageService.Instance.InvalidateCacheEntryAsync(item.STOK_RESIMURL, FFImageLoading.Cache.CacheType.All, removeSimilar: true);
+                         
+                        item.STOK_RESIMURL = SabitUrl.StokResimleri(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, item.STOK_KOD);
+                        await ImageService.Instance.InvalidateCacheEntryAsync(item.STOK_RESIMURL, FFImageLoading.Cache.CacheType.All, removeSimilar: true);
+
                     }
                 }
+
+
+
+
+
+                if (durumSTOCK.Count>0)
+                {
+                    //foreach (var item in durumSTOCK)
+                    //{
+                    //    await LocalSQL<StockModel>.DBIslem("DELETE FROM StockModel where sto_RECno ="+item.sto_RECno+" ");
+                    //}
+
+                    StringBuilder ss = new StringBuilder();
+                    foreach (var item in durumSTOCK)
+                    {
+                        ss.Append(item.sto_RECno + ",");
+                    }
+                    ss.Remove(ss.Length - 1, 1);
+                    var tt = ss;
+                    await LocalSQL<StockModel>.DBIslem("DELETE FROM StockModel where sto_RECno in ("+ tt.ToString()+") ");
+                }
+
 
                 await LocalSQL<StockModel>.DBINSERTALL(durumSTOCK);
                 await LocalSQL<CustomerModel>.DBINSERTALL(durumCARI);
@@ -660,7 +686,7 @@ namespace KayaApp.GetData
 
 
 
-
+                //mmx
                 foreach (var item in _LSTMANAGER.STOCKLIST)
                 {
                     //stok kartlarina stok resimlerinin url lerini getiriyoruz...

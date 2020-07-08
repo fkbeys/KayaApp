@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+             mc:Ignorable="d"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="Gray"
+             x:Class="KayaApp.Views.STOCKS.StockListPage">
+    <ContentPage.Content>
+        <StackLayout Spacing="0">
+
+
+            <yummy:PancakeView BackgroundGradientAngle="0"  BackgroundGradientStartColor="White" BackgroundGradientEndColor="White" CornerRadius="35,35,5,5" BorderColor="LightGray" BorderThickness="3">
+
+                <StackLayout >
+
+                    <StackLayout BackgroundColor="#0080FF">
+                        <Label Text="Mallar" TextColor="White" FontSize="Medium"  HorizontalOptions="Center"/>
+                    </StackLayout> 
+                    <SearchBar x:Name="searchbar1" Placeholder="Mallar Axtarış" BackgroundColor="White" Text="{Binding StockSearchText}"/> 
+                    <ListView   CachingStrategy="RecycleElement"   HasUnevenRows="True" SelectedItem="{Binding SelectedStockModel}" ItemSelected="ListView_ItemSelected"    ItemsSource="{Binding STOCKLIST,Mode=TwoWay}  "           >
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+
+                                    <yummy:PancakeView BackgroundGradientAngle="0"   CornerRadius="5,5,5,5" Margin="2" Padding="2" BorderColor="LightGray" BorderThickness="3">
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+
+                                            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding sto_isim}" FontAttributes="Bold" TextColor="DarkSlateBlue"/>
+
+                                            <Grid Grid.Row="1" Grid.Column="0" Grid.RowSpan="3"  >
+                                                <ffimageloading:CachedImage HorizontalOptions="Center" VerticalOptions="Center"   DownsampleToViewSize="true" Aspect="AspectFit"  LoadingPlaceholder="notfoundimage.png" ErrorPlaceholder="notfoundimage.png"  			
+                                             WidthRequest="400"  HeightRequest="400"                Source = "{Binding stok_resim_url}">
+                                                    <ffimageloading:CachedImage.Transformations>
+                                                        <fftransformations:CornersTransformation />
+                                                    </ffimageloading:CachedImage.Transformations>
+                                                </ffimageloading:CachedImage>
+                                            </Grid>
+
+                                            <Label Grid.Row="1" Grid.Column="1"   Text="{Binding sto_kod}" FontAttributes="Bold" TextColor="Black"/>
+
+                                            <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" TextColor="DarkSlateBlue" >
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span  Text="{Binding sto_fiyat}"   />
+                                                        <Span  Text=" "  />
+                                                        <Span  Text="{Binding sto_doviz_ad}"   />
+                                                        <Span  Text=" + "  /> 
+                                                        <Span  Text="{Binding vradi}"   />
+                                                        <Span  Text=" (%"  />
+                                                        <Span  Text="{Binding vryuzde}"    />
+                                                        <Span  Text=" ) "  />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+
+                                            <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1" TextColor="Red" >
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span  Text="{Binding sto_eldeki_miktar}"   />
+                                                        <Span  Text=" "  />
+                                                        <Span  Text="{Binding sto_birim1_ad}"   />
+
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </Grid>
+                                    </yummy:PancakeView>
+
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+            </yummy:PancakeView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

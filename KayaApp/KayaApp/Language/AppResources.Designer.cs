@@ -88,6 +88,78 @@ namespace KayaApp.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FİNANS.
+        /// </summary>
+        internal static string MAINMENU_CHASH {
+            get {
+                return ResourceManager.GetString("MAINMENU_CHASH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MÜŞTERİLER.
+        /// </summary>
+        internal static string MAINMENU_CUSTOMERS {
+            get {
+                return ResourceManager.GetString("MAINMENU_CUSTOMERS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SİPARİŞLER.
+        /// </summary>
+        internal static string MAINMENU_ORDERS {
+            get {
+                return ResourceManager.GetString("MAINMENU_ORDERS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALIŞ FATURALARI.
+        /// </summary>
+        internal static string MAINMENU_PURCHASE {
+            get {
+                return ResourceManager.GetString("MAINMENU_PURCHASE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RAPORLAR.
+        /// </summary>
+        internal static string MAINMENU_REPORTS {
+            get {
+                return ResourceManager.GetString("MAINMENU_REPORTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SATIŞ FATURALARI.
+        /// </summary>
+        internal static string MAINMENU_SALES_INVOICE {
+            get {
+                return ResourceManager.GetString("MAINMENU_SALES_INVOICE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to STOKLAR.
+        /// </summary>
+        internal static string MAINMENU_STOCKS {
+            get {
+                return ResourceManager.GetString("MAINMENU_STOCKS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DEPOLAR.
+        /// </summary>
+        internal static string MAINMENU_WAREHOUSE {
+            get {
+                return ResourceManager.GetString("MAINMENU_WAREHOUSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nakit.
         /// </summary>
         internal static string Nakit {

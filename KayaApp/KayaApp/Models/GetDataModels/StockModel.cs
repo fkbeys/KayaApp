@@ -6,11 +6,11 @@ namespace KayaApp.Models
 
     public class StockModel //: BaseViewModel
     {
-        [PrimaryKey, AutoIncrement]
+        // [PrimaryKey, AutoIncrement]
 
-        public int Sto_local_RECNO { get; set; }
+        //  public int Sto_local_RECNO { get; set; }
 
-
+        [PrimaryKey]
         public int sto_RECno { get; set; }
         public int sto_RECid_RECno { get; set; }
         public string sto_kod { get; set; }

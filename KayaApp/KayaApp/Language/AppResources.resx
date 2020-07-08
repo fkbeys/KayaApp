@@ -129,6 +129,30 @@
     <value>GİRİŞ YAP</value>
     <comment>LoginPage</comment>
   </data>
+  <data name="MAINMENU_CHASH" xml:space="preserve">
+    <value>FİNANS</value>
+  </data>
+  <data name="MAINMENU_CUSTOMERS" xml:space="preserve">
+    <value>MÜŞTERİLER</value>
+  </data>
+  <data name="MAINMENU_ORDERS" xml:space="preserve">
+    <value>SİPARİŞLER</value>
+  </data>
+  <data name="MAINMENU_PURCHASE" xml:space="preserve">
+    <value>ALIŞ FATURALARI</value>
+  </data>
+  <data name="MAINMENU_REPORTS" xml:space="preserve">
+    <value>RAPORLAR</value>
+  </data>
+  <data name="MAINMENU_SALES_INVOICE" xml:space="preserve">
+    <value>SATIŞ FATURALARI</value>
+  </data>
+  <data name="MAINMENU_STOCKS" xml:space="preserve">
+    <value>STOKLAR</value>
+  </data>
+  <data name="MAINMENU_WAREHOUSE" xml:space="preserve">
+    <value>DEPOLAR</value>
+  </data>
   <data name="Nakit" xml:space="preserve">
     <value>Nakit</value>
     <comment>GetData</comment>

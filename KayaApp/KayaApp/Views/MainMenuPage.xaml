@@ -5,18 +5,99 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
              mc:Ignorable="d"
+             xmlns:dil="clr-namespace:KayaApp.Language"
              NavigationPage.HasNavigationBar="False"
              x:Class="KayaApp.Views.MainMenuPage">
     <ContentPage.Content>
+        <ScrollView>
         <yummy:PancakeView BackgroundGradientAngle="0"  BackgroundGradientStartColor="LightGray" BackgroundGradientEndColor="LightSlateGray">
-            <StackLayout>
-                <Label Text="MainMenu"
-                       
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+           
 
-                <Button Text="tikla" Clicked="Button_Clicked"/>
-            </StackLayout>
+                <Grid  RowSpacing="10"   Margin="0,2,0,0" >
+                    <Grid.RowDefinitions    >
+
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="*"/>
+
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+
+                    <yummy:PancakeView BackgroundGradientAngle="90" Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="2" CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#ffc84f"  BackgroundGradientEndColor="#ff8209"      BorderColor="White" BorderThickness="3">
+
+                        <Button x:Name="BtnStock" Command="{Binding STOCKS_COMMAND}"  Clicked="BtnStock_Clicked"  Text="{x:Static dil:AppResources.MAINMENU_STOCKS}" ImageSource="xfork.png"  VerticalOptions="FillAndExpand"          TextColor="White"   BackgroundColor="Transparent" CornerRadius="10"        ContentLayout="left,0"     />
+
+                    </yummy:PancakeView>
+
+                    <yummy:PancakeView BackgroundGradientAngle="90" Grid.Row="0" Grid.Column="2"  Grid.ColumnSpan="2" CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#28fbb5"  BackgroundGradientEndColor="#09c893"      BorderColor="White" BorderThickness="3">
+
+
+                        <Button x:Name="BtnCustomers"  Command="{Binding CUSTOMER_AND_CRM_COMMAND}" Clicked="BtnCustomers_Clicked"  Text="{x:Static dil:AppResources.MAINMENU_CUSTOMERS}" ImageSource="customers.png"  VerticalOptions="FillAndExpand"   TextColor="White"   BackgroundColor="Transparent"   CornerRadius="10"      FontSize="Small"               ContentLayout="left,0"   />
+
+                    </yummy:PancakeView>
+
+                    <yummy:PancakeView BackgroundGradientAngle="90" Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="2" CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#bc62df"  BackgroundGradientEndColor="#5e28fd"      BorderColor="White" BorderThickness="3">
+
+                        <Button  x:Name="BtnSalesInvoice"  Command="{Binding SALES_INVOICE_COMMAND}"  Text="{x:Static dil:AppResources.MAINMENU_SALES_INVOICE}" ImageSource="salesbill.png"  VerticalOptions="FillAndExpand"   TextColor="White"     BackgroundColor="Transparent"     CornerRadius="10"                ContentLayout="left,0"    />
+
+                    </yummy:PancakeView>
+
+                    <yummy:PancakeView BackgroundGradientAngle="90" Grid.Row="1" Grid.Column="2"  Grid.ColumnSpan="2" CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#5480f1"  BackgroundGradientEndColor="#1153fc"      BorderColor="White" BorderThickness="3">
+
+                        <Button x:Name="BtnPurchaseInvoice"  Text="{x:Static dil:AppResources.MAINMENU_PURCHASE}" ImageSource="purchase.png"  VerticalOptions="FillAndExpand"      BackgroundColor="Transparent"    TextColor="White"     CornerRadius="10"   Command="{Binding PURCHASE_INVOICE_COMMAND}"          ContentLayout="left,0"   />
+
+                    </yummy:PancakeView>
+
+                    <yummy:PancakeView BackgroundGradientAngle="90" Grid.Row="2" Grid.Column="0"  Grid.ColumnSpan="2" CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#fabb79"  BackgroundGradientEndColor="#ff7bb0"      BorderColor="White" BorderThickness="3">
+
+                        <Button  x:Name="BtnWareHouse"  Text="{x:Static dil:AppResources.MAINMENU_WAREHOUSE}" ImageSource="warehouse.png"  VerticalOptions="FillAndExpand"     BackgroundColor="Transparent"       TextColor="White"       CornerRadius="10"         ContentLayout="left,0"   />
+
+                    </yummy:PancakeView>
+
+                    <yummy:PancakeView BackgroundGradientAngle="90"  Grid.Row="2" Grid.Column="2"  Grid.ColumnSpan="2"  CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#c6715d"  BackgroundGradientEndColor="IndianRed"      BorderColor="White" BorderThickness="3">
+                        <Button  x:Name="BtnOrders"  Text="{x:Static dil:AppResources.MAINMENU_ORDERS}" ImageSource="order.png"  VerticalOptions="FillAndExpand"     BackgroundColor="Transparent"        CornerRadius="10"     Command="{Binding ORDERS_COMMAND}"           TextColor="White"      ContentLayout="left,0"   />
+                    </yummy:PancakeView>
+
+                    <yummy:PancakeView BackgroundGradientAngle="90" Grid.Row="3" Grid.Column="0"  Grid.ColumnSpan="2"  CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#40cde8"  BackgroundGradientEndColor="#ac8df9"      BorderColor="White" BorderThickness="3">
+
+                         <Button  x:Name="BtnChash"  Text="{x:Static dil:AppResources.MAINMENU_CHASH}" ImageSource="cash.png"  VerticalOptions="FillAndExpand"             BackgroundColor="Transparent"               CornerRadius="10"      TextColor="White"               ContentLayout="left,0"   />
+
+                    </yummy:PancakeView>
+
+                    <yummy:PancakeView BackgroundGradientAngle="90" Grid.Row="3" Grid.Column="2"  Grid.ColumnSpan="2" CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#ffd827"  BackgroundGradientEndColor="#ffc22f"      BorderColor="White" BorderThickness="3">
+
+
+                        <Button  x:Name="BtnReports"  Text="{x:Static dil:AppResources.MAINMENU_REPORTS}" Command="{Binding REPORTS_AND_CHARTS_COMMAND}" ImageSource="reports.png"  VerticalOptions="FillAndExpand"      BackgroundColor="Transparent"        TextColor="White"         CornerRadius="10"       ContentLayout="left,0"   />
+
+                    </yummy:PancakeView>
+
+
+                    <BoxView Grid.ColumnSpan="4" Grid.Row="4"  BackgroundColor="#FFB300" />
+
+
+                    <ImageButton x:Name="BarcodeBTN"   Source="barcodex1" HeightRequest="20" WidthRequest="20" Grid.Row="4" Grid.Column="3" BackgroundColor="Transparent"   />
+
+
+
+                    <ImageButton x:Name="CameraBTN" Source="scanner.png" HeightRequest="20" WidthRequest="20" Grid.Row="4" Grid.Column="2"  BackgroundColor="Transparent"     />
+
+                    <ImageButton x:Name="SettingsBtn" Source="setting.png" HeightRequest="20" WidthRequest="20" Grid.Row="4" Grid.Column="1" Margin="5,5,5,5" BackgroundColor="Transparent"    />
+
+                    <ImageButton x:Name="RefreshBtn" Source="reload.png" HeightRequest="20" WidthRequest="20" Grid.Row="4" Grid.Column="0"  BackgroundColor="Transparent"     />
+
+                </Grid>
+         
+
         </yummy:PancakeView>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
