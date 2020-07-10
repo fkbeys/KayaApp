@@ -63,6 +63,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CustomRenderer\KayaEntryIOS.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
@@ -159,10 +160,10 @@
       <Version>4.7.0.1080</Version>
     </PackageReference>
     <PackageReference Include="ZXing.Net.Mobile">
-      <Version>2.4.1</Version>
+      <Version>3.0.0-beta5</Version>
     </PackageReference>
     <PackageReference Include="ZXing.Net.Mobile.Forms">
-      <Version>2.4.1</Version>
+      <Version>3.0.0-beta5</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

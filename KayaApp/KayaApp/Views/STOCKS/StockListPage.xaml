@@ -6,6 +6,10 @@
              mc:Ignorable="d"
              NavigationPage.HasNavigationBar="False"
              BackgroundColor="Gray"
+             Visual="Material"
+             Padding="3,0,3,0"
+               xmlns:Fim="clr-namespace:KayaApp.Fonts"
+                          xmlns:dil="clr-namespace:KayaApp.Language" 
              x:Class="KayaApp.Views.STOCKS.StockListPage">
     <ContentPage.Content>
         <StackLayout Spacing="0">
@@ -16,9 +20,14 @@
                 <StackLayout >
 
                     <StackLayout BackgroundColor="#0080FF">
-                        <Label Text="Mallar" TextColor="White" FontSize="Medium"  HorizontalOptions="Center"/>
-                    </StackLayout> 
-                    <SearchBar x:Name="searchbar1" Placeholder="Mallar Axtarış" BackgroundColor="White" Text="{Binding StockSearchText}"/> 
+                        <Label Text="{x:Static dil:AppResources.Stoklar}"  TextColor="White" FontSize="Medium"  HorizontalOptions="Center"/>
+                    </StackLayout>
+
+                    <Grid ColumnDefinitions="3*,*">
+                        <SearchBar Grid.Column="0" x:Name="searchbar1" Placeholder="{x:Static dil:AppResources.StokAra}" BackgroundColor="White" Text="{Binding StockSearchText}"/>
+                         <Button  Grid.Column="1"    FontSize="Medium" BackgroundColor="IndianRed"  Margin="0,0,5,0"
+                              ImageSource="{FontImage FontFamily=FontAwsome,Glyph={x:Static Fim:IconFont.Plus},Size=Title,Color=White}" />
+                    </Grid>
                     <ListView   CachingStrategy="RecycleElement"   HasUnevenRows="True" SelectedItem="{Binding SelectedStockModel}" ItemSelected="ListView_ItemSelected"    ItemsSource="{Binding STOCKLIST,Mode=TwoWay}  "           >
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -43,7 +52,7 @@
                                             <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding sto_isim}" FontAttributes="Bold" TextColor="DarkSlateBlue"/>
 
                                             <Grid Grid.Row="1" Grid.Column="0" Grid.RowSpan="3"  >
-                                                <ffimageloading:CachedImage HorizontalOptions="Center" VerticalOptions="Center"   DownsampleToViewSize="true" Aspect="AspectFit"  LoadingPlaceholder="notfoundimage.png" ErrorPlaceholder="notfoundimage.png"  			
+                                                <ffimageloading:CachedImage HorizontalOptions="Center" VerticalOptions="Center" CacheDuration="90"   DownsampleToViewSize="true" Aspect="AspectFit"  LoadingPlaceholder="notfoundimage.png" ErrorPlaceholder="notfoundimage.png"  			
                                              WidthRequest="400"  HeightRequest="400"                Source = "{Binding stok_resim_url}">
                                                     <ffimageloading:CachedImage.Transformations>
                                                         <fftransformations:CornersTransformation />

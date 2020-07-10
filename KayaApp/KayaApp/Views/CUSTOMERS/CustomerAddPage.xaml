@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             NavigationPage.HasNavigationBar="False"
+             Visual="Material"
+             x:Class="KayaApp.Views.CUSTOMERS.CustomerAddPage">
+
+
+
+    <ContentPage.Content>
+
+        <StackLayout>
+            <StackLayout BackgroundColor="#0080FF">
+                <Label Text="Yeni Cari Ekle" TextColor="White" FontSize="Medium"  HorizontalOptions="Center"/>
+            </StackLayout>
+
+            <ScrollView>
+                <Grid  RowSpacing="0" >
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Frame Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".6"/>
+                    <!--<Label Grid.Row="0" Grid.Column="0"   Text="Cari Isim:" HorizontalOptions="End" VerticalOptions="Center"/>-->  
+                    <Entry Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Cari isim" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Text="{Binding Cari_Isim}" FontSize="Small"/>
+
+
+                    <Frame Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".2"/>
+                    <!--<Label Grid.Row="1" Grid.Column="0"   Text="Cari Soyisim:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Entry Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Cari Soyisim" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Text="{Binding Cari_Soyisim}"  FontSize="Small"/>
+
+                    <Frame Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".6"/>
+                    <!--<Label Grid.Row="2" Grid.Column="0"   Text="Tel:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Entry Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Tel" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Keyboard="Telephone"  Text="{Binding Cari_Tel}"  FontSize="Small"/>
+
+
+                    <Frame Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".2"/>
+                    <!--<Label Grid.Row="3" Grid.Column="0"   Text="Vergi Dairesi:" HorizontalOptions="End" VerticalOptions="Center" />-->
+                    <Entry Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Vergi Dairesi" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Text="{Binding Cari_Vergi_Daire}"  FontSize="Small"/>
+
+
+                    <Frame Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".6"/>
+                    <!--<Label Grid.Row="4" Grid.Column="0"   Text="Vergi No:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Entry Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Vergi No" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Keyboard="Numeric" Text="{Binding Cari_Vergi_No}"  FontSize="Small"/>
+
+                    <Frame Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".2"/>
+                    <!--<Label Grid.Row="5" Grid.Column="0"   Text="EMail:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Entry Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="EMail" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Keyboard="Email" Text="{Binding Cari_Email}"  FontSize="Small"/>
+
+                    <Frame Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".6"/>
+                    <!--<Label Grid.Row="6" Grid.Column="0"   Text="Doviz 1:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Picker Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5"   Title="Doviz 1"   ItemsSource="{Binding KurIsimleriFullKurus,Mode=TwoWay}" ItemDisplayBinding="{Binding KUR_ISMI,Mode=TwoWay}"   SelectedItem="{Binding selected_para1,Mode=TwoWay}"   FontSize="Small"/>
+
+                    <Frame Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".2"/>
+                    <!--<Label Grid.Row="7" Grid.Column="0"   Text="Doviz 3:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Picker Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="5"  Title="Doviz 2"   ItemsSource="{Binding KurIsimleriFullKurus,Mode=TwoWay}" ItemDisplayBinding="{Binding KUR_ISMI,Mode=TwoWay}"   SelectedItem="{Binding selected_para2,Mode=TwoWay}"  FontSize="Small"/>
+
+                    <Frame Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".6"/>
+                    <!--<Label Grid.Row="8" Grid.Column="0"   Text="Doviz 2:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Picker Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="5"  Title="Doviz 3"   ItemsSource="{Binding KurIsimleriFullKurus,Mode=TwoWay}" ItemDisplayBinding="{Binding KUR_ISMI,Mode=TwoWay}"   SelectedItem="{Binding selected_para3,Mode=TwoWay}"  FontSize="Small"/>
+
+
+                    <Frame Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".2"/>
+                    <!--<Label Grid.Row="9" Grid.Column="0"   Text="Cari Sektor:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Picker Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="5"  Title="Cari Sektor"   ItemsSource="{Binding Cari_Sektor_List,Mode=TwoWay}" ItemDisplayBinding="{Binding sktr_ismi,Mode=TwoWay}"   SelectedItem="{Binding SelectedSektor,Mode=TwoWay}"  FontSize="Small" />
+
+                    <Frame Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".6"/>
+                    <!--<Label Grid.Row="10" Grid.Column="0"   Text="Cari Bolge:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Picker Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="5"  Title="Cari Bolge"    ItemsSource="{Binding Cari_Bolgeleri_List,Mode=TwoWay}" ItemDisplayBinding="{Binding bol_ismi,Mode=TwoWay}"   SelectedItem="{Binding SelectedBolge,Mode=TwoWay}"  FontSize="Small"/>
+
+                    <Frame Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".2"/>
+                    <!--<Label Grid.Row="11" Grid.Column="0"   Text="Cari Grup:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Picker Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="5"  Title="Cari Grup"    ItemsSource="{Binding Cari_Gruplari_List,Mode=TwoWay}" ItemDisplayBinding="{Binding crg_isim,Mode=TwoWay}"   SelectedItem="{Binding SelectedGrup,Mode=TwoWay}"  FontSize="Small"/>
+
+                    <Frame Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".6"/>
+                    <!--<Label Grid.Row="12" Grid.Column="0"   Text="Cari Temsilci:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Picker Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="5"  Title="Cari Temsilci"    ItemsSource="{Binding Cari_Temsilci_List,Mode=TwoWay}" ItemDisplayBinding="{Binding cari_per_adi,Mode=TwoWay}"   SelectedItem="{Binding SelectedPersonel,Mode=TwoWay}"  FontSize="Small"/>
+
+                    <Frame Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".2"/>
+                    <!--<Label Grid.Row="13" Grid.Column="0"   Text="Fiyat Listesi:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Picker Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="5"  Title="Fiyat Listesi"  ItemsSource="{Binding Fiyat_Tanimlamalari,Mode=TwoWay}" ItemDisplayBinding="{Binding sfl_aciklama,Mode=TwoWay}"   SelectedItem="{Binding selectedFiyatListe,Mode=TwoWay}"   FontSize="Small"/>
+
+
+                    <Frame Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="LightGoldenrodYellow" Opacity=".6"/>
+                    <!--<Label Grid.Row="14" Grid.Column="0"   Text="Iskonto:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Picker Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="5"  Title="Iskonto"   FontSize="Small"/>
+
+
+                    <Frame Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="IndianRed" Opacity=".3"/>
+                    <!--<Label Grid.Row="16" Grid.Column="0" Grid.RowSpan="2"   Text="Adres Bilgisi:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Entry Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Sokak, Cadde "  Text="{Binding Adres_Cadde}"   FontSize="Small"/>
+
+
+                    <Frame Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="IndianRed" Opacity=".1"/>
+                    <Entry Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Apt, Daire no vs..."  Text="{Binding Adres_AptDaire}"   FontSize="Small"/>
+
+
+                    <Frame Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="IndianRed" Opacity=".3"/>
+                    <!--<Label Grid.Row="18" Grid.Column="0"   Text="Il:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Entry Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Il"  Text="{Binding Adres_Il}"   FontSize="Small"/>
+
+                    <Frame Grid.Row="19" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="IndianRed" Opacity=".1"/>
+                    <!--<Label Grid.Row="19" Grid.Column="0"   Text="Ilce:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Entry Grid.Row="19" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Ilce"  Text="{Binding Adres_Ilce}"  FontSize="Small"/>
+
+
+                    <Frame Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="5" BackgroundColor="IndianRed" Opacity=".3"/>
+                    <!--<Label Grid.Row="20" Grid.Column="0"   Text="Posta Kodu:" HorizontalOptions="End" VerticalOptions="Center"/>-->
+                    <Entry Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="5"  Placeholder="Posta Kodu"    Text="{Binding Adres_PostaKod}"   FontSize="Small"/>
+
+
+                    <Button Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="5"  BackgroundColor="Green" TextColor="White" CornerRadius="0"  Text="Kaydet"  Command="{Binding SaveCariCommand}"  />
+
+
+
+
+                </Grid>
+            </ScrollView>
+
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>

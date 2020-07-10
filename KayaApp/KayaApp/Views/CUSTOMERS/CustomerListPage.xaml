@@ -7,6 +7,9 @@
              NavigationPage.HasNavigationBar="False"
              BackgroundColor="Gray"
              Visual="Material"
+               xmlns:Fim="clr-namespace:KayaApp.Fonts"
+             xmlns:dil="clr-namespace:KayaApp.Language"
+              Padding="3,0,3,0"
              x:Class="KayaApp.Views.CUSTOMERS.CustomerListPage">
     <ContentPage.Content>
         <yummy:PancakeView BackgroundGradientAngle="0"    BackgroundGradientStartColor="White" BackgroundGradientEndColor="WhiteSmoke" CornerRadius="35,35,5,5" BorderColor="LightGray" BorderThickness="3">
@@ -14,9 +17,14 @@
             <StackLayout>
                 <StackLayout Spacing="0">
                     <StackLayout  BackgroundColor="DodgerBlue">
-                        <Label Text="Musteriler" TextColor="White" HorizontalOptions="Center" FontAttributes="Bold"/>
+                        <Label Text="{x:Static dil:AppResources.Musteriler}"  TextColor="White" HorizontalOptions="Center" FontAttributes="Bold"/>
                     </StackLayout>
-                    <SearchBar x:Name="searchbar1" Placeholder="Musteri Axtar" BackgroundColor="White" Text="{Binding CustomerSearchText}"/>
+                    <Grid ColumnDefinitions="3*,*">
+                        <SearchBar Grid.Column="0" x:Name="searchbar1" Placeholder="{x:Static dil:AppResources.MusteriAra}"   Text="{Binding CustomerSearchText}"/>
+                        <Button  Grid.Column="1"    FontSize="Medium" BackgroundColor="IndianRed"  Margin="0,2,5,0" Clicked="Button_Clicked"
+                              ImageSource="{FontImage FontFamily=FontAwsome,Glyph={x:Static Fim:IconFont.Plus},Size=Title,Color=White}" />
+                    </Grid>
+                  
                     <ListView      HasUnevenRows="True" SelectedItem="{Binding SelectedCustomerModel}"      ItemsSource="{Binding CUSTOMERLIST,Mode=TwoWay}  "           >
                         <ListView.ItemTemplate>
                             <DataTemplate>

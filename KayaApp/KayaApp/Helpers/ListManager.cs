@@ -769,12 +769,12 @@ namespace KayaApp.Helpers
                 {
                     _Acik_Kapali = new ObservableCollection<Acik_Kapali_Model>();
 
-                    //kullanici bilgisi cektigimiz zaman, gelen default kasa ve banka bilgilerini burada kullaniyoruz
-                    Acik_Kapali.Add(new Acik_Kapali_Model { Acik_Kapali_ID = 0, Kapama_Sekli = "Acik Hesap", Kapama_Sekli_kodu = "" });
+                    ////kullanici bilgisi cektigimiz zaman, gelen default kasa ve banka bilgilerini burada kullaniyoruz
+                    //Acik_Kapali.Add(new Acik_Kapali_Model { Acik_Kapali_ID = 0, Kapama_Sekli = "Acik Hesap", Kapama_Sekli_kodu = "" });
 
-                    Acik_Kapali.Add(new Acik_Kapali_Model { Acik_Kapali_ID = 1, Kapama_Sekli = "Kasadan Kapanacak", Kapama_Sekli_kodu = ACTIVEUSER.USERS_DEFAULT_KASA });
+                    //Acik_Kapali.Add(new Acik_Kapali_Model { Acik_Kapali_ID = 1, Kapama_Sekli = "Kasadan Kapanacak", Kapama_Sekli_kodu = ACTIVEUSER.USERS_DEFAULT_KASA });
 
-                    Acik_Kapali.Add(new Acik_Kapali_Model { Acik_Kapali_ID = 2, Kapama_Sekli = "Bankadan Kapanacak", Kapama_Sekli_kodu = ACTIVEUSER.USERS_DEFAULT_BANKA });
+                    //Acik_Kapali.Add(new Acik_Kapali_Model { Acik_Kapali_ID = 2, Kapama_Sekli = "Bankadan Kapanacak", Kapama_Sekli_kodu = ACTIVEUSER.USERS_DEFAULT_BANKA });
 
 
 

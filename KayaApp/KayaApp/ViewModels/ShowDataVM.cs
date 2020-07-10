@@ -2,7 +2,11 @@
 using KayaApp.Helpers;
 using KayaApp.Methods;
 using KayaApp.Models;
+using KayaApp.Views.CUSTOMERS;
+using KayaApp.Views.STOCKS;
+using Rg.Plugins.Popup.Extensions;
 using System.Collections.ObjectModel;
+using Xamarin.Forms;
 
 namespace KayaApp.ViewModels
 {
@@ -38,13 +42,19 @@ namespace KayaApp.ViewModels
 
                     if (SelectedStockModel != null)
                     {
-
-                        // Application.Current.MainPage.Navigation.PushPopupAsync(new StockDetailPopUp(SelectedStockModel), false);
+                        //  Application.Current.MainPage.Navigation.PushPopupAsync(new StockDetailPopUp(SelectedStockModel), false);
+                        stokdetayinagit();
                         _SelectedStockModel = null;
                     }
                 }
             }
         }
+        private async void  stokdetayinagit()
+        {
+
+         await   HelpME.PopAc(new StockDetailPopUp(SelectedStockModel));
+        }
+
         private string _StockSearchText;
 
         public string StockSearchText
@@ -123,7 +133,8 @@ namespace KayaApp.ViewModels
 
                     if (SelectedCustomerModel != null)
                     {
-                        //    Application.Current.MainPage.Navigation.PushPopupAsync(new CustomerDetailPopUp(SelectedCustomerModel), false);
+                        //   Application.Current.MainPage.Navigation.PushPopupAsync(new CustomerDetailPopUp(SelectedCustomerModel), false);
+                        HelpME.PopAc(new CustomerDetailPopUp(SelectedCustomerModel));
                         _SelectedCustomerModel = null;
                     }
                 }

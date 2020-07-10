@@ -25,8 +25,8 @@ namespace KayaApp.Models
         public string USERS_PROJE_KOD { get; set; }
         public string USERS_FIRMALAR { get; set; }
         public string USERS_SUBELER { get; set; }
-        public string USERS_DEFAULT_FIRMA { get; set; }
-        public string USERS_DEFAULT_SUBE { get; set; }
+        public int USERS_DEFAULT_FIRMA { get; set; }
+        public int USERS_DEFAULT_SUBE { get; set; }
         public int USERS_DEFAULT_FIYATLISTESI { get; set; }
         public int USERS_DEFAULT_KAYNAKDEPO { get; set; }
         public int USERS_DEFAULT_TRFDEPO { get; set; }

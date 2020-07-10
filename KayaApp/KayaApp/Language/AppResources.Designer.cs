@@ -61,6 +61,33 @@ namespace KayaApp.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Açık Hesap.
+        /// </summary>
+        internal static string AcikHesap {
+            get {
+                return ResourceManager.GetString("AcikHesap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Banka.
+        /// </summary>
+        internal static string Banka {
+            get {
+                return ResourceManager.GetString("Banka", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bilgiler Yükleniyor..
+        /// </summary>
+        internal static string BilgiEkrani_YUKLENIYOR {
+            get {
+                return ResourceManager.GetString("BilgiEkrani_YUKLENIYOR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Demo.
         /// </summary>
         internal static string demobtn {
@@ -70,7 +97,7 @@ namespace KayaApp.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kullanıcı girişi yapılıyor. Lütfen bekleyiniz....
+        ///   Looks up a localized string similar to Veriler Yükleniyor. Lütfen bekleyiniz....
         /// </summary>
         internal static string dialog_logginginplzwait {
             get {
@@ -160,11 +187,65 @@ namespace KayaApp.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to KDV.
+        /// </summary>
+        internal static string MoneyTAX {
+            get {
+                return ResourceManager.GetString("MoneyTAX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MÜŞTERİ ARA.
+        /// </summary>
+        internal static string MusteriAra {
+            get {
+                return ResourceManager.GetString("MusteriAra", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MÜŞTERİLER.
+        /// </summary>
+        internal static string Musteriler {
+            get {
+                return ResourceManager.GetString("Musteriler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nakit.
         /// </summary>
         internal static string Nakit {
             get {
                 return ResourceManager.GetString("Nakit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peşin.
+        /// </summary>
+        internal static string Pesin {
+            get {
+                return ResourceManager.GetString("Pesin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to STOK ARA.
+        /// </summary>
+        internal static string StokAra {
+            get {
+                return ResourceManager.GetString("StokAra", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to STOKLAR.
+        /// </summary>
+        internal static string Stoklar {
+            get {
+                return ResourceManager.GetString("Stoklar", resourceCulture);
             }
         }
         
@@ -201,6 +282,15 @@ namespace KayaApp.Language {
         internal static string usersusername {
             get {
                 return ResourceManager.GetString("usersusername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Satış Faturası.
+        /// </summary>
+        internal static string xSatisFaturasi_1 {
+            get {
+                return ResourceManager.GetString("xSatisFaturasi_1", resourceCulture);
             }
         }
     }

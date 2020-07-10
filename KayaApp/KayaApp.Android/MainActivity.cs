@@ -6,6 +6,8 @@ using Android.OS;
 using Android.Runtime;
 using FFImageLoading;
 using FFImageLoading.Forms.Platform;
+using Rg.Plugins.Popup.Services;
+using System;
 using System.IO;
 
 namespace KayaApp.Droid
@@ -21,6 +23,7 @@ namespace KayaApp.Droid
             //-----------------------------------------------------------------------------
 
             //barcode
+            Xamarin.Essentials.Platform.Init(Application);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
             //-----------------------------------------------------------------------------
 
@@ -31,6 +34,7 @@ namespace KayaApp.Droid
             //FF IMAGE
             Xamarin.Forms.Forms.SetFlags("FastRenderers_Experimental");
             CachedImageRenderer.Init(enableFastRenderer: true);
+           
             var config = new FFImageLoading.Config.Configuration()
             {
                 VerboseLogging = false,
@@ -62,11 +66,30 @@ namespace KayaApp.Droid
 
             LoadApplication(new App(constringANDROID));
         }
+
+ 
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
+            // BARCODE ICIN IZIN ALMAKLAZIM
+            global::ZXing.Net.Mobile.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults); 
+
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        //rg.plugin in backbutton basilinca ne olsun override i
+        public async override void OnBackPressed()
+        {
+            if (Rg.Plugins.Popup.Popup.SendBackPressed(base.OnBackPressed))
+            {
+                await PopupNavigation.Instance.PopAsync();
+            }
+            else
+            {
+                // Do something if there are not any pages in the `PopupStack`
+            }
         }
     }
 }

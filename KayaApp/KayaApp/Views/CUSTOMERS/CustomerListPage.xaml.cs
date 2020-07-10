@@ -1,4 +1,5 @@
-﻿using KayaApp.ViewModels;
+﻿using KayaApp.Helpers;
+using KayaApp.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,11 @@ namespace KayaApp.Views.CUSTOMERS
         {
             InitializeComponent();
             BindingContext = showDataVM;
+        }
+
+        private async void Button_Clicked(object sender, EventArgs e)
+        {
+            await HelpME.SayfaAc(new CustomerAddPage());
         }
     }
 }

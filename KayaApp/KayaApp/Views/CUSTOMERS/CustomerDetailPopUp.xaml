@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage  xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup" 
+                  xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+                                   xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+   xmlns:Fim="clr-namespace:KayaApp.Fonts"
+                          xmlns:dil="clr-namespace:KayaApp.Language" 
+                      CloseWhenBackgroundIsClicked="True"
+             x:Class="KayaApp.Views.CUSTOMERS.CustomerDetailPopUp">
+
+
+    <pages:PopupPage.Animation  >
+
+
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="0"
+            ScaleOut="0"
+            DurationIn="100"
+            DurationOut="100"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"  />
+
+    </pages:PopupPage.Animation  >
+
+
+
+    <Frame Margin="5"   BackgroundColor="WhiteSmoke" CornerRadius="20" VerticalOptions="Center">
+
+        <Grid RowSpacing="2" Grid.Row="4" Grid.ColumnSpan="4" IsVisible="{Binding IsVisibleVisualize,Mode=TwoWay}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition  Width="2*"/>
+
+            </Grid.ColumnDefinitions>
+
+
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="0" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+            <Label  VerticalOptions="Center" HorizontalOptions="Center"  Grid.Row="0" Grid.Column="0" Text="Sektor:"   FontAttributes="Bold"/>
+            <Label  VerticalOptions="Center"                             Grid.Row="0" Grid.Column="1"  x:Name="cari_sektor_ismi"/>
+
+
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="1" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+            <Label  VerticalOptions="Center" HorizontalOptions="Center"  Grid.Row="1" Grid.Column="0" Text="Bolge:"   FontAttributes="Bold"/>
+            <Label  VerticalOptions="Center"                             Grid.Row="1" Grid.Column="1"  x:Name="cari_bolge_ismi"/>
+
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="2" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+            <Label  VerticalOptions="Center" HorizontalOptions="Center"  Grid.Row="2" Grid.Column="0" Text="Grup:"   FontAttributes="Bold"/>
+            <Label  VerticalOptions="Center"                             Grid.Row="2" Grid.Column="1"  x:Name="cari_grup_ismi"/>
+
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="3" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="3" Grid.Column="0" Text="Temsilci:"   FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="3" Grid.Column="1"  x:Name="cari_temsilci_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="4" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="4" Grid.Column="0" Text="Vergi Dairesi:"   FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="4" Grid.Column="1"  x:Name="cari_vdaire_adi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="5" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="5" Grid.Column="0" Text="Daire No:"   FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="5" Grid.Column="1"  x:Name="cari_vdaire_no"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="6" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="6" Grid.Column="0" Text="Vergi Kimlik"   FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="6" Grid.Column="1"  x:Name="cari_VergiKimlikNo"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="7" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="7" Grid.Column="0" Text="Web:"   FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="7" Grid.Column="1"  x:Name="cari_wwwadresi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="8" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="8" Grid.Column="0" Text="E-mail:"   FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="8" Grid.Column="1"  x:Name="cari_EMail"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="9" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="9" Grid.Column="0" Text="Doviz-1:"   FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="9" Grid.Column="1"  x:Name="cari_doviz1"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="10" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="10" Grid.Column="0" Text="Doviz-2:"   FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="10" Grid.Column="1" x:Name="cari_doviz2"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="11" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="11" Grid.Column="0" Text="Doviz-3:"   FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="11" Grid.Column="1" x:Name="cari_doviz3"/>
+
+
+
+
+            <!--<Button   ImageSource="back" BackgroundColor="#FFCE00"  Clicked="Button_Clicked"    Grid.Row="13" Grid.Column="0" CornerRadius="20"/>-->
+            <Button  Grid.Row="13" Grid.Column="0"   FontSize="Medium" BackgroundColor="IndianRed" Clicked="Button_Clicked"  Margin="0,0,5,0"
+                              ImageSource="{FontImage FontFamily=FontAwsome,Glyph={x:Static Fim:IconFont.ArrowLeft},Size=Title,Color=White}" CornerRadius="10" />
+
+            <Button Text="Hareketleri Gor" BackgroundColor="#0080FF" FontSize="Micro" TextColor="White"     Grid.Row="13" Grid.Column="1" CornerRadius="10"/>
+
+        </Grid>
+
+
+    </Frame>
+
+
+
+
+
+</pages:PopupPage>

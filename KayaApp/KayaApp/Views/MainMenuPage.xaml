@@ -47,7 +47,7 @@
 
                     <yummy:PancakeView BackgroundGradientAngle="90" Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="2" CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#bc62df"  BackgroundGradientEndColor="#5e28fd"      BorderColor="White" BorderThickness="3">
 
-                        <Button  x:Name="BtnSalesInvoice"  Command="{Binding SALES_INVOICE_COMMAND}"  Text="{x:Static dil:AppResources.MAINMENU_SALES_INVOICE}" ImageSource="salesbill.png"  VerticalOptions="FillAndExpand"   TextColor="White"     BackgroundColor="Transparent"     CornerRadius="10"                ContentLayout="left,0"    />
+                        <Button  x:Name="BtnSalesInvoice"  Command="{Binding SALES_INVOICE_COMMAND}" Clicked="BtnSalesInvoice_Clicked" Text="{x:Static dil:AppResources.MAINMENU_SALES_INVOICE}" ImageSource="salesbill.png"  VerticalOptions="FillAndExpand"   TextColor="White"     BackgroundColor="Transparent"     CornerRadius="10"                ContentLayout="left,0"    />
 
                     </yummy:PancakeView>
 

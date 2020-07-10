@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KayaApp.Models;
+using System;
 using System.Globalization;
 
 namespace KayaApp.Helpers
@@ -7,40 +8,38 @@ namespace KayaApp.Helpers
     {
         public static NumericConverter cevir;
 
-        //public static int RenkBedenModeltoIntConvertor(RenkModel gelenrenk, BedenModel gelenbeden)
-        //{
+        public static int RenkBedenModeltoIntConvertor(RenkModel gelenrenk, BedenModel gelenbeden)
+        { 
+            try
+            {
+                int renkkodu = 0;
+                int bedenkodu = 1;
 
 
-        //    try
-        //    {
-        //        int renkkodu = 0;
-        //        int bedenkodu = 1;
+                if (gelenrenk != null && gelenrenk.rnk_IndicatorName != null)
+                {
+                    renkkodu = NumericConverter.GetNumberInaString(gelenrenk.rnk_IndicatorName) - 1;
+                }
+
+                if (gelenbeden != null && gelenbeden.bdn_IndicatorName != null)
+                {
+                    bedenkodu = NumericConverter.GetNumberInaString(gelenbeden.bdn_IndicatorName);
+                }
+
+                var reng = gelenrenk;
+                var beden = gelenbeden;
 
 
-        //        if (gelenrenk != null && gelenrenk.rnk_IndicatorName != null)
-        //        {
-        //            renkkodu = NumericConverter.GetNumberInaString(gelenrenk.rnk_IndicatorName) - 1;
-        //        }
+                return (renkkodu) * 40 + bedenkodu;
+            }
+            catch (Exception ex)
+            {
+                HelpME.MessageShow("hata", ex.Message, "ok");
 
-        //        if (gelenbeden != null && gelenbeden.bdn_IndicatorName != null)
-        //        {
-        //            bedenkodu = NumericConverter.GetNumberInaString(gelenbeden.bdn_IndicatorName);
-        //        }
+            }
 
-        //        var reng = gelenrenk;
-        //        var beden = gelenbeden;
-
-
-        //        return (renkkodu) * 40 + bedenkodu;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        HelpME.MessageShow("hata", ex.Message, "ok");
-
-        //    }
-
-        //    return 0;
-        //}
+            return 0;
+        }
 
         public static int GetNumberInaString(string gelenstring)
         {

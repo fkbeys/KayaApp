@@ -221,12 +221,7 @@ namespace KayaApp.Models
                 _sth_vergi = value; /*(sth_tutar * sth_vryuzde / 100);*/ //
             }
         }
-
-
-
         public int sth_vergi_pntr { get; set; } // VERGI_NO 4 
-
-
 
         public double sth_iskonto1 { get; set; }
 
@@ -234,10 +229,7 @@ namespace KayaApp.Models
 
         public double sth_iskonto3 { get; set; }
 
-
-
         private string _sth_srm_merkezi;
-
         public string sth_srm_merkezi
         {
             get
@@ -250,34 +242,21 @@ namespace KayaApp.Models
             }
             set { _sth_srm_merkezi = value; }
         }
-
-
         public string sth_proje { get; set; }
-
         public int sth_depo { get; set; }
-
         public int sth_fiyat_liste_no { get; set; }
-
         public string sth_username_seri { get; set; }  //evrak seri no zimbirtasindan dolayi boyle bi sacmaliga girdim...
-
 
         public int sth_evraktip { get; set; }
         public int sth_tip { get; set; }
-
         public int sth_cins { get; set; }
-
         public int sth_cari_cins { get; set; }
-
         public bool sth_is_sent { get; set; }
-
         public int sth_normal_iade { get; set; }
-
         public int sth_doviz_cins { get; set; }
-
         public double sth_har_doviz_kur { get; set; }
 
         private string _sth_doviz_ismi;
-
         public string sth_doviz_ismi
         {
             get
@@ -294,37 +273,24 @@ namespace KayaApp.Models
                 OnPropertyChanged();
             }
         }
-
-
         public int sth_cikis_depo_no { get; set; }
         public int sth_giris_depo_no { get; set; }
-
         public string sth_resim_url { get; set; }
-
         public string sth_fat_baglanti { get; set; }
-
         public int sth_islemkodu { get; set; }
-
-
         public int sth_firma { get; set; }
         public int sth_sube { get; set; }
         public int mikro_user_id { get; set; }
         public string sth_renk_beden_seri_baglanti { get; set; }
-
         public int sth_mikronfaturaid { get; set; }
-
         public int sth_odeme_op { get; set; }
-
         public string sth_isemri_gider_kodu { get; set; }
-
         public double sth_maliyet_ana { get; set; }
         public double sth_maliyet_alternatif { get; set; }
         public double sth_maliyet_orjinal { get; set; }
-
         public string sth_masraf_gider_adi { get; set; }
 
         private string _Renk_beden_full_bilgi;
-
         public string Renk_beden_full_bilgi
         {
             get { return _Renk_beden_full_bilgi; }

@@ -16,21 +16,21 @@ namespace KayaApp.Methods
 
         public static void GetInstanceMaker()
         {
-            if (_LSTMANAGER == null)
-            {
+            //if (_LSTMANAGER == null)
+            //{
                 _LSTMANAGER = DataClass._LSTMANAGER;
-            }
+            //}
 
         }
 
         public static ObservableCollection<CustomerModel> SearchCustomerCls(string SearchCustomerText)
         {
-
+            GetInstanceMaker();
             if (SearchCustomerText == null)
             {
                 SearchCustomerText = "";
             }
-            GetInstanceMaker();
+          
 
             List<CustomerModel> data1 = new List<CustomerModel>();
             try

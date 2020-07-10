@@ -96,13 +96,14 @@
       <Version>4.7.0.1080</Version>
     </PackageReference>
     <PackageReference Include="ZXing.Net.Mobile">
-      <Version>2.4.1</Version>
+      <Version>3.0.0-beta5</Version>
     </PackageReference>
     <PackageReference Include="ZXing.Net.Mobile.Forms">
-      <Version>2.4.1</Version>
+      <Version>3.0.0-beta5</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomRenderer\KayaEntryDroid.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -180,6 +181,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\setting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\add.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

@@ -117,12 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AcikHesap" xml:space="preserve">
+    <value>Açık Hesap</value>
+    <comment>GENERAL INFO</comment>
+  </data>
+  <data name="Banka" xml:space="preserve">
+    <value>Banka</value>
+    <comment>GENERAL INFO</comment>
+  </data>
+  <data name="BilgiEkrani_YUKLENIYOR" xml:space="preserve">
+    <value>Bilgiler Yükleniyor.</value>
+  </data>
   <data name="demobtn" xml:space="preserve">
     <value>Demo</value>
     <comment>LoginPage</comment>
   </data>
   <data name="dialog_logginginplzwait" xml:space="preserve">
-    <value>Kullanıcı girişi yapılıyor. Lütfen bekleyiniz...</value>
+    <value>Veriler Yükleniyor. Lütfen bekleyiniz...</value>
     <comment>LoginPage</comment>
   </data>
   <data name="loginbtn" xml:space="preserve">
@@ -153,9 +164,33 @@
   <data name="MAINMENU_WAREHOUSE" xml:space="preserve">
     <value>DEPOLAR</value>
   </data>
+  <data name="MoneyTAX" xml:space="preserve">
+    <value>KDV</value>
+    <comment>GENERAL INFO</comment>
+  </data>
+  <data name="MusteriAra" xml:space="preserve">
+    <value>MÜŞTERİ ARA</value>
+    <comment>CustomerListPage</comment>
+  </data>
+  <data name="Musteriler" xml:space="preserve">
+    <value>MÜŞTERİLER</value>
+    <comment>CustomerListPage</comment>
+  </data>
   <data name="Nakit" xml:space="preserve">
     <value>Nakit</value>
-    <comment>GetData</comment>
+    <comment>GENERAL INFO</comment>
+  </data>
+  <data name="Pesin" xml:space="preserve">
+    <value>Peşin</value>
+    <comment>GENERAL INFO</comment>
+  </data>
+  <data name="StokAra" xml:space="preserve">
+    <value>STOK ARA</value>
+    <comment>StockListPage</comment>
+  </data>
+  <data name="Stoklar" xml:space="preserve">
+    <value>STOKLAR</value>
+    <comment>StockListPage</comment>
   </data>
   <data name="userscompanyname" xml:space="preserve">
     <value>Şirket Adı</value>
@@ -172,5 +207,9 @@
   <data name="usersusername" xml:space="preserve">
     <value>Kullanıcı Adı</value>
     <comment>LoginPage</comment>
+  </data>
+  <data name="xSatisFaturasi_1" xml:space="preserve">
+    <value>Satış Faturası</value>
+    <comment>SatisFaturasiPage</comment>
   </data>
 </root>

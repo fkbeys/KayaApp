@@ -1,0 +1,392 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:KayaApp.Helpers" xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations" xmlns:customrenderer="clr-namespace:KayaApp.CustomRenderer"
+            mc:Ignorable="d"
+             Visual="Material"
+             NavigationPage.HasNavigationBar="False"
+            x:Name="SatisPageXXX"
+                xmlns:Fim="clr-namespace:KayaApp.Fonts"
+            xmlns:dil="clr-namespace:KayaApp.Language" 
+            xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+            x:Class="KayaApp.Views.SALES.SatisFaturasiPage">
+
+
+
+    <ContentPage Title="CARİ"    BackgroundColor="FloralWhite">
+
+        <ScrollView>
+            <Grid RowSpacing="0" Padding="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+
+                </Grid.ColumnDefinitions>
+
+
+                <Frame Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.5" />
+                <Label Grid.Row="0" Grid.Column="0" Text="Tarih :" VerticalOptions="Center" HorizontalOptions="Center" FontAttributes="Bold"/>
+                <DatePicker Grid.Row="0" Grid.Column="1" Date="{Binding Tarih}"  VerticalOptions="Center" TextColor="DodgerBlue"/>
+
+                <Frame Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.1" />
+                <Label Grid.Row="1" Grid.Column="0" Text="Firma :"  VerticalOptions="Center"  HorizontalOptions="Center" FontAttributes="Bold"/>
+                <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Firmalar_list}" ItemDisplayBinding="{Binding fir_unvan}" SelectedItem="{Binding SelectedFirma}"    VerticalOptions="Center" />
+
+                <Frame Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.5" />
+                <Label Grid.Row="2" Grid.Column="0" Text="Sube :" VerticalOptions="Center"  HorizontalOptions="Center" FontAttributes="Bold"/>
+                <Picker Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Subeler_list}" ItemDisplayBinding="{Binding Sube_adi}" SelectedItem="{Binding SelectedSube}"   VerticalOptions="Center"/>
+
+                <Frame Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.1" />
+                <Button Grid.Row="3" Grid.Column="0"  Text="CARİ" Command="{Binding BtnCariGoster}" VerticalOptions="Center" BackgroundColor="IndianRed" TextColor="White" CornerRadius="10" FontAttributes="Bold"/>
+
+                <StackLayout Grid.Row="3" Grid.Column="1" >
+
+                    <Label Text="{Binding SelectedCustomerModel.cari_kod}" HorizontalOptions="Start"/>
+
+                    <Label Text="{Binding SelectedCustomerModel.cari_unvan1}" FontAttributes="Bold" TextColor="DarkBlue" />
+
+                </StackLayout>
+
+
+
+                <Frame Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.5"   />
+                <Label Grid.Row="4" Grid.Column="0" Text="Normal/Iade :" VerticalOptions="Center"  HorizontalOptions="Center" FontAttributes="Bold"/>
+                <Picker Grid.Row="4" Grid.Column="1"  ItemsSource="{Binding Normal_Iade}" ItemDisplayBinding="{Binding Normal_Iade}" SelectedItem="{Binding SelectedNormalIade}"   VerticalOptions="Center" />
+
+                <Frame Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.1" />
+                <Label Grid.Row="5" Grid.Column="0" Text="Depo :" FontAttributes="Bold"  VerticalOptions="Center"  HorizontalOptions="Center"/>
+                <Picker Grid.Row="5" Grid.Column="1"  ItemsSource="{Binding Depolar_List}" ItemDisplayBinding="{Binding dep_adi}" SelectedItem="{Binding SelectedDepo}"  VerticalOptions="Center"/>
+
+                <Frame Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.5" />
+                <Label Grid.Row="6" Grid.Column="0" Text="Proje :"  FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center"/>
+                <Picker Grid.Row="6" Grid.Column="1"  ItemsSource="{Binding Projeler_List}" ItemDisplayBinding="{Binding pro_adi}" SelectedItem="{Binding SelectedProje}"  VerticalOptions="Center"/>
+
+                <Frame Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.1" />
+                <Label Grid.Row="7" Grid.Column="0" Text="Sorumluluk :" FontAttributes="Bold"  VerticalOptions="Center"  HorizontalOptions="Center"/>
+                <Picker Grid.Row="7" Grid.Column="1"  ItemsSource="{Binding Sorumluluk_List}" ItemDisplayBinding="{Binding som_isim}" SelectedItem="{Binding SelectedSorumluluk}"  VerticalOptions="Center"/>
+
+
+
+                <Frame Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.1" />
+                <Label Grid.Row="8" Grid.Column="0" Text="Fiyat Listesi :"  FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center"/>
+                <Picker Grid.Row="8" Grid.Column="1"  ItemsSource="{Binding Fiyat_Listesi}" ItemDisplayBinding="{Binding sfl_aciklama}" SelectedItem="{Binding SelectedFiyatListesi}"   VerticalOptions="Center"/>
+
+                <Frame Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.1" />
+                <Label Grid.Row="9" Grid.Column="0" Text="Odeme Plani :"  FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center"/>
+                <Picker Grid.Row="9" Grid.Column="1" ItemsSource="{Binding OdemePlanlari_List}" ItemDisplayBinding="{Binding odp_adi}" SelectedItem="{Binding SelectedOdemePlani}"  VerticalOptions="Center"/>
+
+
+                <Frame Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.5" />
+                <Label Grid.Row="10" Grid.Column="0" Text="Acik/Kapali:"  FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center"/>
+                <Picker Grid.Row="10" Grid.Column="1" ItemsSource="{Binding Acik_Kapali}" ItemDisplayBinding="{Binding Kapama_Sekli}" SelectedItem="{Binding SelectedAcikKapali}"  VerticalOptions="Center"/>
+
+
+                <Frame Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.5" IsVisible="{Binding isKasaVisible}" />
+                <Label Grid.Row="11" Grid.Column="0" Text="Kasa:"  FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center" IsVisible="{Binding isKasaVisible}"/>
+                <Picker Grid.Row="11" Grid.Column="1" ItemsSource="{Binding Kasalar}" ItemDisplayBinding="{Binding kas_isim}" SelectedItem="{Binding SelectedKasa}"  VerticalOptions="Center" IsVisible="{Binding isKasaVisible}"/>
+
+
+                <Frame Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.5" IsVisible="{Binding isBankaVisible}"/>
+                <Label Grid.Row="12" Grid.Column="0" Text="Banka:"  FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center" IsVisible="{Binding isBankaVisible}"/>
+                <Picker Grid.Row="12" Grid.Column="1" ItemsSource="{Binding Bankalar}" ItemDisplayBinding="{Binding ban_ismi}" SelectedItem="{Binding SelectedBanka}"  VerticalOptions="Center" IsVisible="{Binding isBankaVisible}"/>
+
+
+
+
+                <Frame Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" Opacity="0.5" />
+               <Button Grid.Row="13" Grid.Column="0"  Text="Adres"  FontAttributes="Bold" VerticalOptions="Center" BackgroundColor="Green" TextColor="White" CornerRadius="10"/>
+                <Label Grid.Row="13" Grid.Column="1" Text="Tanimsiz" VerticalOptions="Center"/>
+
+            </Grid>
+        </ScrollView>
+
+    </ContentPage>
+
+
+
+    <ContentPage Title="Stok"    BackgroundColor="WhiteSmoke">
+
+
+        <Grid RowSpacing="2" Padding="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="6*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.5*"/>
+
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Siparis Cagir" BackgroundColor="IndianRed"/>
+            <Button Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Text="Stoklar" BackgroundColor="Green" Command="{Binding BtnStokGoster}"/>
+
+
+
+
+            <Button Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"  x:Name="BtnDemo"   Command="{Binding CameraBarcode}"  BackgroundColor="Orange"  TextColor="White"     
+                                FontFamily="MyAwesomeCustomFont"  
+                ImageSource="{FontImage FontFamily=FontAwsome,Glyph={x:Static Fim:IconFont.Camera},Size=Large,Color=White}" />
+
+
+
+            <Entry  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  BackgroundColor="White" Placeholder="Barkod"  Text="{Binding BarkodReaderText} " Keyboard="Numeric" Visual="Default">
+                <Entry.Behaviors>
+                    <local:EntryCompletedBehavior Command="{Binding BarcodeReaderCompletedCommand}" />
+
+                </Entry.Behaviors>
+            </Entry>
+
+
+
+
+            <Picker  Grid.Row="1" Grid.Column="4" ItemsSource="{Binding DovizKurlari}" ItemDisplayBinding="{Binding Kur_sembol}" SelectedItem="{Binding SelectedDovizKuru}" Visual="Default" />
+
+            <ListView Grid.Row="2" Grid.ColumnSpan="5" HasUnevenRows="True" ItemsSource="{Binding DetayliSalesList}" SeparatorColor="Black"  CachingStrategy="RecycleElement" BackgroundColor="White" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+
+                        <ViewCell>
+                            <ViewCell.ContextActions >
+                                <MenuItem Text="Edit"   CommandParameter="{Binding .}"  Command="{Binding Path=BindingContext.EditSTH,      Source={x:Reference SatisPageXXX}}"   />
+                                <MenuItem Text="Delete"   CommandParameter="{Binding .}"  Command="{Binding Path=BindingContext.DeleteSTH,      Source={x:Reference SatisPageXXX}}"   />
+                            </ViewCell.ContextActions>
+                            <StackLayout>
+
+                                <Grid RowSpacing="0" Padding="3">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <Label    Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6"  Text="{Binding sth_stok_isim}" FontSize="Default" FontAttributes="Bold"/>
+
+                                    <ffimageloading:CachedImage Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="5" HorizontalOptions="Center" VerticalOptions="Center"   WidthRequest="400" HeightRequest="400" DownsampleToViewSize="true" Aspect="AspectFit"  LoadingPlaceholder="notfoundimage.png" ErrorPlaceholder="notfoundimage.png"  			Source = "{Binding sth_resim_url}">
+                                        <ffimageloading:CachedImage.Transformations>
+                                            <fftransformations:CornersTransformation />
+                                        </ffimageloading:CachedImage.Transformations>
+                                    </ffimageloading:CachedImage>
+
+                                    <Label    Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="4"   VerticalOptions="Center" Text="{Binding sth_stok_kod}" FontAttributes="Bold"/>
+
+                                    <Label Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="4">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Fiyat: "    />
+                                                <Span  Text="{Binding sth_fiyat_gosterge}"   />
+                                                <Span  Text=" "  />
+                                                <Span  Text="{Binding sth_doviz_ismi}"   />
+                                                <Span  Text=" + "  />
+                                                <Span    Text="{x:Static dil:AppResources.MoneyTAX}"   />
+                                                <Span  Text=" (%"  />
+                                                <Span  Text="{Binding sth_vryuzde}"    />
+                                                <Span  Text=" ) "  />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <Label Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="4">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span    Text="{x:Static dil:AppResources.MoneyTAX}"   />
+                                                <Span  Text=": "  />
+                                                <Span  Text="{Binding sth_vryuzde}"   />
+                                                <Span  Text=" %"  />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <Label Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="4">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Miktar: "    />
+                                                <Span  Text="{Binding sth_miktar_gosterge}"   />
+                                                <Span Text=" "    />
+                                                <Span  Text="{Binding sth_birim_ad}"  />
+
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <Label    Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="4"   >
+
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding sth_tutar_gosterge}"   FontSize="Small" FontAttributes="Bold"  />
+                                                <Span  Text=" " FontAttributes="Bold" />
+                                                <Span Text="{Binding sth_doviz_ismi}"    FontSize="Small" FontAttributes="Bold" />
+                                                <Span  Text=" + " FontAttributes="Bold" />
+
+                                                <Span  Text="{x:Static dil:AppResources.MoneyTAX}" FontAttributes="Bold" />
+                                                <Span  Text=" (%" FontAttributes="Bold" />
+                                                <Span  Text="{Binding sth_vryuzde}"  FontAttributes="Bold" />
+                                                <Span  Text=" ) " FontAttributes="Bold" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <Label  Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="4"   Text="{Binding Renk_beden_full_bilgi}"/>
+
+                                </Grid>
+
+
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.Footer >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2.5*"/>
+                            <ColumnDefinition Width="2.5*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Toplam Vergili Burut Tutar:" HorizontalOptions="End"  VerticalOptions="Center"  />
+                        <!--<Label   Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2"  Text="{Binding BurutTutar ,StringFormat='{0:F2} '}" TextColor="Red" HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="Medium"  />-->
+
+
+
+                        <Label    Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2"     >
+
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span  Text="{Binding BurutTutar ,StringFormat='{0:F2} '}"   FontSize="Small" FontAttributes="Bold"  />
+                                    <Span  Text=" " FontAttributes="Bold" />
+                                    <Span Text="{Binding SelectedDovizKuru.Kur_sembol}"    FontSize="Small" FontAttributes="Bold" />
+
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+
+
+
+
+
+                        <Label Grid.Row="1"  Grid.Column="0" Text="Toplam Miktar:" HorizontalOptions="End"  VerticalOptions="Center"  />
+                        <Label   Grid.Row="1"  Grid.Column="1" Text="{Binding TopalmStokAdeti }" TextColor="Red" HorizontalTextAlignment="Start" VerticalOptions="Center"  />
+
+                        <Label  Grid.Row="1" Grid.Column="2" Text="Satir Sayisi:"  HorizontalOptions="StartAndExpand"   VerticalOptions="Center"  />
+
+                        <Label  Grid.Row="1"   Grid.Column="3" Text="{Binding KalemAdeti}" TextColor="Blue"  HorizontalOptions="Start"   VerticalOptions="Center"  />
+
+                    </Grid>
+                </ListView.Footer>
+            </ListView>
+
+
+
+
+            <!--burdan degisim-->
+
+            <yummy:PancakeView  Grid.Row="3"  Grid.ColumnSpan="5" HeightRequest="55" BackgroundGradientAngle="0" CornerRadius="10,10,0,0" BackgroundGradientStartColor="#E25822" BackgroundGradientEndColor="#A51C30">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+
+                    </Grid.ColumnDefinitions>
+                    <Label  Grid.Row="0"   Grid.Column="0"  Grid.ColumnSpan="2"  VerticalOptions="Center"  TextColor="White" FontAttributes="Bold"   >
+
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding tutar,StringFormat='{0:F2}',Mode=TwoWay}"   FontSize="Small" FontAttributes="Bold"  />
+                                <Span  Text=" " FontAttributes="Bold" />
+                                <Span Text="{Binding SelectedDovizKuru.Kur_sembol}"    FontSize="Small" FontAttributes="Bold" />
+
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label  Grid.Row="0"    Grid.Column="1"  Text="%" HorizontalOptions="End" VerticalOptions="Center"  TextColor="White" FontAttributes="Bold" />
+                    <customrenderer:KayaEntry  Grid.Row="0" Grid.Column="2" Margin="5"    FontSize="Medium"  HorizontalTextAlignment="Center"    Text="{Binding GenelIndirimYUZDE}"  Keyboard="Numeric" />
+
+                    <Label   Grid.Row="0"  Grid.Column="3"   Text="Genel Indirim" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White" FontAttributes="Bold"  />
+
+                    <customrenderer:KayaEntry Grid.Row="0" Grid.Column="4"   HorizontalTextAlignment="Center" Margin="5"   Text="{Binding GenelIndirimTL,Mode=TwoWay}"  />
+
+                </Grid>
+            </yummy:PancakeView>
+
+
+
+
+
+            <Button Grid.Row="4" Grid.Column="0"   Text="Sil" Command="{Binding BtnTemizlikYap}" BackgroundColor="IndianRed" TextColor="White"/>
+            <Button Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4" Text="Kaydet"  Command="{Binding BtnKaydet}" BackgroundColor="Green" TextColor="White" IsVisible="{Binding isVisibleGRID}"/>
+
+
+
+
+
+            <!--buraya kadar-->
+
+
+
+        </Grid>
+
+
+
+
+    </ContentPage>
+
+
+    </TabbedPage>

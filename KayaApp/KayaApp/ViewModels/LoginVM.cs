@@ -166,8 +166,7 @@ namespace KayaApp.ViewModels
                 }
                 else
                 {
-                    //  await HelpME.MessageShow("HATA", "Bir hata olustu lutfen tekrar deneyiniz", "ok");
-                     DELETEALLDATA();
+                     await HelpME.MessageShow("HATA", "Bir hata olustu lutfen tekrar deneyiniz", "ok");                    
                 }
 
             }
@@ -185,44 +184,6 @@ namespace KayaApp.ViewModels
             //*******************************************************
 
         }
-        private static async void DELETEALLDATA()
-        {
-            
-            await LocalSQL<SyncModel>.DELETEALL();
-            await LocalSQL<SilinenKayitlar>.DELETEALL();
-            await LocalSQL<StockModel>.DELETEALL();
-            await LocalSQL<CustomerModel>.DELETEALL();
-            await LocalSQL<BarcodeModel>.DELETEALL();
-            await LocalSQL<MasrafModel>.DELETEALL();
-            await LocalSQL<DepoIsimleriModel>.DELETEALL();
-            await LocalSQL<DovizKurlariModel>.DELETEALL();
-            await LocalSQL<StokListeTanimlamalariModel>.DELETEALL();
-            await LocalSQL<StokSektorlariModel>.DELETEALL();
-            await LocalSQL<CariHesapBolgeleriModel>.DELETEALL();
-            await LocalSQL<CariHesapGruplariModel>.DELETEALL();
-            await LocalSQL<CariPersonelTanimlariModel>.DELETEALL();
-            await LocalSQL<KurIsimleriFullKurusModel>.DELETEALL();
-            await LocalSQL<FirmalarModel>.DELETEALL();
-            await LocalSQL<SubelerModel>.DELETEALL();
-            await LocalSQL<RenkModel>.DELETEALL();
-            await LocalSQL<BedenModel>.DELETEALL();
-            await LocalSQL<SorumlulukModel>.DELETEALL();
-            await LocalSQL<ProjeModel>.DELETEALL();
-            await LocalSQL<BankaModel>.DELETEALL();
-            await LocalSQL<KasaModel>.DELETEALL();
-            await LocalSQL<OdemePlanlariModel>.DELETEALL();
-            await LocalSQL<CariBakiyelerModel>.DELETEALL();
-            await LocalSQL<StokMiktarlariModel>.DELETEALL();
-            await LocalSQL<PartiLotModel>.DELETEALL();
-            await LocalSQL<StokResimleriModel>.DELETEALL();
-            await LocalSQL<KampanyalarModel>.DELETEALL();
-            await LocalSQL<IzinlerModel>.DELETEALL();
-            await LocalSQL<StokFiyatlariModel>.DELETEALL();
-          
-            await HelpME.MessageShow("UYARI", "Sistem Yöneticiniz kullanıcı haklarınızda değişiklik yapmıştır. Bu sebeple,veritabanı güncellemesi yapılacaktır...", "okk");
-
-        }
-
         private async Task<bool> LoginMethod()
         {
             try

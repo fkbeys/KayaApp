@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage  
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup" 
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                     xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup" 
+    mc:Ignorable="d"
+    CloseWhenBackgroundIsClicked="True"
+         xmlns:Fim="clr-namespace:KayaApp.Fonts"
+                          xmlns:dil="clr-namespace:KayaApp.Language" 
+    xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+    Visual="Material"
+ 
+             x:Class="KayaApp.Views.STOCKS.StockDetailPopUp">
+
+    <pages:PopupPage.Animation  >
+
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="0"
+            ScaleOut="0"
+            DurationIn="100"
+            DurationOut="100"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"  />
+
+    </pages:PopupPage.Animation  >
+
+    <ScrollView>
+    <Frame Margin="5"   BackgroundColor="WhiteSmoke" CornerRadius="20" VerticalOptions="Center">
+   
+ 
+        <Grid RowSpacing="3" Grid.Row="4" Grid.ColumnSpan="4" IsVisible="{Binding IsVisibleVisualize,Mode=TwoWay}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition  Width="2*"/>
+
+            </Grid.ColumnDefinitions>
+
+
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="0" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+            <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="0" Grid.Column="0" Text="Kisa Isim:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="0" Grid.Column="1"    x:Name="sto_kisa_ismi"/>
+
+
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="1" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+                <Label  VerticalOptions="Center" HorizontalOptions="Center"  Grid.Row="1" Grid.Column="0" Text="Ana Grup:" FontAttributes="Bold"/>
+                <Label  VerticalOptions="Center"                             Grid.Row="1" Grid.Column="1"  x:Name="sto_anagrup_ismi"/>
+
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="2" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+                <Label  VerticalOptions="Center" HorizontalOptions="Center"  Grid.Row="2" Grid.Column="0" Text="Alt Grup:" FontAttributes="Bold"/>
+            <Label  VerticalOptions="Center"                             Grid.Row="2" Grid.Column="1"  x:Name="sto_altgrup_ismi"/>
+
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="3" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="3" Grid.Column="0" Text="Kategori:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="3" Grid.Column="1"  x:Name="sto_kategori_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="4" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="4" Grid.Column="0" Text="Uretici:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="4" Grid.Column="1"  x:Name="sto_uretici_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="5" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="5" Grid.Column="0" Text="Sektor:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="5" Grid.Column="1"  x:Name="sto_sektor_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="6" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="6" Grid.Column="0" Text="Reyon" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="6" Grid.Column="1"  x:Name="sto_reyon_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="7" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="7" Grid.Column="0" Text="Ambalaj:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="7" Grid.Column="1"  x:Name="sto_ambalaj_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="8" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="8" Grid.Column="0" Text="Marka:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="8" Grid.Column="1"  x:Name="sto_marka_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="9" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="9" Grid.Column="0" Text="Beden:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="9" Grid.Column="1"  x:Name="sto_beden_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="10" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="10" Grid.Column="0" Text="Renk:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="10" Grid.Column="1" x:Name="sto_renk_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="11" Grid.ColumnSpan="2"  Opacity=".3" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="11" Grid.Column="0" Text="Model:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="11" Grid.Column="1" x:Name="sto_model_ismi"/>
+
+            <BoxView    VerticalOptions="End"  BackgroundColor="White"   Grid.Row="12" Grid.ColumnSpan="2"  Opacity=".5" CornerRadius="10" />
+                <Label VerticalOptions="Center" HorizontalOptions="Center"   Grid.Row="12" Grid.Column="0" Text="Hammadde:" FontAttributes="Bold"/>
+            <Label VerticalOptions="Center"                              Grid.Row="12" Grid.Column="1" x:Name="sto_hammadde_ismi"/>
+
+
+            <Button  Grid.Row="13" Grid.Column="0"   FontSize="Medium" BackgroundColor="IndianRed" Clicked="Button_Clicked"  Margin="0,0,5,0"
+                              ImageSource="{FontImage FontFamily=FontAwsome,Glyph={x:Static Fim:IconFont.ArrowLeft},Size=Title,Color=White}" CornerRadius="10" />
+             <Button Text="Hareketleri Gor" BackgroundColor="#0080FF" FontSize="Micro" TextColor="White"     Grid.Row="13" Grid.Column="1" CornerRadius="10"/>
+
+        </Grid>
+
+    
+    </Frame>
+    </ScrollView>
+</pages:PopupPage>
