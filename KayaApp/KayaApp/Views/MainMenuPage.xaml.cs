@@ -1,5 +1,6 @@
 ﻿using KayaApp.Helpers;
 using KayaApp.Views.CUSTOMERS;
+using KayaApp.Views.REPORT;
 using KayaApp.Views.SALES;
 using KayaApp.Views.STOCKS;
 using Xamarin.Forms;
@@ -42,6 +43,11 @@ namespace KayaApp.Views
             //await BtnSalesInvoice.ScaleTo(0.975, 200, Easing.Linear);
             //await BtnSalesInvoice.ScaleTo(1, 200, Easing.Linear); 
             await Application.Current.MainPage.Navigation.PushAsync(new SatisFaturasiPage());
+        }
+
+        private async void BtnReports_Clicked(object sender, System.EventArgs e)
+        {
+            await HelpME.SayfaAc(new ReportMenu());
         }
     }
 }

@@ -7,7 +7,8 @@ namespace KayaApp.Models
 {
     public class KampanyalarModel
     {
-        [PrimaryKey]
+        [PrimaryKey,AutoIncrement]
+        public int KAMP_LOCALID { get; set; }
         public int KAMP_ID { get; set; }
         public string KAMP_ADI { get; set; }
         public string KAMP_USERS { get; set; }

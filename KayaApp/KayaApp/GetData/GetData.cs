@@ -584,7 +584,13 @@ namespace KayaApp.GetData
                         var tt = ss;
                         await LocalSQL<StockModel>.DBIslem("DELETE FROM StockModel where sto_RECno in (" + tt.ToString() + ") ");
                     }
-
+                    if (durumKampanyalar.Count > 0)
+                    { 
+                        foreach (var item in durumKampanyalar)
+                        {
+                            await LocalSQL<KampanyalarModel>.DBIslem("DELETE FROM KampanyalarModel where KAMP_ADI = ('" +item.KAMP_ADI+ "') ");
+                        }
+                    }
 
                     await LocalSQL<StockModel>.DBINSERTALL(durumSTOCK);
                     await LocalSQL<CustomerModel>.DBINSERTALL(durumCARI);

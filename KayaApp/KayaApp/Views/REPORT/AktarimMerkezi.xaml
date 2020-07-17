@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+            NavigationPage.HasNavigationBar="False"
+            x:Name="AktarimPagexaml"
+             x:Class="KayaApp.Views.REPORT.AktarimMerkezi">
+
+    <ContentPage Title="Gonderilmeyen"  IconImageSource="cancel.png" BackgroundColor="IndianRed">
+
+        <ListView ItemsSource="{Binding Hatalilar_Liste}" CachingStrategy="RecycleElement" HasUnevenRows="True" SeparatorVisibility="Default"  SeparatorColor="White"  Margin="10"    >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout>
+                            <Grid RowSpacing="0">
+
+                                <Grid.RowDefinitions    >
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions >
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+
+
+
+                                <Label Grid.Row="0" Grid.Column="0"  TextColor="White"  Text="Aktarim:"/>
+                                <Label Grid.Row="1" Grid.Column="0"  TextColor="White"  Text="IslemRecNo:"/>
+                                <Label Grid.Row="2" Grid.Column="0"  TextColor="White"  Text="IslemKodu:"/>
+                                <Label Grid.Row="3" Grid.Column="0"  TextColor="White"  Text="IslemAdi:"/>
+                                <Label Grid.Row="4" Grid.Column="0"  TextColor="White"  Text="Tarih:"/>
+                                <Label Grid.Row="5" Grid.Column="0"  TextColor="White"  Text="Sent:"/>
+                                <Label Grid.Row="6" Grid.Column="0"  TextColor="White"  Text="Cari_Kod:"/>
+                                <Label Grid.Row="7" Grid.Column="0"  TextColor="White"  Text="Cari_Isim:"/>
+                                <Label Grid.Row="8" Grid.Column="0"  TextColor="White"  Text="Tutar:"/>
+                                <Label Grid.Row="0" Grid.Column="1"  TextColor="White"  Text="{Binding Local_Id_Aktarim}"/>
+                                <Label Grid.Row="1" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_IslemRecNo}"/>
+                                <Label Grid.Row="2" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_IslemKodu}"/>
+                                <Label Grid.Row="3" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_IslemAdi}"/>
+                                <Label Grid.Row="4" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Tarih}"/>
+                                <Label Grid.Row="5" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Sent}"/>
+                                <Label Grid.Row="6" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Cari_Kod}"/>
+                                <Label Grid.Row="7" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Cari_Isim}"/>
+                                <Label Grid.Row="8" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Tutar}"/>
+
+                                <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Text="View"  CommandParameter="{Binding .}" 
+                   Command="{Binding Path=BindingContext.DetailLook,      Source={x:Reference AktarimPagexaml}}"/>
+
+                                <Button Grid.Row="3" Grid.RowSpan="3" Grid.Column="2" Text="Edit"  CommandParameter="{Binding .}" 
+                   Command="{Binding Path=BindingContext.EditCommand,      Source={x:Reference AktarimPagexaml}}" />
+
+                                <Button Grid.Row="6" Grid.RowSpan="3" Grid.Column="2" Text="Delete"   CommandParameter="{Binding .}" 
+                   Command="{Binding Path=BindingContext.DeleteTheInovice,      Source={x:Reference AktarimPagexaml}}"  />
+
+                            </Grid>
+
+
+
+
+                        </StackLayout>
+
+                    </ViewCell>
+
+                </DataTemplate>
+
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+    </ContentPage>
+
+
+
+    <ContentPage Title="Gonderilen"  IconImageSource="checked.png" BackgroundColor="Green">
+        <StackLayout>
+            <ListView ItemsSource="{Binding Gonderilenler_Liste}" HasUnevenRows="True" SeparatorVisibility="Default"  SeparatorColor="White" 
+                  Margin="10"  >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Grid RowSpacing="0">
+
+                                    <Grid.RowDefinitions    >
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions >
+                                        <ColumnDefinition Width="1.2*" />
+                                        <ColumnDefinition Width="1.8*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+
+
+
+                                    <Label Grid.Row="0" Grid.Column="0"  TextColor="White"  Text="Aktarim:"/>
+                                    <Label Grid.Row="1" Grid.Column="0"  TextColor="White"  Text="IslemRecNo:"/>
+                                    <Label Grid.Row="2" Grid.Column="0"  TextColor="White"  Text="IslemKodu:"/>
+                                    <Label Grid.Row="3" Grid.Column="0"  TextColor="White"  Text="IslemAdi:"/>
+                                    <Label Grid.Row="4" Grid.Column="0"  TextColor="White"  Text="Tarih:"/>
+                                    <Label Grid.Row="5" Grid.Column="0"  TextColor="White"  Text="Sent:"/>
+                                    <Label Grid.Row="6" Grid.Column="0"  TextColor="White"  Text="Cari_Kod:"/>
+                                    <Label Grid.Row="7" Grid.Column="0"  TextColor="White"  Text="Cari_Isim:"/>
+                                    <Label Grid.Row="8" Grid.Column="0"  TextColor="White"  Text="Tutar:"/>
+
+                                    <Label Grid.Row="0" Grid.Column="1"  TextColor="White"  Text="{Binding Local_Id_Aktarim}"/>
+                                    <Label Grid.Row="1" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_IslemRecNo}"/>
+                                    <Label Grid.Row="2" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_IslemKodu}"/>
+                                    <Label Grid.Row="3" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_IslemAdi}"/>
+                                    <Label Grid.Row="4" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Tarih}"/>
+                                    <Label Grid.Row="5" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Sent}"/>
+                                    <Label Grid.Row="6" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Cari_Kod}"/>
+                                    <Label Grid.Row="7" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Cari_Isim}"/>
+                                    <Label Grid.Row="8" Grid.Column="1"  TextColor="White"  Text="{Binding Aktarim_Tutar}"/>
+                                    <Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3"  TextColor="Red"  Text="{Binding Aktarim_Baglanti_guid}"/>
+
+                                    <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Text="View"  CommandParameter="{Binding .}" 
+                   Command="{Binding Path=BindingContext.DetailLook,      Source={x:Reference AktarimPagexaml}}"/>
+
+                                    <Button Grid.Row="3" Grid.RowSpan="3" Grid.Column="2" Text="Edit"  CommandParameter="{Binding .}" 
+                   Command="{Binding Path=BindingContext.EditCommand,      Source={x:Reference AktarimPagexaml}}" />
+
+
+                                    <Button Grid.Row="6" Grid.RowSpan="3" Grid.Column="2" Text="Delete"   CommandParameter="{Binding .}" 
+                   Command="{Binding Path=BindingContext.DeleteTheInovice,      Source={x:Reference AktarimPagexaml}}"  />
+
+                                </Grid>
+
+
+
+
+                            </StackLayout>
+
+                        </ViewCell>
+
+                    </DataTemplate>
+
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+            <Button Text="Temizlik yap" Command="{Binding KompleHerseyiSil}"/>
+        </StackLayout>
+    </ContentPage>
+
+
+
+</TabbedPage>

@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage  xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+                  xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+             mc:Ignorable="d"
+             x:Class="KayaApp.Views.REPORT.AktarimDetailLookPage">
+
+
+    <pages:PopupPage.Animation  >
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="0"
+            ScaleOut="0"
+            DurationIn="100"
+            DurationOut="100"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"  />
+    </pages:PopupPage.Animation  >
+
+
+
+
+    <StackLayout BackgroundColor="LightGoldenrodYellow">
+        <StackLayout BackgroundColor="#0080FF">
+            <Label x:Name="LblFaturaIsmi" Text="" HorizontalOptions="Center" VerticalOptions="Start" TextColor="White" />
+        </StackLayout>
+        <Grid Margin="0" RowSpacing="0">
+            <Grid.RowDefinitions    >
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="1.5*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+
+            <Frame Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" BackgroundColor="OrangeRed" Opacity="0.2"/>
+            <Label Grid.Row="0" Grid.Column="0"  Text="Cari Isim:" VerticalOptions="Center"/>
+            <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" x:Name="LblCariIsim" Text="" FontAttributes="Bold" VerticalOptions="Center" />
+
+            <ListView  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6"  x:Name="GenelSTHList" VerticalScrollBarVisibility="Always"   SeparatorColor="Black" SeparatorVisibility="Default"  HasUnevenRows="True" BackgroundColor="LightGray" Margin="0" >
+
+                <ListView.ItemTemplate>
+
+                    <DataTemplate>
+                        <ViewCell>
+
+                            <Frame CornerRadius="10" BackgroundColor="Yellow">
+                                <StackLayout>
+                                    <Grid RowSpacing="0">
+
+                                        <Grid.RowDefinitions    >
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions >
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--<Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"  Text="{Binding sth_stok_kod}"/>-->
+                                        <Frame  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5"   Opacity=".2" />
+                                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5"  Text="{Binding sth_stok_isim}" VerticalTextAlignment="Start"  FontAttributes="Bold"/>
+
+                                        <Label Grid.Row="1" Grid.Column="0"  FontAttributes="Bold" Text=" Miktar "  HorizontalOptions="Center" VerticalOptions="Start" />
+                                        <Label Grid.Row="1" Grid.Column="1"  FontAttributes="Bold" Text=" Birim "  HorizontalOptions="Center" VerticalOptions="Start"/>
+                                        <Label Grid.Row="1" Grid.Column="2"  FontAttributes="Bold" Text="Fiyat"  HorizontalOptions="Center" VerticalOptions="Start"/>
+                                        <Label Grid.Row="1" Grid.Column="3"  FontAttributes="Bold" Text="Kdv"  HorizontalOptions="Center" VerticalOptions="Start"/>
+                                        <Label Grid.Row="1" Grid.Column="4"  FontAttributes="Bold" Text="Tutar"  HorizontalOptions="Center" VerticalOptions="Start"/>
+
+
+                                        <Label Grid.Row="2" Grid.Column="0"  Text="{Binding sth_miktar}" HorizontalOptions="Center" VerticalOptions="Start"/>
+                                        <Label Grid.Row="2" Grid.Column="1"  Text="{Binding sth_birim_ad}"  HorizontalOptions="Center"  VerticalOptions="Start"/>
+                                        <Label Grid.Row="2" Grid.Column="2"  Text="{Binding sth_fiyat}"  HorizontalOptions="Center"  VerticalOptions="Start"/>
+                                        <!--<Label Grid.Row="2" Grid.Column="3"  Text="{Binding sth_vryuzde}"  HorizontalOptions="Center"  VerticalOptions="Start"/>-->
+                                        <!--<Label Grid.Row="2" Grid.Column="4"  Text="{Binding sth_tutar_vergili}"  HorizontalOptions="End"  VerticalOptions="Start"/>-->
+
+                                        <Label    Grid.Row="2" Grid.Column="3"  HorizontalOptions="Center"  VerticalOptions="Start"   >
+
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="{Binding sth_vryuzde}"   FontSize="Small"    />
+                                                    <Span  Text="%" FontAttributes="Bold" />
+
+
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+
+
+                                        <Label    Grid.Row="2" Grid.Column="4"  HorizontalOptions="Center"  VerticalOptions="Start"   >
+
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="{Binding sth_tutar_vergili,StringFormat='{0:F2}'}"   FontSize="Small"    />
+                                                    <Span  Text=" " FontAttributes="Bold" />
+                                                    <Span Text="{Binding sth_doviz_ismi}"    FontSize="Small"  />
+
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+
+                                        <Label  Grid.Row="3"  Grid.ColumnSpan="5"  Text="{Binding Renk_beden_full_bilgi}"/>
+                                    </Grid>
+
+
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+
+
+            <Frame Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6" BackgroundColor="IndianRed" Opacity="0.8"/>
+
+            <StackLayout  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                <Label  Text="Burut Tutar" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+                <Label x:Name="LblBurutTutar" Text="0 AZN" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+            </StackLayout>
+
+
+            <StackLayout  Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2">
+                <Label  Text="Stok Adeti" VerticalOptions="Center" HorizontalOptions="Center" TextColor="White"/>
+                <Label  x:Name="LblTopalmStokAdeti"  Text="%0" VerticalOptions="Center"  HorizontalOptions="Center" TextColor="White"/>
+            </StackLayout>
+
+            <StackLayout  Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="2">
+                <Label  Text="KalemAdeti" VerticalOptions="Center"  HorizontalOptions="Center" TextColor="White"/>
+                <Label x:Name="LblKalemAdeti"  Text="0" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+            </StackLayout>
+
+
+
+            <Frame Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="6" BackgroundColor="DodgerBlue" Opacity="0.8"/>
+
+            <StackLayout  Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                <Label  Text=" Toplam" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+                <Label x:Name="LblToplamTutar" Text="0" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+            </StackLayout>
+
+
+            <StackLayout  Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2">
+                <Label  Text="Indirim" VerticalOptions="Center" HorizontalOptions="Center" TextColor="White"/>
+                <Label  x:Name="LblIndirimYuzde"  Text="0" VerticalOptions="Center"  HorizontalOptions="Center" TextColor="White"/>
+            </StackLayout>
+
+            <StackLayout  Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="2">
+                <Label  Text="Indirim Tutar" VerticalOptions="Center"  HorizontalOptions="Center" TextColor="White"/>
+                <Label x:Name="LblIndirimTutar"  Text="0" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+            </StackLayout>
+
+
+            <Frame Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6" BackgroundColor="DarkOliveGreen" Opacity="0.8"/>
+
+            <StackLayout  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+                <Label  Text="Giris Depo" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+                <Label x:Name="LblGirisDepo" Text="-" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+            </StackLayout>
+
+
+
+            <StackLayout  Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2">
+
+
+                <Label  Text="Cikis Depo" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+                <Label x:Name="LblCikisDepo"  Text="-" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+
+
+            </StackLayout>
+
+
+
+            <StackLayout  Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="2">
+
+
+                <Label  Text="Teslim Tarihi" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+                <Label x:Name="LblTarih" Text="-" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="White"/>
+
+
+            </StackLayout>
+
+            <Button Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="6"  Text="Paylas"/>
+
+        </Grid>
+    </StackLayout>
+    </pages:PopupPage>

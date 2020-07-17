@@ -126,7 +126,19 @@ namespace KayaApp.ViewModels
             }
         }
 
-        public bool remeberpassword { get; set; }
+        //public bool remeberpassword { get; set; }
+        private bool _remeberpassword;
+
+        public bool remeberpassword
+        {
+            get { return _remeberpassword; }
+            set
+            {
+                _remeberpassword = value;
+                INotifyPropertyChanged();
+            }
+        }
+
 
         private void userloginbuttonaktivitecontrol()
         {
@@ -166,7 +178,7 @@ namespace KayaApp.ViewModels
                 }
                 else
                 {
-                     await HelpME.MessageShow("HATA", "Bir hata olustu lutfen tekrar deneyiniz", "ok");                    
+                    await HelpME.MessageShow("HATA", "Bir hata olustu lutfen tekrar deneyiniz", "ok");
                 }
 
             }
@@ -223,6 +235,7 @@ namespace KayaApp.ViewModels
             UserCompanyName = "Demo";
             UserName = "Demo";
             UserPass = "Demo";
+            remeberpassword = true;
         }
 
         private async Task<CompanyModel> getcompanyinfo(string compname)

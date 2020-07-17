@@ -76,7 +76,7 @@
                     <yummy:PancakeView BackgroundGradientAngle="90" Grid.Row="3" Grid.Column="2"  Grid.ColumnSpan="2" CornerRadius="10,10,10,10"  BackgroundGradientStartColor="#ffd827"  BackgroundGradientEndColor="#ffc22f"      BorderColor="White" BorderThickness="3">
 
 
-                        <Button  x:Name="BtnReports"  Text="{x:Static dil:AppResources.MAINMENU_REPORTS}" Command="{Binding REPORTS_AND_CHARTS_COMMAND}" ImageSource="reports.png"  VerticalOptions="FillAndExpand"      BackgroundColor="Transparent"        TextColor="White"         CornerRadius="10"       ContentLayout="left,0"   />
+                        <Button  x:Name="BtnReports"  Text="{x:Static dil:AppResources.MAINMENU_REPORTS}" Clicked="BtnReports_Clicked" Command="{Binding REPORTS_AND_CHARTS_COMMAND}" ImageSource="reports.png"  VerticalOptions="FillAndExpand"      BackgroundColor="Transparent"        TextColor="White"         CornerRadius="10"       ContentLayout="left,0"   />
 
                     </yummy:PancakeView>
 
