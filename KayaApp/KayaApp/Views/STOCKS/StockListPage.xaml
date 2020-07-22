@@ -13,11 +13,16 @@
              x:Class="KayaApp.Views.STOCKS.StockListPage">
     <ContentPage.Content>
         <StackLayout Spacing="0">
+ 
+            <yummy:PancakeView     CornerRadius="35,35,5,5"  Border="{yummy:BorderMarkup Color=LightGray, Thickness='3'}"   >
+                    <yummy:PancakeView.BackgroundGradientStops>
+                        <yummy:GradientStopCollection>
+                            <yummy:GradientStop Color="White" Offset="0.0" />
+                            <yummy:GradientStop Color="White" Offset="1.0" />
+                        </yummy:GradientStopCollection>
+                    </yummy:PancakeView.BackgroundGradientStops>
 
-
-            <yummy:PancakeView BackgroundGradientAngle="0"  BackgroundGradientStartColor="White" BackgroundGradientEndColor="White" CornerRadius="35,35,5,5" BorderColor="LightGray" BorderThickness="3">
-
-                <StackLayout >
+                    <StackLayout >
 
                     <StackLayout BackgroundColor="#0080FF">
                         <Label Text="{x:Static dil:AppResources.Stoklar}"  TextColor="White" FontSize="Medium"  HorizontalOptions="Center"/>
@@ -33,7 +38,7 @@
                             <DataTemplate>
                                 <ViewCell>
 
-                                    <yummy:PancakeView BackgroundGradientAngle="0"   CornerRadius="5,5,5,5" Margin="2" Padding="2" BorderColor="LightGray" BorderThickness="3">
+                                    <yummy:PancakeView     CornerRadius="5,5,5,5" Margin="2" Padding="2" BorderColor="LightGray" BorderThickness="3">
 
                                         <Grid>
                                             <Grid.RowDefinitions>

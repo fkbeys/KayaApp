@@ -29,9 +29,15 @@
     <StackLayout Spacing="0">
 
 
-        <yummy:PancakeView BackgroundGradientAngle="0"  BackgroundGradientStartColor="White" BackgroundGradientEndColor="White" CornerRadius="35,35,5,5" BorderColor="LightGray" BorderThickness="3">
-
-            <StackLayout >
+        <!--<yummy:PancakeView    BackgroundGradientStartColor="White" BackgroundGradientEndColor="White" CornerRadius="35,35,5,5" BorderColor="LightGray" BorderThickness="3">-->
+            <yummy:PancakeView     CornerRadius="35,35,5,5"  Border="{yummy:BorderMarkup Color=LightGray, Thickness='3'}"   >
+                <yummy:PancakeView.BackgroundGradientStops>
+                    <yummy:GradientStopCollection>
+                        <yummy:GradientStop Color="White" Offset="0.0" />
+                        <yummy:GradientStop Color="White" Offset="1.0" />
+                    </yummy:GradientStopCollection>
+                </yummy:PancakeView.BackgroundGradientStops>
+                <StackLayout >
 
                 <Label Text="Mallar Axtaris" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="Black"/>
 
@@ -44,7 +50,7 @@
                         <DataTemplate>
                             <ViewCell>
 
-                                <yummy:PancakeView BackgroundGradientAngle="0"   CornerRadius="5,5,5,5" Margin="2" Padding="2" BorderColor="LightGray" BorderThickness="3">
+                                <yummy:PancakeView    CornerRadius="5,5,5,5" Margin="2" Padding="2" BorderColor="LightGray" BorderThickness="3">
 
                                     <Grid>
                                         <Grid.RowDefinitions>

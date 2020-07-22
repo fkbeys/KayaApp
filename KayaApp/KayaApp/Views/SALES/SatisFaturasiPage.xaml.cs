@@ -17,16 +17,11 @@ namespace KayaApp.Views.SALES
         public SatisFaturasiPage()
         {
             InitializeComponent();
-            //if (SATVMZ!=null)
-            //{
-            //    BindingContext = SATVMZ;
-            //}
-            //else
-            //{               
-            //    BindingContext = SATVMZ= new SatisVM();
-            //}
-
+             
             BindingContext = SATVMZ = new SatisVM();
+
+            //cari goster butonu 
+            SATVMZ.BtnCariGoster.Execute(this);
         }
     }
 }

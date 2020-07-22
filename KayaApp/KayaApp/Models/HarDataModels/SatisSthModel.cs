@@ -225,7 +225,31 @@ namespace KayaApp.Models
 
         public double sth_iskonto1 { get; set; }
 
-        public double sth_iskonto2 { get; set; }
+        //public double sth_iskonto2 { get; set; }
+        private double _sth_iskonto2;
+
+        public double sth_iskonto2
+        {
+            get { return _sth_iskonto2; }
+            set
+            {
+                _sth_iskonto2 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _sth_iskonto2_info;
+
+        public string sth_iskonto2_info
+        {
+            get { return _sth_iskonto2_info; }
+            set
+            {
+                _sth_iskonto2_info = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public double sth_iskonto3 { get; set; }
 
@@ -302,5 +326,7 @@ namespace KayaApp.Models
         }
         public string sth_parti_kodu { get; set; }
         public int sth_lot_no { get; set; }
+
+
     }
 }

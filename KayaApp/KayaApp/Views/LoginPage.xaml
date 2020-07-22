@@ -15,8 +15,16 @@
 
         <ScrollView>
 
-           
-            <yummy:PancakeView BackgroundGradientAngle="0"  BackgroundGradientStartColor="LightGray" BackgroundGradientEndColor="LightSlateGray">
+
+            <yummy:PancakeView BackgroundGradientStartPoint="0.5,0.0" BackgroundGradientEndPoint="0.5,1">
+                <yummy:PancakeView.BackgroundGradientStops>
+                    <yummy:GradientStopCollection>
+                        <yummy:GradientStop Color="LightGray" Offset="0.0" />                         
+                        <yummy:GradientStop Color="DarkGray" Offset="1.0" /> 
+                    </yummy:GradientStopCollection>
+                </yummy:PancakeView.BackgroundGradientStops>
+               
+
             <Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto" ColumnDefinitions="*">
 
                     <Image  Grid.Row="0" Grid.Column="0" x:Name="LogoImage" Source="logo.png" Margin="10" />

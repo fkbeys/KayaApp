@@ -28,9 +28,15 @@
     
     <StackLayout> 
 
-        <yummy:PancakeView BackgroundGradientAngle="0"  BackgroundGradientStartColor="WhiteSmoke" BackgroundGradientEndColor="WhiteSmoke" CornerRadius="35,35,5,5" BorderColor="LightGray" BorderThickness="3">
-
-            <StackLayout  x:Name="StackMain">
+        <!--<yummy:PancakeView   BackgroundGradientStartColor="WhiteSmoke" BackgroundGradientEndColor="WhiteSmoke" CornerRadius="35,35,5,5" BorderColor="LightGray" BorderThickness="3">-->
+            <yummy:PancakeView     CornerRadius="35,35,5,5"  Border="{yummy:BorderMarkup Color=LightGray, Thickness='3'}"   >
+                <yummy:PancakeView.BackgroundGradientStops>
+                    <yummy:GradientStopCollection>
+                        <yummy:GradientStop Color="White" Offset="0.0" />
+                        <yummy:GradientStop Color="White" Offset="1.0" />
+                    </yummy:GradientStopCollection>
+                </yummy:PancakeView.BackgroundGradientStops>
+                <StackLayout  x:Name="StackMain">
 
 
                 <StackLayout  BackgroundColor="DodgerBlue">

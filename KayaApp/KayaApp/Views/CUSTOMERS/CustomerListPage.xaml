@@ -12,9 +12,17 @@
               Padding="3,0,3,0"
              x:Class="KayaApp.Views.CUSTOMERS.CustomerListPage">
     <ContentPage.Content>
-        <yummy:PancakeView BackgroundGradientAngle="0"    BackgroundGradientStartColor="White" BackgroundGradientEndColor="WhiteSmoke" CornerRadius="35,35,5,5" BorderColor="LightGray" BorderThickness="3">
+        
+        
+             <yummy:PancakeView     CornerRadius="35,35,5,5"  Border="{yummy:BorderMarkup Color=LightGray, Thickness='3'}"   >
+                <yummy:PancakeView.BackgroundGradientStops>
+                    <yummy:GradientStopCollection>
+                        <yummy:GradientStop Color="White" Offset="0.0" />
+                        <yummy:GradientStop Color="White" Offset="1.0" />
+                    </yummy:GradientStopCollection>
+                </yummy:PancakeView.BackgroundGradientStops>
 
-            <StackLayout>
+               
                 <StackLayout Spacing="0">
                     <StackLayout  BackgroundColor="DodgerBlue">
                         <Label Text="{x:Static dil:AppResources.Musteriler}"  TextColor="White" HorizontalOptions="Center" FontAttributes="Bold"/>
@@ -30,7 +38,7 @@
                             <DataTemplate>
                                 <ViewCell>
 
-                                    <yummy:PancakeView BackgroundGradientAngle="0"  Margin="2" Padding="5" BackgroundGradientStartColor="WhiteSmoke" BackgroundGradientEndColor="WhiteSmoke" CornerRadius="10,10,10,10" BorderColor="LightGray" BorderThickness="3">
+                                    <yummy:PancakeView    Margin="2" Padding="5" BackgroundGradientStartColor="WhiteSmoke" BackgroundGradientEndColor="WhiteSmoke" CornerRadius="10,10,10,10" BorderColor="LightGray" BorderThickness="3">
 
                                         <StackLayout>
                                             <Label Text="{Binding cari_unvan1}" FontAttributes="Bold"/>
@@ -48,7 +56,7 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </StackLayout>
-            </StackLayout>
+           
         </yummy:PancakeView>
 
     </ContentPage.Content>

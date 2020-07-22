@@ -187,6 +187,7 @@
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
 
                                     <Grid.ColumnDefinitions>
@@ -266,8 +267,23 @@
                                             </FormattedString>
                                         </Label.FormattedText>
                                     </Label>
+ 
+                                    <Label    Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="4"   >
 
-                                    <Label  Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="4"   Text="{Binding Renk_beden_full_bilgi}"/>
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="ISKONTO:"   FontSize="Small" FontAttributes="Bold"  />
+                                                <Span Text="{Binding sth_iskonto2_info}"    FontSize="Small" FontAttributes="Bold" />
+                                                <Span  Text=" " FontAttributes="Bold" /> 
+                                                <Span Text="{Binding sth_iskonto2}"    FontSize="Small" FontAttributes="Bold" />
+                                                <Span  Text=" " FontAttributes="Bold" />
+                                                <Span Text="{Binding sth_doviz_ismi}"    FontSize="Small" FontAttributes="Bold" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    
+                                    <Label  Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="4"   Text="{Binding Renk_beden_full_bilgi}"/>
+
 
                                 </Grid>
 
@@ -324,14 +340,15 @@
                 </ListView.Footer>
             </ListView>
 
-
-
-
-            <!--burdan degisim-->
-
-            <yummy:PancakeView  Grid.Row="3"  Grid.ColumnSpan="5" HeightRequest="55" BackgroundGradientAngle="0" CornerRadius="10,10,0,0" BackgroundGradientStartColor="#E25822" BackgroundGradientEndColor="#A51C30">
-
-                <Grid>
+ 
+             <yummy:PancakeView   Grid.Row="3"  Grid.ColumnSpan="5"     CornerRadius="10,10,0,0"   Border="{yummy:BorderMarkup Color=LightGray, Thickness='3'}"   >
+                    <yummy:PancakeView.BackgroundGradientStops>
+                        <yummy:GradientStopCollection>
+                        <yummy:GradientStop Color="#E25822" Offset="0.0" />
+                        <yummy:GradientStop Color="#A51C30" Offset="1.0" />
+                        </yummy:GradientStopCollection>
+                    </yummy:PancakeView.BackgroundGradientStops>
+                    <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
 
