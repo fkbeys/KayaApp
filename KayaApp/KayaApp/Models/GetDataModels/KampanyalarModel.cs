@@ -52,6 +52,6 @@ namespace KayaApp.Models
         public string KAMP_BEDAVA_VERSTOK3 { get; set; }
         public string KAMP_BEDAVA_VERSTOK4 { get; set; }
         public string KAMP_BEDAVA_VERSTOK5 { get; set; }
+        public string KAMP_FIYATLISTELERI { get; set; }
     }
-
 }

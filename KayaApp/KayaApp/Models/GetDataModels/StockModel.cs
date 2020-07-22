@@ -1,10 +1,11 @@
-﻿using SQLite;
+﻿using KayaApp.Helpers;
+using SQLite;
 using System;
 
 namespace KayaApp.Models
 {
 
-    public class StockModel //: BaseViewModel
+    public class StockModel : BaseViewModel
     {
         // [PrimaryKey, AutoIncrement]
 
@@ -14,7 +15,43 @@ namespace KayaApp.Models
         public int sto_RECno { get; set; }
         public int sto_RECid_RECno { get; set; }
         public string sto_kod { get; set; }
-        public string sto_isim { get; set; }
+        //public string sto_isim { get; set; }
+        private string _sto_isim;
+
+        public string sto_isim
+        {
+            get { return _sto_isim; }
+            set
+            {
+                _sto_isim = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private string _sto_indirimbilgisi;
+
+        public string sto_indirimbilgisi
+        {
+            get { return _sto_indirimbilgisi; }
+            set
+            {
+                _sto_indirimbilgisi = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private string _sto_bedavadurumu;
+
+        public string sto_bedavadurumu
+        {
+            get { return _sto_bedavadurumu; }
+            set
+            {
+                _sto_bedavadurumu = value;
+                INotifyPropertyChanged();
+            }
+        }
+
         public string sto_kisa_ismi { get; set; }
         public int sto_doviz_cinsi { get; set; }
 

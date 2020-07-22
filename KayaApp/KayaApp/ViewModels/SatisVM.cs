@@ -1251,7 +1251,6 @@ namespace KayaApp.ViewModels
 
                 //renk bilgisini, stok bazli yaziyoruz ki kullanici ne renk beden secmis onu gorsun
 
-                //dengesiz
 
 
             }
@@ -1347,7 +1346,7 @@ namespace KayaApp.ViewModels
         private async void kampanyauygula()
         {
 
-            if (DetayliSalesList.Count == 0) return;
+            //if (DetayliSalesList.Count == 0) return;
             if (SelectedCustomerModel == null) return;
 
             try
@@ -1360,180 +1359,200 @@ namespace KayaApp.ViewModels
                         var toplammiktar = DetayliSalesList.Sum(x => x.sth_miktar);
 
 
+                        List<string> carikodlar = item.KAMP_CARI_KODLAR.Split(';').ToList();
+                        List<string> carigruplar = item.KAMP_CARI_GRUPLAR.Split(';').ToList();
+                        List<string> carisektorlar = item.KAMP_CARI_SEKTORLAR.Split(';').ToList();
+                        List<string> caribolgeler = item.KAMP_CARI_BOLGELER.Split(';').ToList();
+                        List<string> caritemsilciler = item.KAMP_CARI_TEMSILCI.Split(';').ToList();
+                        List<string> odemeplanlari = item.KAMP_CARI_ODEMEPLANI.Split(';').ToList();
+                        List<string> projeler = item.KAMP_CARI_PROJE.Split(';').ToList();
+                        List<string> srmler = item.KAMP_CARI_SRM.Split(';').ToList();
+                        List<string> odemeyontemleri = item.KAMP_CARI_ODEMEYONTEMI.Split(';').ToList();
+                        List<string> stoklar = item.KAMP_STOKLAR.Split(';').ToList();
+                        List<string> stokkategorileri = item.KAMP_STOKLAR_KATEGORI.Split(';').ToList();
+                        List<string> stokanagruplari = item.KAMP_STOKLAR_ANAGRUP.Split(';').ToList();
+                        List<string> stokaltgruplari = item.KAMP_STOKLAR_ALTGRUP.Split(';').ToList();
+                        List<string> stokureticileri = item.KAMP_STOKLAR_URETICI.Split(';').ToList();
+                        List<string> stoksektorlari = item.KAMP_STOKLAR_SEKTOR.Split(';').ToList();
+                        List<string> stokreyonlari = item.KAMP_STOKLAR_REYON.Split(';').ToList();
+                        List<string> stokambalajlari = item.KAMP_STOKLAR_AMBALAJ.Split(';').ToList();
+                        List<string> stokmarkalari = item.KAMP_STOKLAR_MARKA.Split(';').ToList();
+                        List<string> fiyatlisteleri = item.KAMP_FIYATLISTELERI.Split(';').ToList();
+                        var minimumtutar = item.KAMP_MINUMUM_TUTAR;
+                        var minimummiktar = item.KAMP_MIMINUM_MIKTAR;
+                        var alana1 = item.KAMP_IF_MIKTAR1;
+                        var alana2 = item.KAMP_IF_MIKTAR2;
+                        var alana3 = item.KAMP_IF_MIKTAR3;
+                        var alana4 = item.KAMP_IF_MIKTAR4;
+                        var alana5 = item.KAMP_IF_MIKTAR5;
+                        var bedava1 = item.KAMP_THEN_MIKTAR1;
+                        var bedava2 = item.KAMP_THEN_MIKTAR2;
+                        var bedava3 = item.KAMP_THEN_MIKTAR3;
+                        var bedava4 = item.KAMP_THEN_MIKTAR4;
+                        var bedava5 = item.KAMP_THEN_MIKTAR5;
 
 
-                        if (item.KAMP_YUZDESEL > 0 || item.KAMP_TUTAR > 0)
+
+                        var gecerliolanfaturalar = item.KAMP_UYGULANACAK_FATLAR.Split(';');
+
+
+
+                        #region listekontrol
+                        if (item.KAMP_CARI_KODLAR == "")
                         {
-                            var minimumtutar = item.KAMP_MINUMUM_TUTAR;
-                            var minimummiktar = item.KAMP_MIMINUM_MIKTAR;
-                            var alana1 = item.KAMP_IF_MIKTAR1;
-                            var alana2 = item.KAMP_IF_MIKTAR2;
-                            var alana3 = item.KAMP_IF_MIKTAR3;
-                            var alana4 = item.KAMP_IF_MIKTAR4;
-                            var alana5 = item.KAMP_IF_MIKTAR5;
-                            var bedava1 = item.KAMP_THEN_MIKTAR1;
-                            var bedava2 = item.KAMP_THEN_MIKTAR2;
-                            var bedava3 = item.KAMP_THEN_MIKTAR3;
-                            var bedava4 = item.KAMP_THEN_MIKTAR4;
-                            var bedava5 = item.KAMP_THEN_MIKTAR5;
+                            carikodlar.Clear();
+                        }
+                        if (item.KAMP_CARI_GRUPLAR == "")
+                        {
+                            carigruplar.Clear();
+                        }
+                        if (item.KAMP_CARI_SEKTORLAR == "")
+                        {
+                            carisektorlar.Clear();
+                        }
+                        if (item.KAMP_CARI_BOLGELER == "")
+                        {
+                            caribolgeler.Clear();
+                        }
+                        if (item.KAMP_CARI_TEMSILCI == "")
+                        {
+                            caritemsilciler.Clear();
+                        }
+                        if (item.KAMP_CARI_ODEMEPLANI == "")
+                        {
+                            odemeplanlari.Clear();
+                        }
+                        if (item.KAMP_CARI_PROJE == "")
+                        {
+                            projeler.Clear();
+                        }
+                        if (item.KAMP_CARI_SRM == "")
+                        {
+                            srmler.Clear();
+                        }
+                        if (item.KAMP_CARI_ODEMEYONTEMI == "")
+                        {
+                            odemeyontemleri.Clear();
+                        }
+                        if (item.KAMP_STOKLAR == "")
+                        {
+                            stoklar.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_KATEGORI == "")
+                        {
+                            stokkategorileri.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_ANAGRUP == "")
+                        {
+                            stokanagruplari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_ALTGRUP == "")
+                        {
+                            stokaltgruplari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_URETICI == "")
+                        {
+                            stokureticileri.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_SEKTOR == "")
+                        {
+                            stoksektorlari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_REYON == "")
+                        {
+                            stokreyonlari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_AMBALAJ == "")
+                        {
+                            stokambalajlari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_MARKA == "")
+                        {
+                            stokmarkalari.Clear();
+                        }
+                        if (item.KAMP_FIYATLISTELERI == "")
+                        {
+                            fiyatlisteleri.Clear();
+                        }
 
-                            var gecerliolanfaturalar = item.KAMP_UYGULANACAK_FATLAR.Split(';');
-
-                            List<string> carikodlar = item.KAMP_CARI_KODLAR.Split(';').ToList();
-                            List<string> carigruplar = item.KAMP_CARI_GRUPLAR.Split(';').ToList();
-                            List<string> carisektorlar = item.KAMP_CARI_SEKTORLAR.Split(';').ToList();
-                            List<string> caribolgeler = item.KAMP_CARI_BOLGELER.Split(';').ToList();
-                            List<string> caritemsilciler = item.KAMP_CARI_TEMSILCI.Split(';').ToList();
-                            List<string> odemeplanlari = item.KAMP_CARI_ODEMEPLANI.Split(';').ToList();
-                            List<string> projeler = item.KAMP_CARI_PROJE.Split(';').ToList();
-                            List<string> srmler = item.KAMP_CARI_SRM.Split(';').ToList();
-                            List<string> odemeyontemleri = item.KAMP_CARI_ODEMEYONTEMI.Split(';').ToList();
-                            List<string> stoklar = item.KAMP_STOKLAR.Split(';').ToList();
-                            List<string> stokkategorileri = item.KAMP_STOKLAR_KATEGORI.Split(';').ToList();
-                            List<string> stokanagruplari = item.KAMP_STOKLAR_ANAGRUP.Split(';').ToList();
-                            List<string> stokaltgruplari = item.KAMP_STOKLAR_ALTGRUP.Split(';').ToList();
-                            List<string> stokureticileri = item.KAMP_STOKLAR_URETICI.Split(';').ToList();
-                            List<string> stoksektorlari = item.KAMP_STOKLAR_SEKTOR.Split(';').ToList();
-                            List<string> stokreyonlari = item.KAMP_STOKLAR_REYON.Split(';').ToList();
-                            List<string> stokambalajlari = item.KAMP_STOKLAR_AMBALAJ.Split(';').ToList();
-                            List<string> stokmarkalari = item.KAMP_STOKLAR_MARKA.Split(';').ToList();
-
-                            #region listekontrol
-                            if (item.KAMP_CARI_KODLAR == "")
-                            {
-                                carikodlar.Clear();
-                            }
-                            if (item.KAMP_CARI_GRUPLAR == "")
-                            {
-                                carigruplar.Clear();
-                            }
-                            if (item.KAMP_CARI_SEKTORLAR == "")
-                            {
-                                carisektorlar.Clear();
-                            }
-                            if (item.KAMP_CARI_BOLGELER == "")
-                            {
-                                caribolgeler.Clear();
-                            }
-                            if (item.KAMP_CARI_TEMSILCI == "")
-                            {
-                                caritemsilciler.Clear();
-                            }
-                            if (item.KAMP_CARI_ODEMEPLANI == "")
-                            {
-                                odemeplanlari.Clear();
-                            }
-                            if (item.KAMP_CARI_PROJE == "")
-                            {
-                                projeler.Clear();
-                            }
-                            if (item.KAMP_CARI_SRM == "")
-                            {
-                                srmler.Clear();
-                            }
-                            if (item.KAMP_CARI_ODEMEYONTEMI == "")
-                            {
-                                odemeyontemleri.Clear();
-                            }
-                            if (item.KAMP_STOKLAR == "")
-                            {
-                                stoklar.Clear();
-                            }
-                            if (item.KAMP_STOKLAR_KATEGORI == "")
-                            {
-                                stokkategorileri.Clear();
-                            }
-                            if (item.KAMP_STOKLAR_ANAGRUP == "")
-                            {
-                                stokanagruplari.Clear();
-                            }
-                            if (item.KAMP_STOKLAR_ALTGRUP == "")
-                            {
-                                stokaltgruplari.Clear();
-                            }
-                            if (item.KAMP_STOKLAR_URETICI == "")
-                            {
-                                stokureticileri.Clear();
-                            }
-                            if (item.KAMP_STOKLAR_SEKTOR == "")
-                            {
-                                stoksektorlari.Clear();
-                            }
-                            if (item.KAMP_STOKLAR_REYON == "")
-                            {
-                                stokreyonlari.Clear();
-                            }
-                            if (item.KAMP_STOKLAR_AMBALAJ == "")
-                            {
-                                stokambalajlari.Clear();
-                            }
-                            if (item.KAMP_STOKLAR_MARKA == "")
-                            {
-                                stokmarkalari.Clear();
-                            }
-
-                            #endregion
+                        #endregion
 
 
-                            foreach (var itemsth in DetayliSalesList)
+                        foreach (var itemsth in DetayliSalesList)
+                        {
+
+                            if (itemsth.sth_tutar <= item.KAMP_MINUMUM_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1) || itemsth.sth_miktar <= item.KAMP_MIMINUM_MIKTAR)
+                            {
+                                itemsth.sth_iskonto2 = 0;
+                                itemsth.sth_iskonto2_info = "";
+                            }
+                            else
                             {
 
-                                if (itemsth.sth_tutar <= item.KAMP_MINUMUM_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1) || itemsth.sth_miktar <= item.KAMP_MIMINUM_MIKTAR)
+                                var stockinfo = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == itemsth.sth_stok_kod).FirstOrDefault();
+
+                                if (
+                                         (!gecerliolanfaturalar.Any() || gecerliolanfaturalar.Contains("0"))
+                                      && (!carikodlar.Any() || carikodlar.Contains(SelectedCustomerModel.cari_kod))
+                                      && (!carigruplar.Any() || carigruplar.Contains(SelectedCustomerModel.cari_grup_kodu))
+                                      && (!carisektorlar.Any() || carisektorlar.Contains(SelectedCustomerModel.cari_sektor_kodu))
+                                      && (!caribolgeler.Any() || caribolgeler.Contains(SelectedCustomerModel.cari_bolge_kodu))
+                                      && (!caritemsilciler.Any() || caritemsilciler.Contains(SelectedCustomerModel.cari_temsilci_kodu))
+                                      && (!odemeplanlari.Any() || odemeplanlari.Contains(SelectedOdemePlani.odp_no.ToString()))
+                                      && (!projeler.Any() || projeler.Contains(SelectedProje.pro_kodu))
+                                      && (!srmler.Any() || srmler.Contains(SelectedSorumluluk.som_kod))
+                                      && (!odemeyontemleri.Any() || odemeyontemleri.Contains(SelectedOdemePlani.odp_no.ToString()))
+                                      && (!stoklar.Any() || stoklar.Contains(itemsth.sth_stok_kod))
+                                      && (!stokkategorileri.Any() || stokkategorileri.Contains(stockinfo.sto_kategori_kodu))
+                                      && (!stokanagruplari.Any() || stokanagruplari.Contains(stockinfo.sto_anagrup_kod))
+                                      && (!stokaltgruplari.Any() || stokaltgruplari.Contains(stockinfo.sto_altgrup_kod))
+                                      && (!stokureticileri.Any() || stokureticileri.Contains(stockinfo.sto_uretici_kodu))
+                                      && (!stoksektorlari.Any() || stoksektorlari.Contains(stockinfo.sto_sektor_kodu))
+                                      && (!stokreyonlari.Any() || stokreyonlari.Contains(stockinfo.sto_reyon_kodu))
+                                      && (!stokambalajlari.Any() || stokambalajlari.Contains(stockinfo.sto_ambalaj_kodu))
+                                      && (!stokmarkalari.Any() || stokmarkalari.Contains(stockinfo.sto_marka_kodu))
+                                       && (!fiyatlisteleri.Any() || fiyatlisteleri.Contains(SelectedFiyatListesi.sfl_sirano.ToString()))
+                                  )
                                 {
-                                    itemsth.sth_iskonto2 = 0;
-                                    itemsth.sth_iskonto2_info = "";
+                                    if (item.KAMP_YUZDESEL != 0)
+                                    {
+                                        //garip
+                                        itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat * item.KAMP_YUZDESEL / 100 * itemsth.sth_miktar / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
+                                        itemsth.sth_iskonto2_info = "(%" + item.KAMP_YUZDESEL.ToString() + ")";
+                                    }
+                                    else if (item.KAMP_TUTAR != 0)
+                                    {
+                                        itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat - item.KAMP_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
+                                    }
                                 }
                                 else
                                 {
+                                    itemsth.sth_iskonto2 = 0;
+                                    itemsth.sth_iskonto2_info = "";
 
-                                    var stockinfo = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == itemsth.sth_stok_kod).FirstOrDefault();
-
-                                    if (
-                                             (!gecerliolanfaturalar.Any() || gecerliolanfaturalar.Contains("1"))
-                                          && (!carikodlar.Any() || carikodlar.Contains(SelectedCustomerModel.cari_kod))
-                                          && (!carigruplar.Any() || carigruplar.Contains(SelectedCustomerModel.cari_grup_kodu))
-                                          && (!carisektorlar.Any() || carisektorlar.Contains(SelectedCustomerModel.cari_sektor_kodu))
-                                          && (!caribolgeler.Any() || caribolgeler.Contains(SelectedCustomerModel.cari_bolge_kodu))
-                                          && (!caritemsilciler.Any() || caritemsilciler.Contains(SelectedCustomerModel.cari_temsilci_kodu))
-                                          && (!odemeplanlari.Any() || odemeplanlari.Contains(SelectedOdemePlani.odp_no.ToString()))
-                                          && (!projeler.Any() || projeler.Contains(SelectedProje.pro_kodu))
-                                          && (!srmler.Any() || srmler.Contains(SelectedSorumluluk.som_kod))
-                                          && (!odemeyontemleri.Any() || odemeyontemleri.Contains(SelectedOdemePlani.odp_no.ToString()))
-                                          && (!stoklar.Any() || stoklar.Contains(itemsth.sth_stok_kod))
-                                          && (!stokkategorileri.Any() || stokkategorileri.Contains(stockinfo.sto_kategori_kodu))
-                                          && (!stokanagruplari.Any() || stokanagruplari.Contains(stockinfo.sto_anagrup_kod))
-                                          && (!stokaltgruplari.Any() || stokaltgruplari.Contains(stockinfo.sto_altgrup_kod))
-                                          && (!stokureticileri.Any() || stokureticileri.Contains(stockinfo.sto_uretici_kodu))
-                                          && (!stoksektorlari.Any() || stoksektorlari.Contains(stockinfo.sto_sektor_kodu))
-                                          && (!stokreyonlari.Any() || stokreyonlari.Contains(stockinfo.sto_reyon_kodu))
-                                          && (!stokambalajlari.Any() || stokambalajlari.Contains(stockinfo.sto_ambalaj_kodu))
-                                          && (!stokmarkalari.Any() || stokmarkalari.Contains(stockinfo.sto_marka_kodu))
-
-                                      )
-                                    { 
-                                        if (item.KAMP_YUZDESEL != 0)
-                                        {
-                                            //garip
-                                            itemsth.sth_iskonto2 =Math.Round( stockinfo.sto_fiyat * item.KAMP_YUZDESEL / 100 * itemsth.sth_miktar / NumericConverter.StringToDouble( SelectedDovizKuru.Kur_fiyat1),2);
-                                            itemsth.sth_iskonto2_info = "(%" + item.KAMP_YUZDESEL.ToString() + ")";
-                                        }
-                                        else if (item.KAMP_TUTAR != 0)
-                                        {
-                                            itemsth.sth_iskonto2 =Math.Round( stockinfo.sto_fiyat - item.KAMP_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1),2);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        itemsth.sth_iskonto2 = 0;
-                                        itemsth.sth_iskonto2_info = "";
-                                    }
                                 }
                             }
                         }
-                        else if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
+
+
+                        foreach (var itemstokkarti in _LSTMANAGER.STOCKLIST)
                         {
-                            
+                            if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
+                            {
+                                itemstokkarti.sto_bedavadurumu = item.KAMP_IF_MIKTAR1.ToString() + " adet alana " + item.KAMP_THEN_MIKTAR1.ToString();
+                                //verilecek stok kodu bu listenin icinde. item.KAMP_BEDAVA_VERSTOK1
+                            }
+                            else if (item.KAMP_TUTAR > 0)
+                            {
+                                itemstokkarti.sto_indirimbilgisi = item.KAMP_TUTAR.ToString() + itemstokkarti.sto_doviz_ad;
+                            }
+                            else if (item.KAMP_YUZDESEL > 0)
+                            {
+                                itemstokkarti.sto_indirimbilgisi = item.KAMP_YUZDESEL.ToString() + " %";
+                            }
                         }
+
+
 
                     }
                 }
@@ -5008,7 +5027,7 @@ namespace KayaApp.ViewModels
                             item.sth_iskonto1 = 0;
                             item.sth_iskonto2 = 0;
                             item.sth_fiyat = Math.Round(stockfiyati / NumericConverter.StringToDouble(_SelectedDovizKuru.Kur_fiyat1), 2);
-                             item.sth_fiyat_gosterge = item.sth_fiyat.ToString();
+                            item.sth_fiyat_gosterge = item.sth_fiyat.ToString();
                             item.sth_doviz_ismi = _SelectedDovizKuru.Kur_sembol;
                             CalculateSumGO(this);
                         }

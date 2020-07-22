@@ -58,6 +58,8 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
 
                                         <Grid.ColumnDefinitions>
@@ -105,6 +107,12 @@
                                             </Label.FormattedText>
                                         </Label>
 
+                                        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="1" Text="Indirim:" HorizontalOptions="End" />
+                                        <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="1" Text="Kampanya:" HorizontalOptions="End" />
+                                        <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding sto_indirimbilgisi}" />
+                                        <Label Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding sto_bedavadurumu}" />
+                                        
+                                        
                                     </Grid>
                                 </yummy:PancakeView>
 
