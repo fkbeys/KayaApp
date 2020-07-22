@@ -1537,18 +1537,51 @@ namespace KayaApp.ViewModels
 
                         foreach (var itemstokkarti in _LSTMANAGER.STOCKLIST)
                         {
-                            if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
+                            if (
+                                       (!gecerliolanfaturalar.Any() || gecerliolanfaturalar.Contains("0"))
+                                    && (!carikodlar.Any() || carikodlar.Contains(SelectedCustomerModel.cari_kod))
+                                    && (!carigruplar.Any() || carigruplar.Contains(SelectedCustomerModel.cari_grup_kodu))
+                                    && (!carisektorlar.Any() || carisektorlar.Contains(SelectedCustomerModel.cari_sektor_kodu))
+                                    && (!caribolgeler.Any() || caribolgeler.Contains(SelectedCustomerModel.cari_bolge_kodu))
+                                    && (!caritemsilciler.Any() || caritemsilciler.Contains(SelectedCustomerModel.cari_temsilci_kodu))
+                                    && (!odemeplanlari.Any() || odemeplanlari.Contains(SelectedOdemePlani.odp_no.ToString()))
+                                    && (!projeler.Any() || projeler.Contains(SelectedProje.pro_kodu))
+                                    && (!srmler.Any() || srmler.Contains(SelectedSorumluluk.som_kod))
+                                    && (!odemeyontemleri.Any() || odemeyontemleri.Contains(SelectedOdemePlani.odp_no.ToString()))
+                                    && (!stoklar.Any() || stoklar.Contains(itemstokkarti.sto_kod))
+                                    && (!stokkategorileri.Any() || stokkategorileri.Contains(itemstokkarti.sto_kategori_kodu))
+                                    && (!stokanagruplari.Any() || stokanagruplari.Contains(itemstokkarti.sto_anagrup_kod))
+                                    && (!stokaltgruplari.Any() || stokaltgruplari.Contains(itemstokkarti.sto_altgrup_kod))
+                                    && (!stokureticileri.Any() || stokureticileri.Contains(itemstokkarti.sto_uretici_kodu))
+                                    && (!stoksektorlari.Any() || stoksektorlari.Contains(itemstokkarti.sto_sektor_kodu))
+                                    && (!stokreyonlari.Any() || stokreyonlari.Contains(itemstokkarti.sto_reyon_kodu))
+                                    && (!stokambalajlari.Any() || stokambalajlari.Contains(itemstokkarti.sto_ambalaj_kodu))
+                                    && (!stokmarkalari.Any() || stokmarkalari.Contains(itemstokkarti.sto_marka_kodu))
+                                     && (!fiyatlisteleri.Any() || fiyatlisteleri.Contains(SelectedFiyatListesi.sfl_sirano.ToString()))
+                                )
                             {
-                                itemstokkarti.sto_bedavadurumu = item.KAMP_IF_MIKTAR1.ToString() + " adet alana " + item.KAMP_THEN_MIKTAR1.ToString();
-                                //verilecek stok kodu bu listenin icinde. item.KAMP_BEDAVA_VERSTOK1
+                                if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
+                                {
+                                    itemstokkarti.sto_bedavadurumu = item.KAMP_IF_MIKTAR1.ToString() + " adet alana " + item.KAMP_THEN_MIKTAR1.ToString();
+                                    itemstokkarti.sto_indirimbilgisi = "";
+                                    //verilecek stok kodu bu listenin icinde. item.KAMP_BEDAVA_VERSTOK1
+                                }
+                                else if (item.KAMP_TUTAR > 0)
+                                {
+                                    itemstokkarti.sto_indirimbilgisi = item.KAMP_TUTAR.ToString() + itemstokkarti.sto_doviz_ad;
+                                    itemstokkarti.sto_bedavadurumu = "";
+                                }
+                                else if (item.KAMP_YUZDESEL > 0)
+                                {
+                                    itemstokkarti.sto_indirimbilgisi = item.KAMP_YUZDESEL.ToString() + " %";
+                                    itemstokkarti.sto_bedavadurumu = "";
+                                }
+                                
                             }
-                            else if (item.KAMP_TUTAR > 0)
+                            else
                             {
-                                itemstokkarti.sto_indirimbilgisi = item.KAMP_TUTAR.ToString() + itemstokkarti.sto_doviz_ad;
-                            }
-                            else if (item.KAMP_YUZDESEL > 0)
-                            {
-                                itemstokkarti.sto_indirimbilgisi = item.KAMP_YUZDESEL.ToString() + " %";
+                                //itemstokkarti.sto_bedavadurumu = "";
+                                //itemstokkarti.sto_indirimbilgisi = "";
                             }
                         }
 
