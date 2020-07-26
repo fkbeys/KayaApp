@@ -127,6 +127,7 @@
   </data>
   <data name="BilgiEkrani_YUKLENIYOR" xml:space="preserve">
     <value>Bilgiler Yükleniyor.</value>
+    <comment>GENERAL INFO</comment>
   </data>
   <data name="demobtn" xml:space="preserve">
     <value>Demo</value>
@@ -142,27 +143,35 @@
   </data>
   <data name="MAINMENU_CHASH" xml:space="preserve">
     <value>FİNANS</value>
+    <comment>MENU</comment>
   </data>
   <data name="MAINMENU_CUSTOMERS" xml:space="preserve">
     <value>MÜŞTERİLER</value>
+    <comment>MENU</comment>
   </data>
   <data name="MAINMENU_ORDERS" xml:space="preserve">
     <value>SİPARİŞLER</value>
+    <comment>MENU</comment>
   </data>
   <data name="MAINMENU_PURCHASE" xml:space="preserve">
     <value>ALIŞ FATURALARI</value>
+    <comment>MENU</comment>
   </data>
   <data name="MAINMENU_REPORTS" xml:space="preserve">
     <value>RAPORLAR</value>
+    <comment>MENU</comment>
   </data>
   <data name="MAINMENU_SALES_INVOICE" xml:space="preserve">
     <value>SATIŞ FATURALARI</value>
+    <comment>MENU</comment>
   </data>
   <data name="MAINMENU_STOCKS" xml:space="preserve">
     <value>STOKLAR</value>
+    <comment>MENU</comment>
   </data>
   <data name="MAINMENU_WAREHOUSE" xml:space="preserve">
     <value>DEPOLAR</value>
+    <comment>MENU</comment>
   </data>
   <data name="MoneyTAX" xml:space="preserve">
     <value>KDV</value>
@@ -211,5 +220,9 @@
   <data name="xSatisFaturasi_1" xml:space="preserve">
     <value>Satış Faturası</value>
     <comment>SatisFaturasiPage</comment>
+  </data>
+  <data name="Yok" xml:space="preserve">
+    <value>Yok</value>
+    <comment>StockSelectPopUp</comment>
   </data>
 </root>

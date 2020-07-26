@@ -293,5 +293,14 @@ namespace KayaApp.Language {
                 return ResourceManager.GetString("xSatisFaturasi_1", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yok.
+        /// </summary>
+        internal static string Yok {
+            get {
+                return ResourceManager.GetString("Yok", resourceCulture);
+            }
+        }
     }
 }

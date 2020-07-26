@@ -1,6 +1,7 @@
 ﻿using KayaApp.Helpers;
 using SQLite;
 using System;
+using System.Collections.ObjectModel;
 
 namespace KayaApp.Models
 {
@@ -40,17 +41,55 @@ namespace KayaApp.Models
             }
         }
 
-        private string _sto_bedavadurumu;
+        //private string _sto_bedavadurumu;
 
-        public string sto_bedavadurumu
+        //public string sto_bedavadurumu
+        //{
+        //    get { return _sto_bedavadurumu; }
+        //    set
+        //    {
+        //        _sto_bedavadurumu = value;
+        //        INotifyPropertyChanged();
+        //    }
+        //}
+        //[TextBlob("addressesBlobbed")]
+        private ObservableCollection<string> _sto_bedavadurumu;
+        [Ignore]
+
+        public ObservableCollection<string> sto_bedavadurumu
         {
-            get { return _sto_bedavadurumu; }
+            get
+            {
+                if (_sto_bedavadurumu == null)
+                {
+                    sto_bedavadurumu = new ObservableCollection<string> { "Yok" };
+
+                }
+                return _sto_bedavadurumu;
+            }
             set
             {
                 _sto_bedavadurumu = value;
                 INotifyPropertyChanged();
             }
         }
+
+        private string _selectedKampanyabedavaitem;
+
+        public string selectedKampanyabedavaitem
+        {
+            get { return _selectedKampanyabedavaitem; }
+            set
+            {
+                if (value!=null)
+                {
+                    _selectedKampanyabedavaitem = value;
+                }
+               
+            }
+        }
+
+
 
         public string sto_kisa_ismi { get; set; }
         public int sto_doviz_cinsi { get; set; }
