@@ -51,10 +51,12 @@ namespace KayaApp.Views.REPORT
 
                         await HelpME.SayfaKapat();
                         await HelpME.SayfaKapat();
-                      //  await HelpME.SayfaAc(satissayfasi);
+                        //  await HelpME.SayfaAc(satissayfasi);
                         await Application.Current.MainPage.Navigation.PushAsync(satissayfasi);
 
-                        _LSTMANAGER.SALESLIST.Clear();
+                        SatisFaturasiPage.SATVMZ.SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == gelendeger.Aktarim_Cari_Kod).FirstOrDefault();
+
+                        _LSTMANAGER.DETAYLISALESLIST.Clear(); 
 
                         var SatisFatList = await LocalSQL<SatisFatModel>.GETLISTALL();
                         var secimFatura = SatisFatList.Where(x => x.fat_sth_baglanti == gelendeger.Aktarim_Baglanti_guid).FirstOrDefault();
@@ -67,20 +69,21 @@ namespace KayaApp.Views.REPORT
                         foreach (var item in selectedstocks.ToList())
                         {
                             ss.DetayliSalesList.Add(item);
-                            await LocalSQL<SatisSthModel>.DELETEROW(item);
+                            // await LocalSQL<SatisSthModel>.DELETEROW(item);
                         }
 
                         SatisFaturasiPage.SATVMZ.GenelIndirimYUZDE = gelendeger.Aktarim_IndirimYuzde;
                         SatisFaturasiPage.SATVMZ.GenelIndirimTL = gelendeger.Aktarim_IndirimTL;
 
-                        SatisFaturasiPage.SATVMZ.SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == gelendeger.Aktarim_Cari_Kod).FirstOrDefault();
 
-                        SatisFaturasiPage.SATVMZ.SelectedDovizKuru= _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == secimFatura.fat_d_cins).FirstOrDefault();
+                        SatisFaturasiPage.SATVMZ.SelectedDovizKuru = _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == secimFatura.fat_d_cins).FirstOrDefault();
                         SatisFaturasiPage.SATVMZ.SelectedDepo = _LSTMANAGER.DEPOISIMLERILIST.Where(x => x.dep_no == selectedstocks.ToList()[0].sth_cikis_depo_no).FirstOrDefault();
 
                         SatisVM.AktarimTaraftanGeliyorum = false;
-                        await LocalSQL<SatisFatModel>.DELETEROW(secimFatura);
-                        await LocalSQL<AktarimModel>.DELETEROW(gelendeger);
+
+
+                        //   await LocalSQL<SatisFatModel>.DELETEROW(secimFatura);
+                        //await LocalSQL<AktarimModel>.DELETEROW(gelendeger);
 
                     }
 
@@ -382,7 +385,7 @@ namespace KayaApp.Views.REPORT
                     //{
                     //    await HelpME.MessageShow("hata", ex.Message, "ok");
                     //}
-                     
+
                     break;
                 #endregion
 

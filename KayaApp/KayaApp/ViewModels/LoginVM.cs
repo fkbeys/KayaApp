@@ -250,6 +250,23 @@ namespace KayaApp.ViewModels
         }
         private async Task<UsersModel> GetUsersInfo(CompanyModel CompanyMM, string usersname, string userspass)
         {
+            //try
+            //{
+            //    string Userlink = SabitUrl.UserLink(CompanyMM, usersname, userspass);
+            //    var GetUser = await ApiBaglan<UsersModel>.VeriListeAl(Userlink);
+
+            //    await LocalSQL<UsersModel>.DELETEROW(GetUser[0]);
+            //    await LocalSQL<UsersModel>.DBROWINSERT(GetUser[0]);
+
+            //    var tt = await LocalSQL<UsersModel>.GETLISTALL();
+            //    return GetUser[0];
+            //}
+            //catch (System.Exception ex)
+            //{
+            //    await HelpME.MessageShow("HATA","Kullanici login hatasi"+ex, "ok");
+            //    return null;
+
+            //}
             string Userlink = SabitUrl.UserLink(CompanyMM, usersname, userspass);
             var GetUser = await ApiBaglan<UsersModel>.VeriListeAl(Userlink);
 
@@ -258,6 +275,7 @@ namespace KayaApp.ViewModels
 
             var tt = await LocalSQL<UsersModel>.GETLISTALL();
             return GetUser[0];
+
         }
     }
 }

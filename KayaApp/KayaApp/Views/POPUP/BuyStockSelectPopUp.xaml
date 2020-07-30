@@ -110,7 +110,7 @@
                                         <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="1" Text="Indirim:" HorizontalOptions="End" />
                                         <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="1" Text="Kampanya:" HorizontalOptions="End" />
                                         <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding sto_indirimbilgisi}" />
-                                        <Picker Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="1"  TitleColor="Black"  Title="Kampanya"     ItemsSource="{Binding sto_bedavadurumu,Mode=TwoWay}" ItemDisplayBinding="{Binding .}"   SelectedItem="{Binding selectedKampanyabedavaitem}" />
+                                        <Picker Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="1"  TitleColor="Black"  Title="{x:Static dil:AppResources.Yok}"   IsVisible="{Binding kampanyavisible}"   ItemsSource="{Binding sto_bedavadurumu,Mode=TwoWay}" ItemDisplayBinding="{Binding .,Mode=TwoWay}"   SelectedItem="{Binding selectedKampanyabedavaitem,Mode=TwoWay}" />
 
                                     </Grid>
                                 </yummy:PancakeView>

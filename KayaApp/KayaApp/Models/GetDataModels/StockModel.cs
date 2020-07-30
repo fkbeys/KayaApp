@@ -1,4 +1,5 @@
 ﻿using KayaApp.Helpers;
+using KayaApp.Language;
 using SQLite;
 using System;
 using System.Collections.ObjectModel;
@@ -41,18 +42,6 @@ namespace KayaApp.Models
             }
         }
 
-        //private string _sto_bedavadurumu;
-
-        //public string sto_bedavadurumu
-        //{
-        //    get { return _sto_bedavadurumu; }
-        //    set
-        //    {
-        //        _sto_bedavadurumu = value;
-        //        INotifyPropertyChanged();
-        //    }
-        //}
-        //[TextBlob("addressesBlobbed")]
         private ObservableCollection<string> _sto_bedavadurumu;
         [Ignore]
 
@@ -78,18 +67,38 @@ namespace KayaApp.Models
 
         public string selectedKampanyabedavaitem
         {
-            get { return _selectedKampanyabedavaitem; }
+            get
+            {
+                if (_selectedKampanyabedavaitem==null)
+                {
+                    _selectedKampanyabedavaitem = AppResources.Yok;
+                }
+                return _selectedKampanyabedavaitem;
+            }
             set
             {
                 if (value!=null)
                 {
                     _selectedKampanyabedavaitem = value;
+                    INotifyPropertyChanged();
                 }
                
             }
         }
 
-
+        private bool _kampanyavisible;
+        public bool kampanyavisible
+        {
+            get
+            {
+                return _kampanyavisible;
+            }
+            set
+            {
+                _kampanyavisible = value;
+                INotifyPropertyChanged();
+            }
+        }
 
         public string sto_kisa_ismi { get; set; }
         public int sto_doviz_cinsi { get; set; }

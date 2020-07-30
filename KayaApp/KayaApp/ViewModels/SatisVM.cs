@@ -1276,14 +1276,25 @@ namespace KayaApp.ViewModels
             }
 
 
+            //garip4
             var mevcutsatislist = DetayliSalesList.Where(x => x.sth_stok_kod == SelectedStockModel.sto_kod).ToList();
 
-            if (mevcutsatislist.Count > 0)
+
+            //eger stokhareketinde zaten bu stoktan 2 tane varsa, bu demektir ki, bu kampanyaile alakali bi stok, bu yuzden kampanyali hareketleri sifirliyoruz.
+            //bu tur uyanikliklarin onune gecmeliyiz.
+            if (mevcutsatislist.Count > 1)
+            {
+                foreach (var item in mevcutsatislist)
+                {
+                    DetayliSalesList.Remove(item);
+                }
+            }
+
+
+            if (mevcutsatislist.Count == 1)
             {
 
 
-                //    DetayliSalesList.Remove(mevcutsatislist.FirstOrDefault());
-                mevcutsatislist[0].sth_fiyat_gosterge = MainFiyat;
                 mevcutsatislist[0].sth_fiyat_gosterge = MainFiyat;
                 mevcutsatislist[0].sth_miktar_gosterge = MainMiktar;
                 mevcutsatislist[0].sth_stok_kod = SelectedStockModel.sto_kod;
@@ -1300,6 +1311,7 @@ namespace KayaApp.ViewModels
                 mevcutsatislist[0].Renk_beden_full_bilgi = stokgun_renk_beden_serino_aciklamasi;
                 mevcutsatislist[0].sth_parti_kodu = FinalParti;
                 mevcutsatislist[0].sth_lot_no = NumericConverter.StringToInt(FinalLot);
+                mevcutsatislist[0].sth_cari = SelectedCustomerModel.cari_kod;
 
             }
             else
@@ -1325,6 +1337,7 @@ namespace KayaApp.ViewModels
                         Renk_beden_full_bilgi = stokgun_renk_beden_serino_aciklamasi,
                         sth_parti_kodu = FinalParti,
                         sth_lot_no = NumericConverter.StringToInt(FinalLot),
+                        sth_cari = SelectedCustomerModel.cari_kod,
                     });
             }
 
@@ -1344,7 +1357,7 @@ namespace KayaApp.ViewModels
 
         }
 
-      
+
 
 
         private async void kampanyauygula()
@@ -1355,12 +1368,10 @@ namespace KayaApp.ViewModels
 
             foreach (var itemsxxsx in _LSTMANAGER.STOCKLIST)
             {
-                //itemsxxsx.sto_bedavadurumu = ""; 
                 itemsxxsx.sto_bedavadurumu.Clear();
                 itemsxxsx.sto_indirimbilgisi = "";
-
+                itemsxxsx.kampanyavisible = false;
             }
-
 
             var toplamtutars = DetayliSalesList.Sum(x => x.sth_tutar) / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1);
             var toplammiktars = DetayliSalesList.Sum(x => x.sth_miktar);
@@ -1487,7 +1498,7 @@ namespace KayaApp.ViewModels
                         #endregion
 
 
-                        foreach (var itemsth in DetayliSalesList)
+                        foreach (var itemsth in DetayliSalesList.ToList())
                         {
 
                             if (itemsth.sth_tutar <= item.KAMP_MINUMUM_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1) || itemsth.sth_miktar <= item.KAMP_MIMINUM_MIKTAR)
@@ -1497,7 +1508,7 @@ namespace KayaApp.ViewModels
                             }
                             else
                             {
-
+                                //GARIP5
                                 var stockinfo = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == itemsth.sth_stok_kod).FirstOrDefault();
 
                                 if (
@@ -1521,23 +1532,60 @@ namespace KayaApp.ViewModels
                                       && (!stokambalajlari.Any() || stokambalajlari.Contains(stockinfo.sto_ambalaj_kodu))
                                       && (!stokmarkalari.Any() || stokmarkalari.Contains(stockinfo.sto_marka_kodu))
                                        && (!fiyatlisteleri.Any() || fiyatlisteleri.Contains(SelectedFiyatListesi.sfl_sirano.ToString()))
+
                                   )
                                 {
-                                    if (item.KAMP_YUZDESEL != 0)
+                                    if (item.KAMP_YUZDESEL > 0 || item.KAMP_TUTAR > 0)
                                     {
-                                        itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat * item.KAMP_YUZDESEL / 100 * itemsth.sth_miktar / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
-                                        itemsth.sth_iskonto2_info = "(%" + item.KAMP_YUZDESEL.ToString() + ")";
+
+
+                                        if (item.KAMP_YUZDESEL != 0)
+                                        {
+                                            itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat * item.KAMP_YUZDESEL / 100 * itemsth.sth_miktar / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
+                                            itemsth.sth_iskonto2_info = "(%" + item.KAMP_YUZDESEL.ToString() + ")";
+                                        }
+                                        else if (item.KAMP_TUTAR != 0)
+                                        {
+                                            itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat - item.KAMP_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
+                                        }
                                     }
-                                    else if (item.KAMP_TUTAR != 0)
-                                    {
-                                        itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat - item.KAMP_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
-                                    }
+
+
                                 }
                                 else
-                                {
-                                    itemsth.sth_iskonto2 = 0;
-                                    itemsth.sth_iskonto2_info = "";
+                                //burda cok dikkatli olmaliyim.
+                                // eger bir stokhareketi, 10 alana 2 bedava kampanyasina uymuyorsa, bunu runtime zamani listeden kaldirmamiz gerekli. 
+                                // aksi halde kullanicilar hile yapabilir. bunun onune gecmemiz lazim
 
+                                    if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
+                                {
+
+
+                                    //bu stok hareketinde 2 tane varmi ona bakiyoruz.
+
+                                    var birstoktan2tanevarmi = from p in DetayliSalesList.Where(xx => xx.sth_stok_kod == itemsth.sth_stok_kod).GroupBy(p => p.sth_stok_kod)
+                                                               select new
+                                                               {
+                                                                   count = p.Count(),
+                                                                   p.First().sth_stok_kod,
+                                                               };
+
+                                    //eger varsa bu 2 stok hareketini silmeliyiz,
+                                    //cunku kampanya sartlarina uymuyor. 
+                                    foreach (var itemikitanevarmichk in birstoktan2tanevarmi)
+                                    {
+                                        if (itemikitanevarmichk.count == 2)
+                                        {
+                                            var silinsin = DetayliSalesList.Where(x => x.sth_stok_kod == itemikitanevarmichk.sth_stok_kod).ToList();
+
+                                            foreach (var itemsilinsin in silinsin)
+                                            {
+                                                DetayliSalesList.Remove(itemsilinsin);
+
+                                            }
+                                            HelpME.MessageShow("Uyari", "Kampanya tanimlarina uymayan stok hareketleri silindi...", "ok");
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1573,13 +1621,17 @@ namespace KayaApp.ViewModels
 
                                 if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
                                 {
-                                    //itemstokkarti.sto_bedavadurumu = item.KAMP_IF_MIKTAR1.ToString() + " adet alana " + item.KAMP_THEN_MIKTAR1.ToString();
                                     itemstokkarti.sto_bedavadurumu.Add(AppResources.Yok);
                                     itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR1.ToString() + " + " + item.KAMP_THEN_MIKTAR1);
                                     itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR2.ToString() + " + " + item.KAMP_THEN_MIKTAR2);
                                     itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR3.ToString() + " + " + item.KAMP_THEN_MIKTAR3);
                                     itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR4.ToString() + " + " + item.KAMP_THEN_MIKTAR4);
                                     itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR5.ToString() + " + " + item.KAMP_THEN_MIKTAR5);
+                                    itemstokkarti.kampanyavisible = true;
+
+
+
+
                                 }
                                 else if (item.KAMP_TUTAR > 0)
                                 {
@@ -2801,6 +2853,11 @@ namespace KayaApp.ViewModels
         }
         private async void BtnCariGosterGO(object obj)
         {
+            //if (DetayliSalesList.Count>0)
+            //{
+            //    await HelpME.MessageShow("Uyari", "Sepette urun varken, cari degistiremezsiniz", "ok");
+            //    return;
+            //}
             SearchCustomerText = "";
             await HelpME.PopAc(new BuyCustomerSelectPopUp(this));
         }
@@ -2879,6 +2936,7 @@ namespace KayaApp.ViewModels
             set
             {
                 _SelectedFirma = value;
+                CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
         }
@@ -2893,6 +2951,7 @@ namespace KayaApp.ViewModels
             set
             {
                 _SelectedSube = value;
+                CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
         }
@@ -2904,6 +2963,7 @@ namespace KayaApp.ViewModels
             set
             {
                 _SelectedDepo = value;
+                CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
         }
@@ -2922,6 +2982,7 @@ namespace KayaApp.ViewModels
             set
             {
                 _SelectedProje = value;
+                CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
         }
@@ -2940,6 +3001,7 @@ namespace KayaApp.ViewModels
             set
             {
                 _SelectedSorumluluk = value;
+                CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
         }
@@ -2958,6 +3020,7 @@ namespace KayaApp.ViewModels
             set
             {
                 _SelectedOdemePlani = value;
+                CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
         }
@@ -2970,6 +3033,7 @@ namespace KayaApp.ViewModels
             set
             {
                 _SelectedFiyatListesi = value;
+                CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
         }
@@ -2982,6 +3046,7 @@ namespace KayaApp.ViewModels
             set
             {
                 _SelectedNormalIade = value;
+                CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
         }
@@ -3024,6 +3089,7 @@ namespace KayaApp.ViewModels
                     default:
                         break;
                 }
+                CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
         }
@@ -3059,7 +3125,14 @@ namespace KayaApp.ViewModels
             {
                 if (_SelectedCustomerModel == null)
                 {
-                    _SelectedCustomerModel = new CustomerModel { cari_kod = "" };
+
+                    if (DetayliSalesList.Count > 0)
+                    {
+                        _SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == DetayliSalesList[0].sth_cari).FirstOrDefault();
+
+                    }
+
+
                 }
                 return _SelectedCustomerModel;
             }
@@ -3073,6 +3146,13 @@ namespace KayaApp.ViewModels
                     if (_SelectedCustomerModel != null)
                     {
                         SelectedDovizKuru = _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == _SelectedCustomerModel.cari_doviz1).FirstOrDefault();
+                       
+                        //onceden cari secilmis ise, ve biz o cari yi degistirmek istersek, stok hareketlerindeki cari bolumunu de guncellememiz gerekiyor.
+                        //yoksa bussuru problem
+                        foreach (var item in DetayliSalesList.ToList())
+                        {
+                            item.sth_cari = _SelectedCustomerModel.cari_kod;
+                        }
                     }
                 }
                 catch (Exception)
@@ -4868,11 +4948,75 @@ namespace KayaApp.ViewModels
                     {
 
 
-                        
-                        if (_SelectedStockModel.selectedKampanyabedavaitem!=""&& _SelectedStockModel.selectedKampanyabedavaitem != null)
+                        //eger kampanya secilmis ise, mesela 5 alana 1 bedava secimi yapilmis, ve stok ozellik olarak renk beden seri no ozelligi tasimiyorsa, basarili bir sekilde detaylisatis listemize sth olarak ekliyoruz
+                        if (_SelectedStockModel.selectedKampanyabedavaitem.ToString() != AppResources.Yok && _SelectedStockModel.selectedKampanyabedavaitem != null && !_SelectedStockModel.sto_renkDetayli && !_SelectedStockModel.sto_bedenli_takip && _SelectedStockModel.sto_detay_takip == 0)
                         {
                             //garip3
-                              HelpME.MessageShow("ok","ok","ok");
+
+
+
+                            //bu stok kartinin sth taki tum hareketlerini siliyoruz.
+                            foreach (var item in DetayliSalesList.ToList())
+                            {
+                                if (item.sth_stok_kod == _SelectedStockModel.sto_kod)
+                                {
+                                    DetayliSalesList.Remove(item);
+                                }
+                            }
+
+                            // kampanya tutari ve bedava verilecek miktar
+                            var gelenkampanyamiktarlari = _SelectedStockModel.selectedKampanyabedavaitem.Split('+');
+                            DetayliSalesList.Add
+                              (
+                              new SatisSthModel
+                              {
+                                  sth_fiyat_gosterge = _SelectedStockModel.sto_fiyat.ToString(),
+                                  sth_miktar_gosterge = gelenkampanyamiktarlari[0],
+                                  sth_stok_kod = SelectedStockModel.sto_kod,
+                                  sth_stok_isim = SelectedStockModel.sto_isim,
+                                  sth_birim_ad = SelectedStockModel.sto_birim1_ad,
+                                  sth_tarih = DateTime.Now.Date,
+                                  sth_vergi_pntr = SelectedStockModel.VERGI_NO,
+                                  sth_vryuzde = SelectedStockModel.vryuzde,
+                                  sth_doviz_cins = SelectedDovizKuru.Kur_no,
+                                  sth_har_doviz_kur = NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1),
+                                  sth_doviz_ismi = SelectedDovizKuru.Kur_sembol,
+                                  sth_resim_url = SelectedStockModel.stok_resim_url,
+                                  sth_cari = SelectedCustomerModel.cari_kod,
+
+                              });
+
+
+                            DetayliSalesList.Add
+                              (
+                              new SatisSthModel
+                              {
+                                  sth_fiyat_gosterge = _SelectedStockModel.sto_fiyat.ToString(),
+                                  sth_miktar_gosterge = gelenkampanyamiktarlari[1],
+                                  sth_stok_kod = SelectedStockModel.sto_kod,
+                                  sth_stok_isim = SelectedStockModel.sto_isim,
+                                  sth_birim_ad = SelectedStockModel.sto_birim1_ad,
+                                  sth_tarih = DateTime.Now.Date,
+                                  sth_vergi_pntr = SelectedStockModel.VERGI_NO,
+                                  sth_vryuzde = SelectedStockModel.vryuzde,
+                                  sth_doviz_cins = SelectedDovizKuru.Kur_no,
+                                  sth_har_doviz_kur = NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1),
+                                  sth_doviz_ismi = SelectedDovizKuru.Kur_sembol,
+                                  sth_resim_url = SelectedStockModel.stok_resim_url,
+                                  sth_iskonto2 = _SelectedStockModel.sto_fiyat * NumericConverter.StringToDouble(gelenkampanyamiktarlari[1]) / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1),
+                                  sth_iskonto2_info = @"(%100)",
+                                  sth_cari = SelectedCustomerModel.cari_kod,
+
+
+                              }); ;
+
+                            CalculateSumGO(this);
+
+
+                            HelpME.MessageShow("ok", "Kampanya Eklendi" + _SelectedStockModel.selectedKampanyabedavaitem.ToString(), "ok");
+
+
+
                             return;
                         }
 
@@ -5044,6 +5188,8 @@ namespace KayaApp.ViewModels
 
                     HelpME.MessageShow("error", "bir hata meydana geldi:" + ex.Message, "ok");
                 }
+
+                INotifyPropertyChanged();
             }
         }
 

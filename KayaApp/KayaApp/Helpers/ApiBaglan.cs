@@ -27,13 +27,23 @@ namespace KayaApp.Helpers
         public static async Task<List<T>> VeriListeAl(string requesturl)
         {
 
-            var subclient = await Gethttpclient();
+            try
+            {
+                var subclient = await Gethttpclient();
 
-            var myContent = await subclient.GetStringAsync(requesturl);
+                var myContent = await subclient.GetStringAsync(requesturl);
 
-            var tr = JsonConvert.DeserializeObject<List<T>>(myContent);
+                var tr = JsonConvert.DeserializeObject<List<T>>(myContent);
 
-            return tr;
+                return tr;
+            }
+            catch (System.Exception ex)
+            {
+
+                await HelpME.MessageShow("VeriListeAl  Hatasi", ex.Message,"OK");
+                return null;
+            }
+          
         }
 
         //  nedense calismadi 
