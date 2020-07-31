@@ -205,6 +205,16 @@ namespace KayaApp.Helpers
         {
             return "http://" + ip + ":" + port + "/Values/GETALL_STOKFIYATLARI?DB=" + DB + "&syncID=" + syncID + " ";
         }
-        
+
+        public static string SATIS_SARTLARI(string ip, string port, String DB, int syncID)
+        {
+            return "http://" + ip + ":" + port + "/Values/GETALL_SATIS_SARTLARI?DB=" + DB + "&syncID=" + syncID + " ";
+        }
+
+        public static string STOK_PAKETLERI(string ip, string port, String DB, int syncID)
+        {
+            return "http://" + ip + ":" + port + "/Values/GETALL_STOK_PAKETLERI?DB=" + DB + "&syncID=" + syncID + " ";
+        }
+
     }
 }

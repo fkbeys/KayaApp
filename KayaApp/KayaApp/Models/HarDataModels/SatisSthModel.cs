@@ -327,6 +327,7 @@ namespace KayaApp.Models
         public string sth_parti_kodu { get; set; }
         public int sth_lot_no { get; set; }
 
+        public bool isbedavalikampanya { get; set; }
 
     }
 }

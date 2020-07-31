@@ -2,6 +2,7 @@
 using KayaApp.Helpers;
 using KayaApp.Language;
 using KayaApp.Models;
+using KayaApp.Models.GetDataModels;
 using Org.Apache.Http.Conn;
 using Plugin.Connectivity;
 using System;
@@ -116,6 +117,12 @@ namespace KayaApp.GetData
 
                     var url28 = SabitUrl.STOKFIYATLARI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
+                    var url29= SabitUrl.SATIS_SARTLARI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+
+                    var url30 = SabitUrl.STOK_PAKETLERI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+
+
+
                     #endregion
                     //-----------------------------------------------------------------------------------------------------
                     #region VeriAlimi Yapiliyor
@@ -183,6 +190,9 @@ namespace KayaApp.GetData
                     var durumIzinler = await ApiBaglan<IzinlerModel>.VeriListeAl(url27);
 
                     var durumStokFiyatlari = await ApiBaglan<StokFiyatlariModel>.VeriListeAl(url28);
+
+                    var durumSatisSartlari = await ApiBaglan<SatisSartlariModel>.VeriListeAl(url29);
+
 
                     #endregion
 
@@ -619,6 +629,8 @@ namespace KayaApp.GetData
                     await LocalSQL<KampanyalarModel>.DBINSERTALL(durumKampanyalar);
                     await LocalSQL<IzinlerModel>.DBINSERTALL(durumIzinler);
                     await LocalSQL<StokFiyatlariModel>.DBINSERTALL(durumStokFiyatlari);
+                    await LocalSQL<SatisSartlariModel>.DBINSERTALL(durumSatisSartlari);
+
 
                     _LSTMANAGER.ACTIVEUSER = MyUser;
                     _LSTMANAGER.ACTIVECOMPANY = Mycompany;
@@ -699,6 +711,10 @@ namespace KayaApp.GetData
 
                     var STOKFIYATLARI = await LocalSQL<StokFiyatlariModel>.GETLISTALL();
                     _LSTMANAGER.STOKFIYATLARI = new ObservableCollection<StokFiyatlariModel>(STOKFIYATLARI);
+
+                    var SATISSARTLARI = await LocalSQL<SatisSartlariModel>.GETLISTALL();
+                    _LSTMANAGER.SATISSARTLARI= new ObservableCollection<SatisSartlariModel>(SATISSARTLARI);
+
 
 
                     _LSTMANAGER.Sorumluluklar.Insert(0, new SorumlulukModel { som_isim = "", som_kod = "" });
@@ -797,6 +813,12 @@ namespace KayaApp.GetData
 
                     var IZINLER = await LocalSQL<IzinlerModel>.GETLISTALL();
                     _LSTMANAGER.IzinlerList = new ObservableCollection<IzinlerModel>(IZINLER);
+
+                    var STOKFIYATLARI = await LocalSQL<StokFiyatlariModel>.GETLISTALL();
+                    _LSTMANAGER.STOKFIYATLARI = new ObservableCollection<StokFiyatlariModel>(STOKFIYATLARI);
+
+                    var SATISSARTLARI = await LocalSQL<SatisSartlariModel>.GETLISTALL();
+                    _LSTMANAGER.SATISSARTLARI = new ObservableCollection<SatisSartlariModel>(SATISSARTLARI);
                 }
 
 
@@ -876,7 +898,7 @@ namespace KayaApp.GetData
             await LocalSQL<KampanyalarModel>.DELETEALL();
             await LocalSQL<IzinlerModel>.DELETEALL();
             await LocalSQL<StokFiyatlariModel>.DELETEALL();
-            //  await HelpME.MessageShow("UYARI", "Sistem Yöneticiniz kullanıcı haklarınızda değişiklik yapmıştır. Bu sebeple,veritabanı güncellemesi yapılacaktır...", "");
-        }
+            await LocalSQL<SatisSartlariModel>.DELETEALL();
+         }
     }
 }

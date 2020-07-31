@@ -1,5 +1,6 @@
 ﻿using KayaApp.GetData;
 using KayaApp.Models;
+using KayaApp.Models.GetDataModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -917,5 +918,29 @@ namespace KayaApp.Helpers
                 INotifyPropertyChanged();
             }
         }
+
+
+        private ObservableCollection<SatisSartlariModel> _SATISSARTLARI;
+        public ObservableCollection<SatisSartlariModel> SATISSARTLARI
+        {
+            get
+            {
+                if (_SATISSARTLARI == null)
+                {
+                    _SATISSARTLARI = new ObservableCollection<SatisSartlariModel>();
+                }
+
+                return _SATISSARTLARI;
+            }
+
+            set
+            {
+                _SATISSARTLARI = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+
+
     }
 }

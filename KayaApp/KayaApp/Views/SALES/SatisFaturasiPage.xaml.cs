@@ -20,13 +20,10 @@ namespace KayaApp.Views.SALES
              
             BindingContext = SATVMZ = new SatisVM();
 
-            if (SATVMZ.SelectedCustomerModel==null)
+            if (SATVMZ.SelectedCustomerModel.cari_kod=="")
             {
                 SATVMZ.BtnCariGoster.Execute(this);
-
-            }
-               
-            
+            }            
         }
     }
 }
