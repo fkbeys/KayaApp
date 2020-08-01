@@ -940,7 +940,26 @@ namespace KayaApp.Helpers
             }
         }
 
+        private ObservableCollection<StokPaketleriModel> _STOKPAKETLERI;
+        public ObservableCollection<StokPaketleriModel> STOKPAKETLERI
+        {
+            get
+            {
+                if (_STOKPAKETLERI == null)
+                {
+                    _STOKPAKETLERI = new ObservableCollection<StokPaketleriModel>();
+                }
 
+                return _STOKPAKETLERI;
+            }
+
+            set
+            {
+                _STOKPAKETLERI = value;
+                INotifyPropertyChanged();
+            }
+        }
+        
 
     }
 }

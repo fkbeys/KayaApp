@@ -193,6 +193,7 @@ namespace KayaApp.GetData
 
                     var durumSatisSartlari = await ApiBaglan<SatisSartlariModel>.VeriListeAl(url29);
 
+                    var durumStokPaketleri = await ApiBaglan<StokPaketleriModel>.VeriListeAl(url30);
 
                     #endregion
 
@@ -630,6 +631,7 @@ namespace KayaApp.GetData
                     await LocalSQL<IzinlerModel>.DBINSERTALL(durumIzinler);
                     await LocalSQL<StokFiyatlariModel>.DBINSERTALL(durumStokFiyatlari);
                     await LocalSQL<SatisSartlariModel>.DBINSERTALL(durumSatisSartlari);
+                    await LocalSQL<StokPaketleriModel>.DBINSERTALL(durumStokPaketleri);
 
 
                     _LSTMANAGER.ACTIVEUSER = MyUser;
@@ -715,6 +717,8 @@ namespace KayaApp.GetData
                     var SATISSARTLARI = await LocalSQL<SatisSartlariModel>.GETLISTALL();
                     _LSTMANAGER.SATISSARTLARI= new ObservableCollection<SatisSartlariModel>(SATISSARTLARI);
 
+                    var STOKPAKETLERI = await LocalSQL<StokPaketleriModel>.GETLISTALL();
+                    _LSTMANAGER.STOKPAKETLERI= new ObservableCollection<StokPaketleriModel>(STOKPAKETLERI);
 
 
                     _LSTMANAGER.Sorumluluklar.Insert(0, new SorumlulukModel { som_isim = "", som_kod = "" });

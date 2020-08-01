@@ -1363,11 +1363,16 @@ namespace KayaApp.ViewModels
 
             try
             {
-                if (SelectedCustomerModel == null || SelectedDepo == null || SelectedDovizKuru == null || SelectedOdemePlani == null) return;
+                //if (SelectedCustomerModel == null || SelectedDepo == null || SelectedDovizKuru == null || SelectedOdemePlani == null) return;
+               
+                    //dengex
 
-
-                if (_LSTMANAGER.SATISSARTLARI.ToList().Any())
+                    if (_LSTMANAGER.SATISSARTLARI.ToList().Any())
                 {
+
+
+
+                    StokFiyatGuncelle();
 
 
 
@@ -1394,7 +1399,7 @@ namespace KayaApp.ViewModels
                        && item.sat_stok_kod == itemstoklar.sto_kod
                        )
                             {
-                                itemstoklar.sto_fiyat = Math.Round(item.sat_brut_fiyat, 2);
+                                 itemstoklar.sto_fiyat = Math.Round(item.sat_brut_fiyat, 2);
                                 itemstoklar.sto_indirimbilgisi = "Satış Şartı:" + Math.Round((item.sat_brut_fiyat - item.sat_sonfiyat), 2).ToString();
 
 
@@ -1658,9 +1663,10 @@ namespace KayaApp.ViewModels
                                 {
 
 
-                                    if (SelectedFirma!=null && SelectedCustomerModel != null && SelectedDepo != null && SelectedDovizKuru != null && SelectedOdemePlani != null )
+                                    if (SelectedFirma != null && SelectedSube != null && SelectedCustomerModel != null && SelectedDepo != null && SelectedProje != null && SelectedSorumluluk != null
+                                        && SelectedFiyatListesi != null && SelectedOdemePlani != null && SelectedAcikKapali != null
+                                        && SelectedDovizKuru != null)
                                     {
-
                                         //bu stok hareketinde 2 tane varmi ona bakiyoruz.
 
                                         var birstoktan2tanevarmi = from p in DetayliSalesList.Where(xx => xx.sth_stok_kod == itemsth.sth_stok_kod).GroupBy(p => p.sth_stok_kod)
@@ -1687,10 +1693,7 @@ namespace KayaApp.ViewModels
                                         }
 
 
-
                                     }
-
-
 
 
 
@@ -1834,6 +1837,9 @@ namespace KayaApp.ViewModels
 
         private void CalculateSumGO(object obj)
         {
+            if (SelectedFirma == null || SelectedSube == null || SelectedCustomerModel == null || SelectedDepo == null || SelectedProje == null || SelectedSorumluluk == null
+                                         || SelectedFiyatListesi == null || SelectedOdemePlani == null || SelectedAcikKapali == null
+                                         || SelectedDovizKuru == null) return;
             kampanyauygula();
             satissartlariuygula();
 
@@ -3142,8 +3148,41 @@ namespace KayaApp.ViewModels
             set
             {
                 _SelectedFiyatListesi = value;
+
+                 
                 CalculateSumGO(this);
                 INotifyPropertyChanged();
+            }
+        }
+
+        private void StokFiyatGuncelle()
+        {
+            if (_SelectedFiyatListesi != null)
+            {
+                try
+                {
+                    if (!_LSTMANAGER.STOCKLIST.Any() || SelectedFiyatListesi == null) return;
+
+                    foreach (var item in _LSTMANAGER.STOCKLIST.ToList())
+                    {
+
+                        var fiyat_getir = _LSTMANAGER.STOKFIYATLARI.Where(x => x.sfiyat_stokkod == item.sto_kod && x.sfiyat_listesirano == SelectedFiyatListesi.sfl_sirano);
+                        if (fiyat_getir.Any())
+                        {
+                            item.sto_fiyat = fiyat_getir.FirstOrDefault().sfiyat_fiyati;
+                        }
+                        else
+                        {
+                            item.sto_fiyat = 0;
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    HelpME.MessageShow("Stok FiyatListe dagit", ex.Message, "Ok");
+                }
             }
         }
 
