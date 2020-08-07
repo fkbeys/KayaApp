@@ -1364,23 +1364,18 @@ namespace KayaApp.ViewModels
             try
             {
                 //if (SelectedCustomerModel == null || SelectedDepo == null || SelectedDovizKuru == null || SelectedOdemePlani == null) return;
-               
-                    //dengex
 
-                    if (_LSTMANAGER.SATISSARTLARI.ToList().Any())
+                //dengex
+
+                if (_LSTMANAGER.SATISSARTLARI.ToList().Any())
                 {
 
 
 
                     StokFiyatGuncelle();
 
-
-
                     foreach (var item in _LSTMANAGER.SATISSARTLARI.ToList())
-                    {
-
-
-
+                    { 
                         foreach (var itemstoklar in _LSTMANAGER.STOCKLIST.ToList())
                         {
                             int depokotnrol = 0;
@@ -1399,17 +1394,11 @@ namespace KayaApp.ViewModels
                        && item.sat_stok_kod == itemstoklar.sto_kod
                        )
                             {
-                                 itemstoklar.sto_fiyat = Math.Round(item.sat_brut_fiyat, 2);
+                                //abla
+                                itemstoklar.sto_fiyat = Math.Round(item.sat_brut_fiyat, 2);
                                 itemstoklar.sto_indirimbilgisi = "Satış Şartı:" + Math.Round((item.sat_brut_fiyat - item.sat_sonfiyat), 2).ToString();
-
-
-
                             }
-
-
-
                         }
-
 
                         foreach (var itemsth in DetayliSalesList.ToList())
                         {
@@ -1432,18 +1421,10 @@ namespace KayaApp.ViewModels
                             {
                                 itemsth.sth_fiyat = Math.Round(item.sat_brut_fiyat, 2);
                                 itemsth.sth_iskonto2 = Math.Round((item.sat_brut_fiyat - item.sat_sonfiyat) * itemsth.sth_miktar, 2);
-                                itemsth.sth_iskonto2_info = "Satış Şartı:" + itemsth.sth_iskonto2.ToString();
+                                itemsth.sth_iskonto2_info = "Satış Şartı: "; //+ itemsth.sth_iskonto2.ToString();
                             }
-
-
                         }
-
-                        {
-
-                        }
-
                     }
-
                 }
             }
             catch (Exception ex)
@@ -3149,7 +3130,7 @@ namespace KayaApp.ViewModels
             {
                 _SelectedFiyatListesi = value;
 
-                 
+
                 CalculateSumGO(this);
                 INotifyPropertyChanged();
             }
