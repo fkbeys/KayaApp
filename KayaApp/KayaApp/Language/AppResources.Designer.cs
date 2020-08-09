@@ -223,6 +223,15 @@ namespace KayaApp.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Orderby.
+        /// </summary>
+        internal static string Orderby {
+            get {
+                return ResourceManager.GetString("Orderby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Peşin.
         /// </summary>
         internal static string Pesin {

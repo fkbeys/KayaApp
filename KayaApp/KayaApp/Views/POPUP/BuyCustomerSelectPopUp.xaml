@@ -23,9 +23,10 @@
             EasingOut="SinIn"
             HasBackgroundAnimation="True"  />
     </pages:PopupPage.Animation  >
-
-    <!--<yummy:PancakeView     BackgroundGradientStartColor="White" BackgroundGradientEndColor="WhiteSmoke" CornerRadius="35,35,5,5" BorderColor="LightGray" BorderThickness="3">-->
-
+ 
+    
+    
+    
         <yummy:PancakeView     CornerRadius="35,35,5,5"  Border="{yummy:BorderMarkup Color=LightGray, Thickness='3'}"   >
             <yummy:PancakeView.BackgroundGradientStops>
                 <yummy:GradientStopCollection>

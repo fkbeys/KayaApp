@@ -143,7 +143,7 @@
 
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Siparis Cagir" BackgroundColor="IndianRed"/>
+            <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Evrak Cagir" Command="{Binding EvrakCagirBtn}" BackgroundColor="IndianRed"/>
             <Button Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Text="Stoklar" BackgroundColor="Green" Command="{Binding BtnStokGoster}"/>
 
 

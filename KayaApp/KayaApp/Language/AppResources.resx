@@ -189,6 +189,10 @@
     <value>Nakit</value>
     <comment>GENERAL INFO</comment>
   </data>
+  <data name="Orderby" xml:space="preserve">
+    <value>Orderby</value>
+    <comment>StockSelectPopUp</comment>
+  </data>
   <data name="Pesin" xml:space="preserve">
     <value>Peşin</value>
     <comment>GENERAL INFO</comment>

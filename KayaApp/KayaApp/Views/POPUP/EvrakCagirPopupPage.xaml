@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage  
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup" 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:Fim="clr-namespace:KayaApp.Fonts"
+             xmlns:dil="clr-namespace:KayaApp.Language"
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" 
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+    x:Class="KayaApp.Views.POPUP.EvrakCagirPopupPage"
+     CloseWhenBackgroundIsClicked="True"
+    BackgroundInputTransparent="True"
+     
+    >
+
+
+    <pages:PopupPage.Animation  >
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="0"
+            ScaleOut="0"
+            DurationIn="100"
+            DurationOut="100"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"  />
+    </pages:PopupPage.Animation  >
+    
+    <StackLayout BackgroundColor="Gray"  >
+    <Grid RowDefinitions="auto,*" ColumnDefinitions="*,*,*" >
+
+            <Button Grid.Row="0" Grid.Column="0" Text="Paket"/>
+            <Button Grid.Row="0" Grid.Column="1" Text="Siparis Satir"/>
+            <Button Grid.Row="0" Grid.Column="2" Text="Siparis Evrak"/>
+
+            <ListView   Grid.Row="1" Grid.ColumnSpan="3"  ItemsSource="{Binding StokPaketleriList}" BackgroundColor="Yellow" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding pak_kod}"/>
+
+                            </StackLayout>
+                            
+                        </ViewCell>
+                        
+                    </DataTemplate>
+                    
+                </ListView.ItemTemplate>
+                
+            </ListView>
+        
+                 
+            </Grid> 
+    </StackLayout>
+
+</pages:PopupPage>
