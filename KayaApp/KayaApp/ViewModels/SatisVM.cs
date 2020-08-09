@@ -81,6 +81,8 @@ namespace KayaApp.ViewModels
         public ICommand FilitreTemizle { get; set; }
 
         public ICommand EvrakCagirBtn { get; set; }
+
+        public ICommand SelectedStockPaketi { get; set; }
         public SatisVM()
         {
             _LSTMANAGER = DataClass._LSTMANAGER;
@@ -144,12 +146,14 @@ namespace KayaApp.ViewModels
             StokListSirala = new Command(StokListSiralaGO);
             StokListFiltre = new Command(StokListFiltreGO);
 
-            
+
 
             FilitreUygula = new Command(FilitreUygulaGO);
             FilitreTemizle = new Command(FilitreTemizleGO);
 
             EvrakCagirBtn = new Command(EvrakCagirBtnGO);
+
+            SelectedStockPaketi = new Command(SelectedStockPaketiGO);
 
             Firmalar_list = _LSTMANAGER.FirmalarList;
             Subeler_list = _LSTMANAGER.SubelerList;
@@ -188,6 +192,143 @@ namespace KayaApp.ViewModels
 
 
         }
+
+        private ObservableCollection<StokPaketleriModel> _TEMPPaketTanimlariVeya_bedava_stoklist;
+
+        public ObservableCollection<StokPaketleriModel> TEMPPaketTanimlariVeya_bedava_stoklist
+        {
+            get
+            {
+                if (_TEMPPaketTanimlariVeya_bedava_stoklist == null)
+                {
+                    _TEMPPaketTanimlariVeya_bedava_stoklist = new ObservableCollection<StokPaketleriModel>();
+                }
+                return _TEMPPaketTanimlariVeya_bedava_stoklist;
+            }
+            set
+            {
+                _TEMPPaketTanimlariVeya_bedava_stoklist = value;
+            }
+        }
+
+
+        private async void SelectedStockPaketiGO(object obj)
+        {
+            try
+            {
+                var gelenbilgi = (StokPaketleriHeaders)obj;
+                var paketbul = _LSTMANAGER.STOKPAKETLERI.Where(x => x.pak_kod == gelenbilgi.pak_kod).ToList();
+                if (paketbul.Any())
+                {
+
+
+                    var birdenfazla_veya_bedelsiz_stoklar = paketbul.Where(x => x.pak_detay_tip == 1 && x.pak_ve_veya == 1).ToList();
+
+                    if (birdenfazla_veya_bedelsiz_stoklar.Count > 1)
+                    {
+
+                        
+                        //List<string> kodlar = birdenfazla_veya_bedelsiz_stoklar.Select(x => x.pak_stokkod).ToList();
+
+                        foreach (var item in birdenfazla_veya_bedelsiz_stoklar)
+                        {
+                            var stokbilgisi = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.pak_stokkod);
+
+                            if (stokbilgisi.Any())
+                            {
+                                item.pak_stokisim = stokbilgisi.FirstOrDefault().sto_isim;
+                            }                            
+                        }
+
+
+                        //var stokbilgilerixx =_LSTMANAGER.STOCKLIST.Where(x => kodlar.Contains(x.sto_kod));
+
+                        TEMPPaketTanimlariVeya_bedava_stoklist = new ObservableCollection<StokPaketleriModel>(birdenfazla_veya_bedelsiz_stoklar);
+
+                        await
+
+                            Task.Run(() => HelpME.PopAc(new StokPaketleriVeyaEkraniPage(this))
+
+
+                            ).ConfigureAwait(false);
+
+                        //veya +bedelsiz stoklardan sadece 1 tane sectirecegimiz ekrani aciyoruz.
+                        //actigimiz ekranda kullanici hangi kaleme basarsa, onun *veya sini *ve yapip, 
+                        //stok hareket ekledigimiz yere gonderiyoruz.
+                        //orda kendisi ayarlicak herseyi...
+                    }
+                    else
+                    {
+                        paketislemlerinindevami();
+                    }
+
+                    var deg = "";
+                    var sez = 0;
+                    var ff = deg + sez.ToString();
+                    //foreach (var item in paketbul.Where(x => x.pak_ve_veya == 0))
+                    //{
+                    //    //eger renk beden bos ise direk listeye ekliyoruz.
+                    //    if (item.pak_renkbeden == "")
+                    //    {
+                    //        //pak_detay_tip  =0  bedelli 
+                    //        //pak_detay_tip  =1  bedelsiz 
+
+
+                    //        double iskonto2 = 0;
+                    //        if (item.pak_detay_tip == 1) iskonto2 = item.pak_fiyat;
+
+                    //        DetayliSalesList.Add(new SatisSthModel
+                    //        {
+
+                    //            sth_stok_kod = item.pak_stokkod,
+                    //            sth_miktar = item.pak_miktar,
+                    //            sth_fiyat = item.pak_fiyat,
+                    //            sth_iskonto2 = iskonto2,
+                    //            sth_iskonto2_info = "Paket",
+                    //            sth_doviz_cins = item.pak_doviz_cins,
+
+
+
+                    //        });
+
+
+                    //    }
+                    //    else
+                    //    {
+
+
+
+                    //    }
+                    //}
+
+
+                  //  await HelpME.MessageShow("Ok", paketbul[0].pak_ismi + " isimli paket tanimi satış listenize eklendi", "OK");
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                await HelpME.MessageShow("Stok Paketi Ekleme Hatasi", ex.Message, "OK");
+
+            }
+
+        }
+
+        private async void paketislemlerinindevami()
+        {
+            await HelpME.MessageShow("Ok", "Paket islemlerinin devami", "OK");
+            //throw new NotImplementedException();
+        }
+
+        //private StokPaketleriHeaders _SelectedStockPaketi;
+
+        //public StokPaketleriHeaders SelectedStockPaketi
+        //{
+        //    get { return _SelectedStockPaketi; }
+        //    set { _SelectedStockPaketi = value; }
+        //}
+
 
         private async void EvrakCagirBtnGO(object obj)
         {
@@ -279,7 +420,7 @@ namespace KayaApp.ViewModels
             await HelpME.PopKapat();
         }
 
-      
+
 
 
         private List<StockFilterModel> _StockFilter;
@@ -3315,12 +3456,12 @@ namespace KayaApp.ViewModels
         {
             get
             {
-                if (_StokPaketleriHeaders==null && _LSTMANAGER.STOKPAKETLERI!=null)
+                if (_StokPaketleriHeaders == null && _LSTMANAGER.STOKPAKETLERI != null)
                 {
                     if (_LSTMANAGER.STOKPAKETLERI.Any())
                     {
 
-                        var headers = _LSTMANAGER.STOKPAKETLERI.GroupBy(x => new { x.pak_kod, x.pak_ismi,x.pak_fiyat,x.pak_doviz_cins });
+                        var headers = _LSTMANAGER.STOKPAKETLERI.GroupBy(x => new { x.pak_kod, x.pak_ismi, x.pak_fiyat, x.pak_doviz_cins });
                         _StokPaketleriHeaders = new ObservableCollection<StokPaketleriHeaders>();
                         foreach (var item in headers)
                         {
@@ -3338,13 +3479,13 @@ namespace KayaApp.ViewModels
 
                                 });
                             }
-                            
+
 
                         }
 
 
                     }
-                    
+
                 }
 
                 return _StokPaketleriHeaders;

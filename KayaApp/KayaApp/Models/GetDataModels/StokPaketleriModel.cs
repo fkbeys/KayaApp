@@ -10,6 +10,8 @@ namespace KayaApp.Models.GetDataModels
         public int pak_RECno { get; set; }
         public string pak_kod { get; set; }
         public string pak_stokkod { get; set; }
+        public string pak_stokisim { get; set; }
+
         public double pak_miktar { get; set; }
         public double pak_fiyat { get; set; }
         public int pak_doviz_cins { get; set; }
@@ -18,6 +20,10 @@ namespace KayaApp.Models.GetDataModels
         public string pak_ismi { get; set; }
         public int pak_vergidahilfl { get; set; }
         public int pak_master_tip { get; set; }
+        public string pak_renkbeden { get; set; }
+        public string pak_renkbeden_miktar { get; set; }
+
+
     }
 
     public class StokPaketleriHeaders : BaseViewModel
@@ -25,14 +31,10 @@ namespace KayaApp.Models.GetDataModels
         public string pak_kod { get; set; }
         public double pak_fiyat { get; set; }
         public string pak_ismi { get; set; }
+         
+        public string pak_doviz_cins { get; set; } 
 
-
-
-        public string pak_doviz_cins { get; set; }
-
-
-        private string _pak_carpan;
-
+        private string _pak_carpan; 
         public string pak_carpan
         {
             get { return _pak_carpan; }
@@ -44,22 +46,7 @@ namespace KayaApp.Models.GetDataModels
         }
 
 
-        //private double _pak_carpan;
-        //public double pak_carpan
-        //{
-        //    get
-        //    {
-
-
-        //        return _pak_carpan;
-        //    }
-        //    set
-        //    {
-        //        _pak_carpan = value;
-        //        INotifyPropertyChanged();
-        //    }
-        //}
-
+        
     }
 
 }
