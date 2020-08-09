@@ -3309,17 +3309,40 @@ namespace KayaApp.ViewModels
             set { _StokPaketleriDetailList = value; }
         }
 
-        private ObservableCollection<StokPaketleriModel> _StokPaketleriHeaders;
+        private ObservableCollection<StokPaketleriHeaders> _StokPaketleriHeaders;
 
-        public ObservableCollection<StokPaketleriModel> StokPaketleriHeaders
+        public ObservableCollection<StokPaketleriHeaders> StokPaketleriHeaders
         {
             get
             {
-                if (_StokPaketleriHeaders==null && StokPaketleriDetailList!=null)
+                if (_StokPaketleriHeaders==null && _LSTMANAGER.STOKPAKETLERI!=null)
                 {
-                    if (StokPaketleriDetailList.Any())
+                    if (_LSTMANAGER.STOKPAKETLERI.Any())
                     {
-                      
+
+                        var headers = _LSTMANAGER.STOKPAKETLERI.GroupBy(x => new { x.pak_kod, x.pak_ismi,x.pak_fiyat,x.pak_doviz_cins });
+                        _StokPaketleriHeaders = new ObservableCollection<StokPaketleriHeaders>();
+                        foreach (var item in headers)
+                        {
+                            var kurbilgisi = _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == item.Key.pak_doviz_cins);
+
+                            if (kurbilgisi.Any())
+                            {
+                                _StokPaketleriHeaders.Add(new StokPaketleriHeaders
+                                {
+                                    pak_kod = item.Key.pak_kod,
+                                    pak_ismi = item.Key.pak_ismi,
+                                    pak_fiyat = item.Key.pak_fiyat,
+                                    pak_carpan = "1",
+                                    pak_doviz_cins = kurbilgisi.FirstOrDefault().Kur_sembol
+
+                                });
+                            }
+                            
+
+                        }
+
+
                     }
                     
                 }

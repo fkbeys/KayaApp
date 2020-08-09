@@ -21,6 +21,30 @@ namespace KayaApp.Views.POPUP
             {
                 BindingContext = SatisFaturasiPage.SATVMZ;
             }
+            StokPaketleriList.IsVisible = false;
+            StokPaketleriList.IsVisible = false;
+            StokPaketleriList.IsVisible = false;
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            StokPaketleriList.IsVisible = true;
+            SipariSatirlariList.IsVisible = false;
+            SipariEvraklariList.IsVisible = false;
+        }
+
+        private void Button_Clicked_1(object sender, EventArgs e)
+        {
+            StokPaketleriList.IsVisible = false;
+            SipariSatirlariList.IsVisible = true;
+            SipariEvraklariList.IsVisible = false;
+        }
+
+        private void Button_Clicked_2(object sender, EventArgs e)
+        {
+            StokPaketleriList.IsVisible = false;
+            SipariSatirlariList.IsVisible = false;
+            SipariEvraklariList.IsVisible = true;
         }
     }
 }

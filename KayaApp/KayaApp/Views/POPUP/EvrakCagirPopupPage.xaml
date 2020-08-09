@@ -10,7 +10,7 @@
     x:Class="KayaApp.Views.POPUP.EvrakCagirPopupPage"
      CloseWhenBackgroundIsClicked="True"
     BackgroundInputTransparent="True"
-     
+     xmlns:customrenderer="clr-namespace:KayaApp.CustomRenderer"
     >
 
 
@@ -30,29 +30,83 @@
     <StackLayout BackgroundColor="Gray"  >
     <Grid RowDefinitions="auto,*" ColumnDefinitions="*,*,*" >
 
-            <Button Grid.Row="0" Grid.Column="0" Text="Paket"/>
-            <Button Grid.Row="0" Grid.Column="1" Text="Siparis Satir"/>
-            <Button Grid.Row="0" Grid.Column="2" Text="Siparis Evrak"/>
+            <Button Grid.Row="0" Grid.Column="0" Clicked="Button_Clicked" Text="Paket"/>
+            <Button Grid.Row="0" Grid.Column="1" Clicked="Button_Clicked_1" Text="Siparis Satir"/>
+            <Button Grid.Row="0" Grid.Column="2" Clicked="Button_Clicked_2"  Text="Siparis Evrak"/>
 
-            <ListView   Grid.Row="1" Grid.ColumnSpan="3"  ItemsSource="{Binding StokPaketleriList}" BackgroundColor="Yellow" >
+
+            <ListView x:Name="StokPaketleriList"   Grid.Row="1" Grid.ColumnSpan="3"  ItemsSource="{Binding StokPaketleriHeaders}" CachingStrategy="RecycleElement"  HasUnevenRows="True" >
+                <ListView.Header>
+                    <StackLayout BackgroundColor="DodgerBlue">
+                        <Label Text="Stok Paketleri" TextColor="White" HorizontalOptions="Center"/>
+                    </StackLayout>
+                </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout>
-                                <Label Text="{Binding pak_kod}"/>
+                            <Grid RowDefinitions="*,*" ColumnDefinitions="auto,3*,*,auto" Margin="2" BackgroundColor="LightGray">
 
-                            </StackLayout>
-                            
+
+                                <Label Grid.Row="0" Grid.Column="0"  Text="İsim:"/>
+                                <Label Grid.Row="1" Grid.Column="0"  Text="Fiyat:"/>
+
+                                <Label Grid.Row="0" Grid.Column="1"  Text="{Binding pak_ismi}"/>
+                                <Label  Grid.Row="1" Grid.Column="1"  >
+
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding pak_fiyat}"   FontSize="Small" FontAttributes="Bold"  />
+                                            <Span  Text=" + " FontAttributes="Bold" />
+
+                                            <Span Text="{Binding pak_doviz_cins}"    FontSize="Small" FontAttributes="Bold" />
+                                      
+
+                                        </FormattedString>
+                                </Label.FormattedText>
+                                </Label>
+
+
+                                <!--<Entry Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Text="{Binding pak_carpan}" FontSize="Large" HorizontalTextAlignment="Center"/>-->
+
+                                <customrenderer:KayaEntry  Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Text="{Binding pak_carpan,Mode=TwoWay}" FontSize="Large" HorizontalTextAlignment="Center"/>
+
+                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"  Text="Ekle" BackgroundColor="AntiqueWhite"/>
+
+                            </Grid>
                         </ViewCell>
-                        
+
                     </DataTemplate>
-                    
+
                 </ListView.ItemTemplate>
-                
+
             </ListView>
-        
-                 
-            </Grid> 
+
+            <ListView x:Name="SipariSatirlariList"  Grid.Row="1" Grid.ColumnSpan="3"  BackgroundColor="IndianRed">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+            <ListView x:Name="SipariEvraklariList"  Grid.Row="1" Grid.ColumnSpan="3"  BackgroundColor="Yellow">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+           
+
+
+        </Grid> 
     </StackLayout>
 
 </pages:PopupPage>
