@@ -24,7 +24,7 @@
         <Label Text="Bedelsiz olarak verilecek ürünlerden birini seçebilirsiniz..."     TextColor="White" HorizontalTextAlignment="Center" FontSize="Large"       />
 
 
-        <ListView ItemsSource="{Binding TEMPPaketTanimlariVeya_bedava_stoklist}" SelectedItem="{Binding }"  BackgroundColor="Yellow" HasUnevenRows="True"     >
+        <ListView ItemsSource="{Binding TEMPPaketTanimlariVeya_bedava_stoklist}" SelectedItem="{Binding TEMPSelected_PaketTanimlariVeya_bedava_stok}"  BackgroundColor="Yellow" HasUnevenRows="True"     >
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

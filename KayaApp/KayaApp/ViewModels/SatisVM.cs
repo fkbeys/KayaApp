@@ -211,7 +211,41 @@ namespace KayaApp.ViewModels
             }
         }
 
+        private StokPaketleriModel _TEMPSelected_PaketTanimlariVeya_bedava_stok;
 
+        public StokPaketleriModel TEMPSelected_PaketTanimlariVeya_bedava_stok
+        {
+            get
+            {
+                return _TEMPSelected_PaketTanimlariVeya_bedava_stok;
+            }
+            set
+            {
+                _TEMPSelected_PaketTanimlariVeya_bedava_stok = value;
+                if (_TEMPSelected_PaketTanimlariVeya_bedava_stok!=null)
+                {
+                    var analist = _LSTMANAGER.STOKPAKETLERI.Where(x => x.pak_kod == _TEMPSelected_PaketTanimlariVeya_bedava_stok.pak_kod).ToList();
+                    if (analist.Any())
+                    {
+                        var cikarmamgerekenler = analist.Where(x => x.pak_ve_veya == 1).ToList();
+
+                        foreach (var item in cikarmamgerekenler)
+                        {
+                            analist.Remove(item);
+                        }
+                        analist.Add(_TEMPSelected_PaketTanimlariVeya_bedava_stok);
+
+                        paketislemlerinindevami(analist);
+                       HelpME.PopKapat();
+                        
+                    }
+                }
+            }
+        }
+
+
+
+        //Paket tanimlarindan bir paket secince bu calisiyor
         private async void SelectedStockPaketiGO(object obj)
         {
             try
@@ -226,10 +260,6 @@ namespace KayaApp.ViewModels
 
                     if (birdenfazla_veya_bedelsiz_stoklar.Count > 1)
                     {
-
-                        
-                        //List<string> kodlar = birdenfazla_veya_bedelsiz_stoklar.Select(x => x.pak_stokkod).ToList();
-
                         foreach (var item in birdenfazla_veya_bedelsiz_stoklar)
                         {
                             var stokbilgisi = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.pak_stokkod);
@@ -237,20 +267,14 @@ namespace KayaApp.ViewModels
                             if (stokbilgisi.Any())
                             {
                                 item.pak_stokisim = stokbilgisi.FirstOrDefault().sto_isim;
-                            }                            
+                            }
                         }
 
 
-                        //var stokbilgilerixx =_LSTMANAGER.STOCKLIST.Where(x => kodlar.Contains(x.sto_kod));
-
                         TEMPPaketTanimlariVeya_bedava_stoklist = new ObservableCollection<StokPaketleriModel>(birdenfazla_veya_bedelsiz_stoklar);
 
-                        await
+                        await HelpME.PopAc(new StokPaketleriVeyaEkraniPage(this));
 
-                            Task.Run(() => HelpME.PopAc(new StokPaketleriVeyaEkraniPage(this))
-
-
-                            ).ConfigureAwait(false);
 
                         //veya +bedelsiz stoklardan sadece 1 tane sectirecegimiz ekrani aciyoruz.
                         //actigimiz ekranda kullanici hangi kaleme basarsa, onun *veya sini *ve yapip, 
@@ -259,50 +283,9 @@ namespace KayaApp.ViewModels
                     }
                     else
                     {
-                        paketislemlerinindevami();
+                        paketislemlerinindevami(paketbul);
                     }
 
-                    var deg = "";
-                    var sez = 0;
-                    var ff = deg + sez.ToString();
-                    //foreach (var item in paketbul.Where(x => x.pak_ve_veya == 0))
-                    //{
-                    //    //eger renk beden bos ise direk listeye ekliyoruz.
-                    //    if (item.pak_renkbeden == "")
-                    //    {
-                    //        //pak_detay_tip  =0  bedelli 
-                    //        //pak_detay_tip  =1  bedelsiz 
-
-
-                    //        double iskonto2 = 0;
-                    //        if (item.pak_detay_tip == 1) iskonto2 = item.pak_fiyat;
-
-                    //        DetayliSalesList.Add(new SatisSthModel
-                    //        {
-
-                    //            sth_stok_kod = item.pak_stokkod,
-                    //            sth_miktar = item.pak_miktar,
-                    //            sth_fiyat = item.pak_fiyat,
-                    //            sth_iskonto2 = iskonto2,
-                    //            sth_iskonto2_info = "Paket",
-                    //            sth_doviz_cins = item.pak_doviz_cins,
-
-
-
-                    //        });
-
-
-                    //    }
-                    //    else
-                    //    {
-
-
-
-                    //    }
-                    //}
-
-
-                  //  await HelpME.MessageShow("Ok", paketbul[0].pak_ismi + " isimli paket tanimi satış listenize eklendi", "OK");
 
                 }
 
@@ -315,10 +298,101 @@ namespace KayaApp.ViewModels
 
         }
 
-        private async void paketislemlerinindevami()
+
+
+        //bildigin gibi, paket olayinda veya li urunler meselesinden dolayi, await ile bi pop aciyoruz. o pop u sistem beklemedigi icin
+        //mecburen method u 2 ye bolmek zorunda kaldim. Acilan pencerede,veya lardan 1 tanesi seciliyor. ve bu devam metoduna satis listesine eklenecek kayitlar geliyor...
+        private async void paketislemlerinindevami(List<StokPaketleriModel> gelenpaketbilgileri)
         {
-            await HelpME.MessageShow("Ok", "Paket islemlerinin devami", "OK");
+            foreach (var item in gelenpaketbilgileri)
+            {
+                //eger renk beden bos ise direk listeye ekliyoruz.
+                if (item.pak_renkbeden == "")
+                {
+
+                    var tt = gelenpaketbilgileri.Where(x => x.pak_detay_tip == 0).Sum(x => x.pak_miktar);
+
+                    double itemcount = tt;
+                    //pak_detay_tip  =0  bedelli 
+                    //pak_detay_tip  =1  bedelsiz 
+
+                    var stok_bilgisi = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.pak_stokkod).FirstOrDefault();
+                    var kur_bilgisi = _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == item.pak_doviz_cins).FirstOrDefault();
+
+                    //bedoabi
+                   
+                    //if (item.pak_detay_tip == 1) iskonto2 = (item.pak_fiyat / itemcount) *item.pak_miktar;
+
+
+
+
+                    double iskonto2 = 0;
+                    double vergi = 0;
+                    double fiyat = 0;
+
+                    if (item.pak_vergidahilfl == 0 && item.pak_detay_tip==0)
+                    {
+                        //pak_vergidahilfl =0 yani vergiler dahil demek. fiyattan vergiyi dusmemizlazim.
+                        vergi = stok_bilgisi.vryuzde;
+                        fiyat = (item.pak_fiyat / itemcount)- (item.pak_fiyat / itemcount)* vergi/100;
+                        //iskonto2 = (item.pak_fiyat / itemcount) * item.pak_miktar;
+
+
+                    }
+                    else if (item.pak_vergidahilfl == 1 && item.pak_detay_tip == 0)
+                    {
+                        //pak_vergidahilfl =1 yani vergiler haric demek. boyle olursa, ustune ilave vergiyi biz hesapliyoruz
+                        vergi = stok_bilgisi.vryuzde;
+                        fiyat = (item.pak_fiyat / itemcount);
+                        //iskonto2 = (item.pak_fiyat / itemcount) * item.pak_miktar;
+                    }
+                    
+                     
+
+                    
+
+
+
+
+
+
+                    DetayliSalesList.Add(new SatisSthModel
+                    {
+                        sth_fiyat_gosterge =  fiyat.ToString(),
+                        sth_miktar_gosterge = item.pak_miktar.ToString(),
+                        sth_stok_kod = item.pak_stokkod,
+                        sth_stok_isim = stok_bilgisi.sto_isim,
+                        sth_birim_ad = stok_bilgisi.sto_birim1_ad,
+                        sth_tarih = DateTime.Now.Date,
+                        sth_vergi_pntr = stok_bilgisi.VERGI_NO,
+                        sth_vryuzde = vergi,
+                        sth_doviz_cins = item.pak_doviz_cins,
+                        sth_har_doviz_kur = NumericConverter.StringToDouble(kur_bilgisi.Kur_fiyat1),
+                        sth_doviz_ismi = kur_bilgisi.Kur_sembol,
+                        sth_resim_url = stok_bilgisi.stok_resim_url,
+                        sth_renk_beden_seri_baglanti = "buraya guid gelmeli. dikkat",
+                        Renk_beden_full_bilgi = "PAKET",
+                        sth_parti_kodu = "",
+                        sth_iskonto2=iskonto2,
+                        sth_lot_no = 0,
+                        sth_cari = SelectedCustomerModel.cari_kod
+                    });
+
+
+
+                }
+                else
+                {
+
+                    await HelpME.MessageShow("Uyari", "Suan Renk Beden olayini yapmiyoruz.sonra yapcaz..", "OK");
+
+                }
+
+            }
+            //  await HelpME.MessageShow("Ok", "Paket islemlerinin devami", "OK");
             //throw new NotImplementedException();
+
+            CalculateSumGO(this);
         }
 
         //private StokPaketleriHeaders _SelectedStockPaketi;
@@ -2270,8 +2344,8 @@ namespace KayaApp.ViewModels
             if (SelectedFirma == null || SelectedSube == null || SelectedCustomerModel == null || SelectedDepo == null || SelectedProje == null || SelectedSorumluluk == null
                                          || SelectedFiyatListesi == null || SelectedOdemePlani == null || SelectedAcikKapali == null
                                          || SelectedDovizKuru == null) return;
-            kampanyauygula();
-            satissartlariuygula();
+            //kampanyauygula();
+            //satissartlariuygula();
 
             foreach (var item in DetayliSalesList)
             {
