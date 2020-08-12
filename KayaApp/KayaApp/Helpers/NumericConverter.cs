@@ -1,12 +1,59 @@
-﻿using KayaApp.Models;
+﻿using Java.Util;
+using KayaApp.Models;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace KayaApp.Helpers
 {
     public class NumericConverter
     {
         public static NumericConverter cevir;
+
+
+        //public static Dictionary<int, int> RenkBedenNumarasiniRenkBedenObjesineDondur(string gelensayi)
+        //{
+        //    if (gelensayi == null ) return new Dictionary<int, int>();
+        //    if (gelensayi == "") return new Dictionary<int, int>();
+
+
+        //    int.TryParse(gelensayi, out int gelenint);
+
+        //    int renk= ((gelenint - 1) / 40) + 1;
+
+        //    int beden = gelenint - ((renk - 1) * 40);
+
+        //    var gonderilecek=new Dictionary<int, int>();
+        //    gonderilecek.Add(renk, beden);
+
+        //    return gonderilecek;
+        //}
+
+        public class renk_beden_kirilim
+        {
+            public int renk_kirilimi { get; set; }
+            public int beden_kirilimi { get; set; } 
+        }
+
+        public static renk_beden_kirilim RenkBedenNumarasiniRenkBedenObjesineDondur(string gelensayi)
+        {
+            if (gelensayi == null) return null;
+            if (gelensayi == "") return null;
+
+
+            int.TryParse(gelensayi, out int gelenint);
+
+            int renk = ((gelenint - 1) / 40) + 1;
+
+            int beden = gelenint - ((renk - 1) * 40);
+
+            var gonderilecek = new Dictionary<int, int>(); 
+            return new renk_beden_kirilim { renk_kirilimi = renk, beden_kirilimi = beden };
+        }
+
+
+     
 
         public static int RenkBedenModeltoIntConvertor(RenkModel gelenrenk, BedenModel gelenbeden)
         { 
