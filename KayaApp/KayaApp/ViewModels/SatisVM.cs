@@ -307,6 +307,7 @@ namespace KayaApp.ViewModels
 
 
             var bedelliler = gelenpaketbilgileri.Where(x => x.pak_detay_tip == 0).ToList();
+            double toplam_miktar_carpi_fiyat = 0;
             double toplamyuzdeler = 0;
             foreach (var item in bedelliler)
             {
@@ -314,8 +315,11 @@ namespace KayaApp.ViewModels
                 if (stok.Any())
                 {
                     toplamyuzdeler += stok.First().vryuzde* item.pak_miktar ;
+                    toplam_miktar_carpi_fiyat += stok.First().sto_fiyat * item.pak_miktar;
                 }
             }
+
+            
 
             var islemegireceklerinsayisi = gelenpaketbilgileri.Where(x => x.pak_detay_tip == 0).Sum(x => x.pak_miktar);
             toplamyuzdeler = toplamyuzdeler / islemegireceklerinsayisi;
@@ -340,37 +344,52 @@ namespace KayaApp.ViewModels
                     double vergi = 0;
                     double fiyat = 0;
 
-                   
+
                     //dogumgunum
-                    if (item.pak_vergidahilfl == 0 && item.pak_detay_tip==0)
+                    if (item.pak_vergidahilfl == 0 && item.pak_detay_tip == 0)
                     {
                         //pak_vergidahilfl =0 yani vergiler dahil demek. fiyattan vergiyi dusmemizlazim.
-                      
 
-                        var toplam_fiyat_cik_vergi = (item.pak_fiyat * 100) / (100 + toplamyuzdeler);
+                        double bu_stokun_genel_stok_fiyat_carpi_miktar_orani = ( stok_bilgisi.sto_fiyat*item.pak_miktar ) / toplam_miktar_carpi_fiyat;
 
-                        fiyat = toplam_fiyat_cik_vergi / itemcount;
-                        vergi = fiyat * stok_bilgisi.vryuzde/100* item.pak_miktar ;
+                        double toplam_fiyat_cik_vergi = (item.pak_fiyat * 100) / (100 + toplamyuzdeler);
+                        var ss = toplam_fiyat_cik_vergi * bu_stokun_genel_stok_fiyat_carpi_miktar_orani;
 
+
+
+                        fiyat = ss / item.pak_miktar;
+                        vergi = (fiyat *  item.pak_miktar) * stok_bilgisi.vryuzde / 100 ;
                         double ikisitoplam = fiyat + vergi;
-                        // vergi = ((item.pak_fiyat * item.pak_miktar / itemcount) ) * stok_bilgisi.vryuzde / 100; //stok_bilgisi.vryuzde;
-                        //  double birimfiyat = item.pak_fiyat / itemcount;
-
-                        // fiyat = birimfiyat - birimfiyat * stok_bilgisi.vryuzde / 100;      //-(item.pak_fiyat / itemcount)* stok_bilgisi.vryuzde / 100;
-                        //double tutar = fiyat * item.pak_miktar;
-                        //vergi = tutar * stok_bilgisi.vryuzde / 100;
-                        //fiyat = fiyat - vergi;
-
                     }
                     else if (item.pak_vergidahilfl == 1 && item.pak_detay_tip == 0)
                     {
                         //pak_vergidahilfl =1 yani vergiler haric demek. boyle olursa, ustune ilave vergiyi biz hesapliyoruz
-                        vergi = (item.pak_fiyat / itemcount);
-                        fiyat = (item.pak_fiyat / itemcount) - (item.pak_fiyat / itemcount);                        
+                        vergi = (item.pak_fiyat / itemcount) * stok_bilgisi.vryuzde / 100;
+                        fiyat = (item.pak_fiyat / itemcount); // - (item.pak_fiyat / itemcount);                        
                     }
-                    
-               
-                      
+
+
+
+                    ////dogumgunum
+                    //if (item.pak_vergidahilfl == 0 && item.pak_detay_tip==0)
+                    //{
+                    //    //pak_vergidahilfl =0 yani vergiler dahil demek. fiyattan vergiyi dusmemizlazim.
+
+                    //    var toplam_fiyat_cik_vergi = (item.pak_fiyat * 100) / (100 + toplamyuzdeler);
+
+                    //    fiyat = toplam_fiyat_cik_vergi / itemcount;
+                    //    vergi = fiyat * stok_bilgisi.vryuzde/100* item.pak_miktar ; 
+                    //    double ikisitoplam = fiyat + vergi; 
+                    //}
+                    //else if (item.pak_vergidahilfl == 1 && item.pak_detay_tip == 0)
+                    //{
+                    //    //pak_vergidahilfl =1 yani vergiler haric demek. boyle olursa, ustune ilave vergiyi biz hesapliyoruz
+                    //    vergi = (item.pak_fiyat / itemcount)*stok_bilgisi.vryuzde/100;
+                    //    fiyat = (item.pak_fiyat / itemcount); // - (item.pak_fiyat / itemcount);                        
+                    //}
+
+
+
                     DetayliSalesList.Add(new SatisSthModel
                     {
                         sth_fiyat_gosterge =  fiyat.ToString(),
@@ -2405,6 +2424,7 @@ namespace KayaApp.ViewModels
             else
             {
                 tutar = Math.Round(netx2, 2).ToString();
+               //tutar= Math.Ceiling(netx2).ToString();
             }
 
 
@@ -3489,11 +3509,7 @@ namespace KayaApp.ViewModels
         }
         private async void BtnCariGosterGO(object obj)
         {
-            //if (DetayliSalesList.Count>0)
-            //{
-            //    await HelpME.MessageShow("Uyari", "Sepette urun varken, cari degistiremezsiniz", "ok");
-            //    return;
-            //}
+            
             SearchCustomerText = "";
             await HelpME.PopAc(new BuyCustomerSelectPopUp(this));
         }
