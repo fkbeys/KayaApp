@@ -304,6 +304,22 @@ namespace KayaApp.ViewModels
         //mecburen method u 2 ye bolmek zorunda kaldim. Acilan pencerede,veya lardan 1 tanesi seciliyor. ve bu devam metoduna satis listesine eklenecek kayitlar geliyor...
         private async void paketislemlerinindevami(List<StokPaketleriModel> gelenpaketbilgileri)
         {
+
+
+            var bedelliler = gelenpaketbilgileri.Where(x => x.pak_detay_tip == 0).ToList();
+            double toplamyuzdeler = 0;
+            foreach (var item in bedelliler)
+            {
+                var stok = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.pak_stokkod);
+                if (stok.Any())
+                {
+                    toplamyuzdeler += stok.First().vryuzde* item.pak_miktar ;
+                }
+            }
+
+            var islemegireceklerinsayisi = gelenpaketbilgileri.Where(x => x.pak_detay_tip == 0).Sum(x => x.pak_miktar);
+            toplamyuzdeler = toplamyuzdeler / islemegireceklerinsayisi;
+
             foreach (var item in gelenpaketbilgileri)
             {
                 //eger renk beden bos ise direk listeye ekliyoruz.
@@ -319,53 +335,54 @@ namespace KayaApp.ViewModels
                     var stok_bilgisi = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.pak_stokkod).FirstOrDefault();
                     var kur_bilgisi = _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == item.pak_doviz_cins).FirstOrDefault();
 
-                    //bedoabi
                    
-                    //if (item.pak_detay_tip == 1) iskonto2 = (item.pak_fiyat / itemcount) *item.pak_miktar;
-
-
-
-
                     double iskonto2 = 0;
                     double vergi = 0;
                     double fiyat = 0;
 
+                   
+                    //dogumgunum
                     if (item.pak_vergidahilfl == 0 && item.pak_detay_tip==0)
                     {
                         //pak_vergidahilfl =0 yani vergiler dahil demek. fiyattan vergiyi dusmemizlazim.
-                        vergi = stok_bilgisi.vryuzde;
-                        fiyat = (item.pak_fiyat / itemcount)- (item.pak_fiyat / itemcount)* vergi/100;
-                        //iskonto2 = (item.pak_fiyat / itemcount) * item.pak_miktar;
+                      
 
+                        var toplam_fiyat_cik_vergi = (item.pak_fiyat * 100) / (100 + toplamyuzdeler);
+
+                        fiyat = toplam_fiyat_cik_vergi / itemcount;
+                        vergi = fiyat * stok_bilgisi.vryuzde/100* item.pak_miktar ;
+
+                        double ikisitoplam = fiyat + vergi;
+                        // vergi = ((item.pak_fiyat * item.pak_miktar / itemcount) ) * stok_bilgisi.vryuzde / 100; //stok_bilgisi.vryuzde;
+                        //  double birimfiyat = item.pak_fiyat / itemcount;
+
+                        // fiyat = birimfiyat - birimfiyat * stok_bilgisi.vryuzde / 100;      //-(item.pak_fiyat / itemcount)* stok_bilgisi.vryuzde / 100;
+                        //double tutar = fiyat * item.pak_miktar;
+                        //vergi = tutar * stok_bilgisi.vryuzde / 100;
+                        //fiyat = fiyat - vergi;
 
                     }
                     else if (item.pak_vergidahilfl == 1 && item.pak_detay_tip == 0)
                     {
                         //pak_vergidahilfl =1 yani vergiler haric demek. boyle olursa, ustune ilave vergiyi biz hesapliyoruz
-                        vergi = stok_bilgisi.vryuzde;
-                        fiyat = (item.pak_fiyat / itemcount);
-                        //iskonto2 = (item.pak_fiyat / itemcount) * item.pak_miktar;
+                        vergi = (item.pak_fiyat / itemcount);
+                        fiyat = (item.pak_fiyat / itemcount) - (item.pak_fiyat / itemcount);                        
                     }
                     
-                     
-
-                    
-
-
-
-
-
-
+               
+                      
                     DetayliSalesList.Add(new SatisSthModel
                     {
                         sth_fiyat_gosterge =  fiyat.ToString(),
+                      
                         sth_miktar_gosterge = item.pak_miktar.ToString(),
                         sth_stok_kod = item.pak_stokkod,
                         sth_stok_isim = stok_bilgisi.sto_isim,
                         sth_birim_ad = stok_bilgisi.sto_birim1_ad,
                         sth_tarih = DateTime.Now.Date,
                         sth_vergi_pntr = stok_bilgisi.VERGI_NO,
-                        sth_vryuzde = vergi,
+                        sth_vergi=vergi,
+                        sth_vryuzde = stok_bilgisi.vryuzde,
                         sth_doviz_cins = item.pak_doviz_cins,
                         sth_har_doviz_kur = NumericConverter.StringToDouble(kur_bilgisi.Kur_fiyat1),
                         sth_doviz_ismi = kur_bilgisi.Kur_sembol,
