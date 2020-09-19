@@ -42,7 +42,7 @@
                                 
                      ImageSource="{FontImage FontFamily=FontAwsome,Glyph={x:Static Fim:IconFont.Login},Size=Title,Color=White}" />
 
-                    <Button Grid.Row="6" Grid.Column="0" Text="{x:Static dil:AppResources.demobtn}" Command="{Binding DemoCommand}"  FontSize="Medium" BackgroundColor="IndianRed"
+                    <Button Grid.Row="6" Grid.Column="0" Text="{x:Static dil:AppResources.demobtn}" TextColor="White" Command="{Binding DemoCommand}"  FontSize="Medium" BackgroundColor="IndianRed"
                               ImageSource="{FontImage FontFamily=FontAwsome,Glyph={x:Static Fim:IconFont.ArrowRightDropCircle},Size=Title,Color=White}" />
                     <Label Grid.Row="7" Grid.Column="0" Text="www.mikronerp.com" HorizontalOptions="Center" TextColor="WhiteSmoke"/>
                 </Grid>

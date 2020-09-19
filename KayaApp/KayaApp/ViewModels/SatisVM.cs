@@ -2376,8 +2376,8 @@ namespace KayaApp.ViewModels
             if (SelectedFirma == null || SelectedSube == null || SelectedCustomerModel == null || SelectedDepo == null || SelectedProje == null || SelectedSorumluluk == null
                                          || SelectedFiyatListesi == null || SelectedOdemePlani == null || SelectedAcikKapali == null
                                          || SelectedDovizKuru == null) return;
-            //kampanyauygula();
-            //satissartlariuygula();
+            kampanyauygula();
+            satissartlariuygula();
 
             foreach (var item in DetayliSalesList)
             {

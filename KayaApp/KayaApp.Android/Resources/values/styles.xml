@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
+ 
+
+
+
 
   <style name="MainTheme" parent="MainTheme.Base">
   </style>
+
+  <style name="MyScreen" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:windowBackground">@drawable/MyScreen</item>
+  </style>
+
+
   <!-- Base theme applied no matter what API -->
   <style name="MainTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
     <!--If you are using revision 22.1 please use just windowNoTitle. Without android:-->
