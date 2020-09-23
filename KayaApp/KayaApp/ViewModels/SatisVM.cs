@@ -24,7 +24,7 @@ namespace KayaApp.ViewModels
         public static bool AktarimTaraftanGeliyorum = false;
         private static int stoklistyardimcisi = 0;
 
-        #region commands
+        #region COMMANDS
         public ICommand RenkBedenUP1 { get; set; }
         public ICommand RenkBedenUP2 { get; set; }
         public ICommand RenkBedenUP3 { get; set; }
@@ -92,7 +92,6 @@ namespace KayaApp.ViewModels
 
         #endregion
         
-        //ctor
         public SatisVM()
         {
             _LSTMANAGER = DataClass._LSTMANAGER;
@@ -208,6 +207,1096 @@ namespace KayaApp.ViewModels
         }
 
         #region GO METHODS
+        private void CalculateSumGO(object obj)
+        {
+            if (SelectedFirma == null || SelectedSube == null || SelectedCustomerModel == null || SelectedDepo == null || SelectedProje == null || SelectedSorumluluk == null
+                                         || SelectedFiyatListesi == null || SelectedOdemePlani == null || SelectedAcikKapali == null
+                                         || SelectedDovizKuru == null) return;
+            kampanyauygula();
+            satissartlariuygula();
+
+            foreach (var item in DetayliSalesList)
+            {
+                if (NumericConverter.StringToDouble(GenelIndirimTL) != 0 || NumericConverter.StringToDouble(GenelIndirimYUZDE) != 0)
+                {
+                    item.sth_iskonto2 = 0;
+                    item.sth_iskonto2_info = "";
+                }
+                item.sth_vergi_burut = item.sth_tutar * item.sth_vryuzde / 100;
+
+                item.sth_vergi = (
+                         item.sth_tutar - item.sth_iskonto2
+                       - (item.sth_tutar * NumericConverter.StringToDouble(GenelIndirimYUZDE) / 100)
+                       )
+                       * item.sth_vryuzde
+                       / 100;
+
+                var eldeki_mik = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sth_stok_kod).FirstOrDefault().sto_eldeki_miktar;
+            }
+            double netx2 = 0;
+
+            var vergi_toplami = DetayliSalesList.Sum(x => x.sth_vergi);
+
+            var tutar_toplami = DetayliSalesList.Sum(x => x.sth_tutar);
+
+            var isk2 = DetayliSalesList.Sum(x => x.sth_iskonto2);
+
+            var netx1 = tutar_toplami - (tutar_toplami * NumericConverter.StringToDouble(GenelIndirimYUZDE) / 100) + vergi_toplami;
+
+            if (netx1 > 0)
+            {
+                netx2 = (netx1 - NumericConverter.StringToDouble(GenelIndirimTL) - isk2);
+            }
+            if (netx2 <= 0)
+            {
+
+                tutar = "0";
+            }
+            else
+            {
+                tutar = Math.Round(netx2, 2).ToString();
+            }
+
+            BurutTutar = DetayliSalesList.Sum(x => x.sth_tutar) + DetayliSalesList.Sum(Z => Z.sth_vergi_burut);
+            KalemAdeti = DetayliSalesList.Count;
+            TopalmStokAdeti = DetayliSalesList.Sum(x => x.sth_miktar);
+            BarkodReaderText = "";
+        }
+
+        async public Task<string> ScannerKAYA(bool flashOn)
+        {
+            MobileBarcodeScanner scanner = new MobileBarcodeScanner();
+
+            scanner.BottomText = "Barkodun dik ve Kirmizi cizgi hizasinda olduğundan emin olun.";
+            ZXing.Result result = null;
+            scanner.AutoFocus();
+            TimeSpan ts = new TimeSpan(0, 0, 0, 1, 0);
+            Device.StartTimer(ts, () =>
+            {
+                if (result == null)
+                {
+                    scanner.AutoFocus();
+                    if (flashOn)
+                    {
+                        scanner.Torch(true);
+                    }
+                    return true;
+                }
+                return false;
+            });
+
+            try
+            {
+
+                result = await scanner.Scan();
+
+                if (result != null)
+                {
+                    return result.Text;
+                }
+
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("error:", ex.Message, "ok");
+                return string.Empty;
+            }
+
+        }
+        private async void CameraBarcodeGO(object obj)
+        {
+            //Barcode_Islemi_yapiliyor = true;
+
+            try
+            {
+                var okunandeger = await ScannerKAYA(false);
+
+                if (okunandeger != "")
+                {
+                    var gelenbarkod = _LSTMANAGER.BARCODELIST.Where(x => x.bar_kodu == okunandeger).FirstOrDefault();
+
+                    if (gelenbarkod != null)
+                    {
+                        var gereklistok = _LSTMANAGER.STOCKLIST.Where(c => c.sto_kod == gelenbarkod.bar_stokkodu).FirstOrDefault();
+
+                        if (gereklistok != null)
+                        {
+                            SelectedStockModel = gereklistok;
+                        }
+                        else
+                        {
+                            await Application.Current.MainPage.DisplayAlert("No Stock found", "No Barcode Found in the Database...", "OK");
+                        }
+                    }
+                    else
+                    {
+                        await Application.Current.MainPage.DisplayAlert("No Barcode", "No Barcode Found in the Database...", "OK");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+            }
+
+            //Barcode_Islemi_yapiliyor = false;
+        }
+        private void SeriNoDOWN6GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext6 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar6);
+            if (sayi > 0)
+            {
+                sayi--;
+                SeriNoMiktar6 = sayi.ToString();
+            }
+
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoDOWN5GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext5 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar5);
+            if (sayi > 0)
+            {
+                sayi--;
+                SeriNoMiktar5 = sayi.ToString();
+            }
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoDOWN4GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext4 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar4);
+            if (sayi > 0)
+            {
+                sayi--;
+                SeriNoMiktar4 = sayi.ToString();
+            }
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoDOWN3GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext3 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar3);
+            if (sayi > 0)
+            {
+                sayi--;
+                SeriNoMiktar3 = sayi.ToString();
+            }
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoDOWN2GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext2 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar2);
+            if (sayi > 0)
+            {
+                sayi--;
+                SeriNoMiktar2 = sayi.ToString();
+            }
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoDOWN1GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext1 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar1);
+            if (sayi > 0)
+            {
+                sayi--;
+                SeriNoMiktar1 = sayi.ToString();
+            }
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoUP6GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext6 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar6);
+            sayi++;
+            SeriNoMiktar6 = sayi.ToString();
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoUP5GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext5 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar5);
+
+            sayi++;
+            SeriNoMiktar5 = sayi.ToString();
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoUP4GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext4 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar4);
+            sayi++;
+            SeriNoMiktar4 = sayi.ToString();
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoUP3GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext3 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar3);
+            sayi++;
+            SeriNoMiktar3 = sayi.ToString();
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoUP2GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext2 == "") return;
+
+            }
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar2);
+            sayi++;
+            SeriNoMiktar2 = sayi.ToString();
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void SeriNoUP1GO(object obj)
+        {
+            if (SelectedStockModel.sto_detay_takip == 3)
+            {
+                if (Serinotext1 == "") return;
+
+            }
+
+            double sayi = NumericConverter.StringToDouble(SeriNoMiktar1);
+            sayi++;
+            SeriNoMiktar1 = sayi.ToString();
+            SumRenkBedenSeriNoMiktarlari();
+        }
+        private void Amount_DecreaseGO(object obj)
+        {
+            if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_detay_takip == 3)
+                return;
+
+
+            double MIKKKK = NumericConverter.StringToDouble(MainMiktar);
+            if (MIKKKK > 0)
+            {
+
+                MIKKKK--;
+                MainMiktar = MIKKKK.ToString();
+            }
+        }
+        private void Amount_IncreaseGO(object obj)
+        {
+            if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_detay_takip == 3)
+                return;
+
+
+            double MIKKKK = NumericConverter.StringToDouble(MainMiktar);
+            MIKKKK++;
+            MainMiktar = MIKKKK.ToString();
+
+        }
+        private async void BtnStokGosterGO(object obj)
+        {
+            SearchStockText = "";
+            await HelpME.PopAc(new BuyStockSelectPopUp(this));
+        }
+        private async void BtnCariGosterGO(object obj)
+        {
+
+            SearchCustomerText = "";
+            await HelpME.PopAc(new BuyCustomerSelectPopUp(this));
+        }
+        private void BtnTemizlikYapGO(object obj)
+        {
+            GenelIndirimYUZDE = "0";
+            GenelIndirimTL = "0";
+            DetayliSalesList.Clear();
+            CalculateSumGO(obj);
+        }
+        private void temizlikisleri()
+        {
+            if (DetayliSalesList.Count == 0 && DetayliSalesList.Sum(x => x.sth_tutar) <= 0)
+            {
+                GenelIndirimTL = "0";
+                GenelIndirimYUZDE = "0";
+                BurutTutar = 0;
+                tutar = "0";
+            }
+        }
+        private async void EkleStockButtonGO(object obj)
+        {
+            //garip2
+            if (NumericConverter.StringToDouble(MainMiktar) <= 0)
+            {
+                await HelpME.MessageShow("Miktar Hatasi", "Miktar sifir Veya Sifirdan Kucuk Olamaz", "ok");
+                return;
+            }
+            if (NumericConverter.StringToDouble(MainTutar) <= 0)
+            {
+                await HelpME.MessageShow("Tutar Hatasi", "Tutar Sifir Veya Sifirdan Kucuk Olamaz", "ok");
+                return;
+            }
+
+            int Olusan_Hareket_No = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK1, SelectedBeden1);
+
+            List<OlusanRenkBedenSeriHareketleriModel> GidecekListe = new List<OlusanRenkBedenSeriHareketleriModel>();
+            string stokgun_renk_beden_serino_aciklamasi = "";
+
+            string FinalParti = "";
+            string FinalLot = "";
+            //stok renk beden detayli veya serino detayli ise bu kriterlerden gecicek, aksi halde, direk satis listesine eklenecek.
+            if (SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_detay_takip == 3 || SelectedStockModel.sto_detay_takip == 1 || SelectedStockModel.sto_detay_takip == 2)
+            {
+                int renkbedensonuc1 = 0;
+                int renkbedensonuc2 = 0;
+                int renkbedensonuc3 = 0;
+                int renkbedensonuc4 = 0;
+                int renkbedensonuc5 = 0;
+                int renkbedensonuc6 = 0;
+                int renkbedensonuc7 = 0;
+                int renkbedensonuc8 = 0;
+                int renkbedensonuc9 = 0;
+                int renkbedensonuc10 = 0;
+
+                if (SelectedParti == null)
+                {
+                    FinalParti = PartiTxt;
+                    FinalLot = LotTxt;
+                }
+                else
+                {
+                    FinalParti = SelectedParti.pl_partikodu;
+                    FinalLot = SelectedLot.ToString();
+
+                }
+                if (FinalParti == null) FinalParti = "";
+                if (FinalLot == null) FinalLot = "";
+
+                if (SelectedStockModel.sto_detay_takip == 1) FinalLot = " ";
+
+
+
+                try
+                {
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar1) > 0 || NumericConverter.StringToDouble(SeriNoMiktar1) > 0 || (!string.IsNullOrWhiteSpace(FinalParti) && FinalLot != ""))
+                    {
+                        if (SelectedRENK1.rnk_IndicatorName != "" || SelectedBeden1.bdn_IndicatorName != "" || Serinotext1 != "" ||
+                           !string.IsNullOrWhiteSpace(FinalParti) || FinalLot != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar1) > 0 || NumericConverter.StringToDouble(SeriNoMiktar1) > 0 || !string.IsNullOrWhiteSpace(FinalParti) || FinalLot != "")
+                            {
+                                renkbedensonuc1 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK1, SelectedBeden1);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel
+                                {
+                                    Olusan_Stok_kodu = SelectedStockModel.sto_kod,
+                                    Olusan_Renk_Indicatoru = SelectedRENK1.rnk_IndicatorName,
+                                    Olusan_Beden_Indicatoru = SelectedBeden1.bdn_IndicatorName,
+                                    Olusan_RenkBeden_Miktar = RenkBedenMiktar1,
+                                    Olusan_Serino = Serinotext1,
+                                    Olusan_Serino_Miktar = SeriNoMiktar1,
+                                    Olusan_SiraNo = 1,
+                                    Olusan_Parti = FinalParti,
+                                    Olusan_Lot = NumericConverter.StringToInt(FinalLot),
+                                });
+
+                                stokgun_renk_beden_serino_aciklamasi = SelectedRENK1.rnk_IndicatorValue + " " + SelectedBeden1.bdn_IndicatorValue + Serinotext1 + FinalParti + " " + FinalLot.ToString() + " ; ";
+
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar1 = "0";
+                            SeriNoMiktar1 = "0";
+                        }
+
+                    }
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar2) > 0 || NumericConverter.StringToDouble(SeriNoMiktar2) > 0)
+                    {
+                        if (SelectedRENK2.rnk_IndicatorName != "" || SelectedBeden2.bdn_IndicatorName != "" || Serinotext2 != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar2) > 0 || NumericConverter.StringToDouble(SeriNoMiktar2) > 0)
+                            {
+                                renkbedensonuc2 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK2, SelectedBeden2);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK2.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden2.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar2, Olusan_Serino = Serinotext2, Olusan_Serino_Miktar = SeriNoMiktar2, Olusan_SiraNo = 2 });
+                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK2.rnk_IndicatorValue + " " + SelectedBeden2.bdn_IndicatorValue + Serinotext2 + " ; ";
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar2 = "0";
+                            SeriNoMiktar2 = "0";
+                        }
+                    }
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar3) > 0 || NumericConverter.StringToDouble(SeriNoMiktar3) > 0)
+                    {
+                        if (SelectedRENK3.rnk_IndicatorName != "" || SelectedBeden3.bdn_IndicatorName != "" || Serinotext3 != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar3) > 0 || NumericConverter.StringToDouble(SeriNoMiktar3) > 0)
+                            {
+                                renkbedensonuc3 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK3, SelectedBeden3);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK3.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden3.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar3, Olusan_Serino = Serinotext3, Olusan_Serino_Miktar = SeriNoMiktar3, Olusan_SiraNo = 3 });
+                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK3.rnk_IndicatorValue + " " + SelectedBeden3.bdn_IndicatorValue + Serinotext3 + " ; ";
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar3 = "0";
+                            SeriNoMiktar3 = "0";
+                        }
+                    }
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar4) > 0 || NumericConverter.StringToDouble(SeriNoMiktar4) > 0)
+                    {
+                        if (SelectedRENK4.rnk_IndicatorName != "" || SelectedBeden4.bdn_IndicatorName != "" || Serinotext4 != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar4) > 0 || NumericConverter.StringToDouble(SeriNoMiktar4) > 0)
+                            {
+                                renkbedensonuc4 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK4, SelectedBeden4);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK4.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden4.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar4, Olusan_Serino = Serinotext4, Olusan_Serino_Miktar = SeriNoMiktar4, Olusan_SiraNo = 4 });
+                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK4.rnk_IndicatorValue + " " + SelectedBeden4.bdn_IndicatorValue + Serinotext4 + " ; ";
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar4 = "0";
+                            SeriNoMiktar4 = "0";
+                        }
+                    }
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar5) > 0 || NumericConverter.StringToDouble(SeriNoMiktar5) > 0)
+                    {
+                        if (SelectedRENK5.rnk_IndicatorName != "" || SelectedBeden5.bdn_IndicatorName != "" || Serinotext5 != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar5) > 0 || NumericConverter.StringToDouble(SeriNoMiktar5) > 0)
+                            {
+                                renkbedensonuc5 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK5, SelectedBeden5);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK5.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden5.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar5, Olusan_Serino = Serinotext5, Olusan_Serino_Miktar = SeriNoMiktar5, Olusan_SiraNo = 5 });
+                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK5.rnk_IndicatorValue + " " + SelectedBeden5.bdn_IndicatorValue + Serinotext5 + " ; ";
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar5 = "0";
+                            SeriNoMiktar5 = "0";
+                        }
+                    }
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar6) > 0 || NumericConverter.StringToDouble(SeriNoMiktar6) > 0)
+                    {
+                        if (SelectedRENK6.rnk_IndicatorName != "" || SelectedBeden6.bdn_IndicatorName != "" || Serinotext6 != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar6) > 0 || NumericConverter.StringToDouble(SeriNoMiktar6) > 0)
+                            {
+                                renkbedensonuc6 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK6, SelectedBeden6);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK6.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden6.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar6, Olusan_Serino = Serinotext6, Olusan_Serino_Miktar = SeriNoMiktar6, Olusan_SiraNo = 6 });
+                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK6.rnk_IndicatorValue + " " + SelectedBeden6.bdn_IndicatorValue + Serinotext6 + " ; ";
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar6 = "0";
+                            SeriNoMiktar6 = "0";
+                        }
+                    }
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar7) > 0)
+                    {
+                        if (SelectedRENK7.rnk_IndicatorName != "" || SelectedBeden7.bdn_IndicatorName != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar7) > 0)
+                            {
+                                renkbedensonuc7 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK7, SelectedBeden7);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK7.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden7.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar7, Olusan_Serino = "", Olusan_SiraNo = 7 });
+                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK7.rnk_IndicatorValue + " " + SelectedBeden7.bdn_IndicatorValue + " ; ";
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar7 = "0";
+
+                        }
+                    }
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar8) > 0)
+                    {
+                        if (SelectedRENK8.rnk_IndicatorName != "" || SelectedBeden8.bdn_IndicatorName != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar8) > 0)
+                            {
+                                renkbedensonuc8 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK8, SelectedBeden8);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK8.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden8.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar8, Olusan_Serino = "", Olusan_SiraNo = 8 });
+                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK8.rnk_IndicatorValue + " " + SelectedBeden8.bdn_IndicatorValue + " ; ";
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar8 = "0";
+
+                        }
+                    }
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar9) > 0)
+                    {
+                        if (SelectedRENK9.rnk_IndicatorName != "" || SelectedBeden9.bdn_IndicatorName != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar9) > 0)
+                            {
+                                renkbedensonuc9 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK9, SelectedBeden9);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK9.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden9.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar9, Olusan_Serino = "", Olusan_SiraNo = 9 });
+                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK9.rnk_IndicatorValue + " " + SelectedBeden9.bdn_IndicatorValue + " ; ";
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar9 = "0";
+
+                        }
+                    }
+                    if (NumericConverter.StringToDouble(RenkBedenMiktar10) > 0)
+                    {
+                        if (SelectedRENK10.rnk_IndicatorName != "" || SelectedBeden10.bdn_IndicatorName != "")
+                        {
+                            if (NumericConverter.StringToDouble(RenkBedenMiktar10) > 0)
+                            {
+                                renkbedensonuc10 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK10, SelectedBeden10);
+                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK10.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden10.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar10, Olusan_Serino = "", Olusan_SiraNo = 10 });
+                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK10.rnk_IndicatorValue + " " + SelectedBeden10.bdn_IndicatorValue + " ; ";
+                            }
+                        }
+                        else
+                        {
+                            RenkBedenMiktar10 = "0";
+
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await HelpME.MessageShow("error", ex.Message, "OK");
+                }
+                if (GidecekListe.Count == 0)
+                {
+                    await HelpME.MessageShow("Detay Hatasi", "Lutfen Stok Detayi Giriniz", "OK");
+                    return;
+                }
+
+                #region Benzerlik kontrolu
+                //mesela bazi kullanicilar beyaz xl i 2 farkli yerde kullaniyor. bunun karsisini almak icin, boyle bir yontem uyguluyoruz.
+                // distinct ile normal liste aynimi degilmi diye bakiyoruz...
+
+                if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip)
+                {
+
+                    List<int> benzerlikkontrol = new List<int>();
+
+                    if (renkbedensonuc1 != 0) benzerlikkontrol.Add(renkbedensonuc1);
+                    if (renkbedensonuc2 != 0) benzerlikkontrol.Add(renkbedensonuc2);
+                    if (renkbedensonuc3 != 0) benzerlikkontrol.Add(renkbedensonuc3);
+                    if (renkbedensonuc4 != 0) benzerlikkontrol.Add(renkbedensonuc4);
+                    if (renkbedensonuc5 != 0) benzerlikkontrol.Add(renkbedensonuc5);
+                    if (renkbedensonuc6 != 0) benzerlikkontrol.Add(renkbedensonuc6);
+                    if (renkbedensonuc7 != 0) benzerlikkontrol.Add(renkbedensonuc7);
+                    if (renkbedensonuc8 != 0) benzerlikkontrol.Add(renkbedensonuc8);
+                    if (renkbedensonuc9 != 0) benzerlikkontrol.Add(renkbedensonuc9);
+                    if (renkbedensonuc10 != 0) benzerlikkontrol.Add(renkbedensonuc10);
+
+                    var dist = benzerlikkontrol.Distinct().Count();
+
+                    bool isUnique = dist == benzerlikkontrol.Count();
+                    if (!isUnique)
+                    {
+                        await HelpME.MessageShow("Warning", "Renk beden hareketleri benzersiz olmali, ayni kayitlar kabul edilemez...", "OK");
+                        return;
+                    }
+                }
+                #endregion
+
+                //renk bilgisini, stok bazli yaziyoruz ki kullanici ne renk beden secmis onu gorsun
+            }
+
+            string Myguid = Guid.NewGuid().ToString();
+            //bu renk beden hareketlerini tutan tabloda, bu stogun onceden yapilmis hareketleri varsa siliyor.yenisiyle guncelliyoruz...
+            var stokbazliliste = _LSTMANAGER.DETAYLI_SATIS_RENK_BEDEN_SERI_HAREKETLERI.Where(x => x.Olusan_Stok_kodu == SelectedStockModel.sto_kod).ToList();
+            foreach (var item in stokbazliliste)
+            {
+                _LSTMANAGER.DETAYLI_SATIS_RENK_BEDEN_SERI_HAREKETLERI.Remove(item);
+            }
+
+            foreach (var item in GidecekListe)
+            {
+                item.Olusan_Baglantisi_sth = Myguid;
+                _LSTMANAGER.DETAYLI_SATIS_RENK_BEDEN_SERI_HAREKETLERI.Add(item);
+            }
+            //garip4
+            var mevcutsatislist = DetayliSalesList.Where(x => x.sth_stok_kod == SelectedStockModel.sto_kod).ToList();
+
+            //eger stokhareketinde zaten bu stoktan 2 tane varsa, bu demektir ki, bu kampanyaile alakali bi stok, bu yuzden kampanyali hareketleri sifirliyoruz.
+            //bu tur uyanikliklarin onune gecmeliyiz.
+            if (mevcutsatislist.Count > 1)
+            {
+                foreach (var item in mevcutsatislist)
+                {
+                    DetayliSalesList.Remove(item);
+                }
+            }
+            if (mevcutsatislist.Count == 1)
+            {
+                mevcutsatislist[0].sth_fiyat_gosterge = MainFiyat;
+                mevcutsatislist[0].sth_miktar_gosterge = MainMiktar;
+                mevcutsatislist[0].sth_stok_kod = SelectedStockModel.sto_kod;
+                mevcutsatislist[0].sth_stok_isim = SelectedStockModel.sto_isim;
+                mevcutsatislist[0].sth_birim_ad = SelectedStockModel.sto_birim1_ad;
+                mevcutsatislist[0].sth_tarih = DateTime.Now.Date;
+                mevcutsatislist[0].sth_vergi_pntr = SelectedStockModel.VERGI_NO;
+                mevcutsatislist[0].sth_vryuzde = SelectedStockModel.vryuzde;
+                mevcutsatislist[0].sth_doviz_cins = SelectedDovizKuru.Kur_no;
+                mevcutsatislist[0].sth_har_doviz_kur = NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1);
+                mevcutsatislist[0].sth_doviz_ismi = SelectedDovizKuru.Kur_sembol;
+                mevcutsatislist[0].sth_resim_url = SelectedStockModel.stok_resim_url;
+                mevcutsatislist[0].sth_renk_beden_seri_baglanti = Myguid;
+                mevcutsatislist[0].Renk_beden_full_bilgi = stokgun_renk_beden_serino_aciklamasi;
+                mevcutsatislist[0].sth_parti_kodu = FinalParti;
+                mevcutsatislist[0].sth_lot_no = NumericConverter.StringToInt(FinalLot);
+                mevcutsatislist[0].sth_cari = SelectedCustomerModel.cari_kod;
+
+            }
+            else
+            {
+
+                DetayliSalesList.Add
+                    (
+                    new SatisSthModel
+                    {
+                        sth_fiyat_gosterge = MainFiyat,
+                        sth_miktar_gosterge = MainMiktar,
+                        sth_stok_kod = SelectedStockModel.sto_kod,
+                        sth_stok_isim = SelectedStockModel.sto_isim,
+                        sth_birim_ad = SelectedStockModel.sto_birim1_ad,
+                        sth_tarih = DateTime.Now.Date,
+                        sth_vergi_pntr = SelectedStockModel.VERGI_NO,
+                        sth_vryuzde = SelectedStockModel.vryuzde,
+                        sth_doviz_cins = SelectedDovizKuru.Kur_no,
+                        sth_har_doviz_kur = NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1),
+                        sth_doviz_ismi = SelectedDovizKuru.Kur_sembol,
+                        sth_resim_url = SelectedStockModel.stok_resim_url,
+                        sth_renk_beden_seri_baglanti = Myguid,
+                        Renk_beden_full_bilgi = stokgun_renk_beden_serino_aciklamasi,
+                        sth_parti_kodu = FinalParti,
+                        sth_lot_no = NumericConverter.StringToInt(FinalLot),
+                        sth_cari = SelectedCustomerModel.cari_kod,
+                    });
+            }
+            FinalParti = "";
+            FinalLot = "";
+            SelectedParti = null;
+            SelectedLot = "";
+            PartiTxt = "";
+            LotTxt = "";
+            await HelpME.PopKapat();
+            //CalculateSumGO(this);
+            CalculateSumGO(this);
+        }
+        private void satissartlariuygula()
+        {
+            try
+            {
+                if (_LSTMANAGER.SATISSARTLARI.ToList().Any())
+                {
+
+                    StokFiyatGuncelle();
+
+                    foreach (var item in _LSTMANAGER.SATISSARTLARI.ToList())
+                    {
+                        foreach (var itemstoklar in _LSTMANAGER.STOCKLIST.ToList())
+                        {
+                            int depokotnrol = 0;
+                            if (item.sat_depo_no == 0)
+                                depokotnrol = SelectedDepo.dep_no;
+                            else depokotnrol = item.sat_depo_no;
+
+                            if (
+
+                       item.sat_basla_tarih <= DateTime.Now
+                       && item.sat_bitis_tarih >= DateTime.Now
+                       && item.sat_cari_kod == SelectedCustomerModel.cari_kod
+                       && depokotnrol == SelectedDepo.dep_no
+                       && item.sat_doviz_cinsi == SelectedDovizKuru.Kur_no
+                       && item.sat_odeme_plan == SelectedOdemePlani.odp_no
+                       && item.sat_stok_kod == itemstoklar.sto_kod
+                       )
+                            {
+                                //abla
+                                itemstoklar.sto_fiyat = Math.Round(item.sat_brut_fiyat, 2);
+                                itemstoklar.sto_indirimbilgisi = "Satış Şartı:" + Math.Round((item.sat_brut_fiyat - item.sat_sonfiyat), 2).ToString();
+                            }
+                        }
+
+                        foreach (var itemsth in DetayliSalesList.ToList())
+                        {
+
+                            int depokotnrol = 0;
+                            if (item.sat_depo_no == 0)
+                                depokotnrol = SelectedDepo.dep_no;
+                            else depokotnrol = item.sat_depo_no;
+
+                            if (
+
+                           item.sat_basla_tarih <= DateTime.Now
+                           && item.sat_bitis_tarih >= DateTime.Now
+                           && item.sat_cari_kod == SelectedCustomerModel.cari_kod
+                           && depokotnrol == SelectedDepo.dep_no
+                           && item.sat_doviz_cinsi == SelectedDovizKuru.Kur_no
+                           && item.sat_odeme_plan == SelectedOdemePlani.odp_no
+                           && item.sat_stok_kod == itemsth.sth_stok_kod
+                           )
+                            {
+                                itemsth.sth_fiyat = Math.Round(item.sat_brut_fiyat, 2);
+                                itemsth.sth_iskonto2 = Math.Round((item.sat_brut_fiyat - item.sat_sonfiyat) * itemsth.sth_miktar, 2);
+                                itemsth.sth_iskonto2_info = "Satış Şartı: "; //+ itemsth.sth_iskonto2.ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                HelpME.MessageShow("Satis Sartlari Hata", ex.Message, "Ok");
+            }
+
+        }
+
+        private async void kampanyauygula()
+        {
+
+            if (SelectedCustomerModel == null || SelectedDepo == null || SelectedDovizKuru == null || SelectedOdemePlani == null) return;
+
+            try
+            {
+                if (_LSTMANAGER.KampanyalarList.ToList().Any())
+                {
+
+                    foreach (var itemsxxsx in _LSTMANAGER.STOCKLIST.ToList())
+                    {
+                        itemsxxsx.sto_bedavadurumu.Clear();
+                        itemsxxsx.sto_indirimbilgisi = "";
+                        itemsxxsx.kampanyavisible = false;
+                    }
+                    foreach (var item in DetayliSalesList.ToList())
+                    {
+                        if (!item.isbedavalikampanya)
+                        {
+                            item.sth_iskonto2 = 0;
+                            item.sth_iskonto2_info = "";
+                        }
+                    }
+
+                    var toplamtutars = DetayliSalesList.Sum(x => x.sth_tutar) / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1);
+                    var toplammiktars = DetayliSalesList.Sum(x => x.sth_miktar);
+
+                    foreach (var item in _LSTMANAGER.KampanyalarList)
+                    {
+
+                        List<string> carikodlar = item.KAMP_CARI_KODLAR.Split(';').ToList();
+                        List<string> carigruplar = item.KAMP_CARI_GRUPLAR.Split(';').ToList();
+                        List<string> carisektorlar = item.KAMP_CARI_SEKTORLAR.Split(';').ToList();
+                        List<string> caribolgeler = item.KAMP_CARI_BOLGELER.Split(';').ToList();
+                        List<string> caritemsilciler = item.KAMP_CARI_TEMSILCI.Split(';').ToList();
+                        List<string> odemeplanlari = item.KAMP_CARI_ODEMEPLANI.Split(';').ToList();
+                        List<string> projeler = item.KAMP_CARI_PROJE.Split(';').ToList();
+                        List<string> srmler = item.KAMP_CARI_SRM.Split(';').ToList();
+                        List<string> odemeyontemleri = item.KAMP_CARI_ODEMEYONTEMI.Split(';').ToList();
+                        List<string> stoklar = item.KAMP_STOKLAR.Split(';').ToList();
+                        List<string> stokkategorileri = item.KAMP_STOKLAR_KATEGORI.Split(';').ToList();
+                        List<string> stokanagruplari = item.KAMP_STOKLAR_ANAGRUP.Split(';').ToList();
+                        List<string> stokaltgruplari = item.KAMP_STOKLAR_ALTGRUP.Split(';').ToList();
+                        List<string> stokureticileri = item.KAMP_STOKLAR_URETICI.Split(';').ToList();
+                        List<string> stoksektorlari = item.KAMP_STOKLAR_SEKTOR.Split(';').ToList();
+                        List<string> stokreyonlari = item.KAMP_STOKLAR_REYON.Split(';').ToList();
+                        List<string> stokambalajlari = item.KAMP_STOKLAR_AMBALAJ.Split(';').ToList();
+                        List<string> stokmarkalari = item.KAMP_STOKLAR_MARKA.Split(';').ToList();
+                        List<string> fiyatlisteleri = item.KAMP_FIYATLISTELERI.Split(';').ToList();
+                        var minimumtutar = item.KAMP_MINUMUM_TUTAR;
+                        var minimummiktar = item.KAMP_MIMINUM_MIKTAR;
+                        var alana1 = item.KAMP_IF_MIKTAR1;
+                        var alana2 = item.KAMP_IF_MIKTAR2;
+                        var alana3 = item.KAMP_IF_MIKTAR3;
+                        var alana4 = item.KAMP_IF_MIKTAR4;
+                        var alana5 = item.KAMP_IF_MIKTAR5;
+                        var bedava1 = item.KAMP_THEN_MIKTAR1;
+                        var bedava2 = item.KAMP_THEN_MIKTAR2;
+                        var bedava3 = item.KAMP_THEN_MIKTAR3;
+                        var bedava4 = item.KAMP_THEN_MIKTAR4;
+                        var bedava5 = item.KAMP_THEN_MIKTAR5;
+
+                        var gecerliolanfaturalar = item.KAMP_UYGULANACAK_FATLAR.Split(';');
+
+                        #region listekontrol
+                        if (item.KAMP_CARI_KODLAR == "")
+                        {
+                            carikodlar.Clear();
+                        }
+                        if (item.KAMP_CARI_GRUPLAR == "")
+                        {
+                            carigruplar.Clear();
+                        }
+                        if (item.KAMP_CARI_SEKTORLAR == "")
+                        {
+                            carisektorlar.Clear();
+                        }
+                        if (item.KAMP_CARI_BOLGELER == "")
+                        {
+                            caribolgeler.Clear();
+                        }
+                        if (item.KAMP_CARI_TEMSILCI == "")
+                        {
+                            caritemsilciler.Clear();
+                        }
+                        if (item.KAMP_CARI_ODEMEPLANI == "")
+                        {
+                            odemeplanlari.Clear();
+                        }
+                        if (item.KAMP_CARI_PROJE == "")
+                        {
+                            projeler.Clear();
+                        }
+                        if (item.KAMP_CARI_SRM == "")
+                        {
+                            srmler.Clear();
+                        }
+                        if (item.KAMP_CARI_ODEMEYONTEMI == "")
+                        {
+                            odemeyontemleri.Clear();
+                        }
+                        if (item.KAMP_STOKLAR == "")
+                        {
+                            stoklar.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_KATEGORI == "")
+                        {
+                            stokkategorileri.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_ANAGRUP == "")
+                        {
+                            stokanagruplari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_ALTGRUP == "")
+                        {
+                            stokaltgruplari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_URETICI == "")
+                        {
+                            stokureticileri.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_SEKTOR == "")
+                        {
+                            stoksektorlari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_REYON == "")
+                        {
+                            stokreyonlari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_AMBALAJ == "")
+                        {
+                            stokambalajlari.Clear();
+                        }
+                        if (item.KAMP_STOKLAR_MARKA == "")
+                        {
+                            stokmarkalari.Clear();
+                        }
+                        if (item.KAMP_FIYATLISTELERI == "")
+                        {
+                            fiyatlisteleri.Clear();
+                        }
+
+                        #endregion
+
+                        foreach (var itemsth in DetayliSalesList.ToList())
+                        {
+
+                            if (itemsth.sth_tutar <= item.KAMP_MINUMUM_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1) || itemsth.sth_miktar <= item.KAMP_MIMINUM_MIKTAR)
+                            {
+                                itemsth.sth_iskonto2 = 0;
+                                itemsth.sth_iskonto2_info = "";
+                            }
+                            else
+                            {
+                                //GARIP5
+                                var stockinfo = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == itemsth.sth_stok_kod).FirstOrDefault();
+
+                                if (
+                                         (!gecerliolanfaturalar.Any() || gecerliolanfaturalar.Contains("0"))
+                                      && (!carikodlar.Any() || carikodlar.Contains(SelectedCustomerModel.cari_kod))
+                                      && (!carigruplar.Any() || carigruplar.Contains(SelectedCustomerModel.cari_grup_kodu))
+                                      && (!carisektorlar.Any() || carisektorlar.Contains(SelectedCustomerModel.cari_sektor_kodu))
+                                      && (!caribolgeler.Any() || caribolgeler.Contains(SelectedCustomerModel.cari_bolge_kodu))
+                                      && (!caritemsilciler.Any() || caritemsilciler.Contains(SelectedCustomerModel.cari_temsilci_kodu))
+                                      && (!odemeplanlari.Any() || odemeplanlari.Contains(SelectedOdemePlani.odp_no.ToString()))
+                                      && (!projeler.Any() || projeler.Contains(SelectedProje.pro_kodu))
+                                      && (!srmler.Any() || srmler.Contains(SelectedSorumluluk.som_kod))
+                                      && (!odemeyontemleri.Any() || odemeyontemleri.Contains(SelectedOdemePlani.odp_no.ToString()))
+                                      && (!stoklar.Any() || stoklar.Contains(itemsth.sth_stok_kod))
+                                      && (!stokkategorileri.Any() || stokkategorileri.Contains(stockinfo.sto_kategori_kodu))
+                                      && (!stokanagruplari.Any() || stokanagruplari.Contains(stockinfo.sto_anagrup_kod))
+                                      && (!stokaltgruplari.Any() || stokaltgruplari.Contains(stockinfo.sto_altgrup_kod))
+                                      && (!stokureticileri.Any() || stokureticileri.Contains(stockinfo.sto_uretici_kodu))
+                                      && (!stoksektorlari.Any() || stoksektorlari.Contains(stockinfo.sto_sektor_kodu))
+                                      && (!stokreyonlari.Any() || stokreyonlari.Contains(stockinfo.sto_reyon_kodu))
+                                      && (!stokambalajlari.Any() || stokambalajlari.Contains(stockinfo.sto_ambalaj_kodu))
+                                      && (!stokmarkalari.Any() || stokmarkalari.Contains(stockinfo.sto_marka_kodu))
+                                       && (!fiyatlisteleri.Any() || fiyatlisteleri.Contains(SelectedFiyatListesi.sfl_sirano.ToString()))
+
+                                  )
+                                {
+                                    if (item.KAMP_YUZDESEL > 0 || item.KAMP_TUTAR > 0)
+                                    {
+
+
+                                        if (item.KAMP_YUZDESEL != 0)
+                                        {
+                                            itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat * item.KAMP_YUZDESEL / 100 * itemsth.sth_miktar / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
+                                            itemsth.sth_iskonto2_info = "(%" + item.KAMP_YUZDESEL.ToString() + ")";
+                                        }
+                                        else if (item.KAMP_TUTAR != 0)
+                                        {
+                                            itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat - item.KAMP_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
+                                        }
+                                    }
+
+
+                                }
+                                else
+                                //burda cok dikkatli olmaliyim.
+                                // eger bir stokhareketi, 10 alana 2 bedava kampanyasina uymuyorsa, bunu runtime zamani listeden kaldirmamiz gerekli. 
+                                // aksi halde kullanicilar hile yapabilir. bunun onune gecmemiz lazim
+
+                                 if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
+                                {
+
+
+                                    if (SelectedFirma != null && SelectedSube != null && SelectedCustomerModel != null && SelectedDepo != null && SelectedProje != null && SelectedSorumluluk != null
+                                        && SelectedFiyatListesi != null && SelectedOdemePlani != null && SelectedAcikKapali != null
+                                        && SelectedDovizKuru != null)
+                                    {
+                                        //bu stok hareketinde 2 tane varmi ona bakiyoruz.
+
+                                        var birstoktan2tanevarmi = from p in DetayliSalesList.Where(xx => xx.sth_stok_kod == itemsth.sth_stok_kod).GroupBy(p => p.sth_stok_kod)
+                                                                   select new
+                                                                   {
+                                                                       count = p.Count(),
+                                                                       p.First().sth_stok_kod,
+                                                                   };
+                                        //eger varsa bu 2 stok hareketini silmeliyiz,
+                                        //cunku kampanya sartlarina uymuyor. 
+                                        foreach (var itemikitanevarmichk in birstoktan2tanevarmi)
+                                        {
+                                            if (itemikitanevarmichk.count == 2)
+                                            {
+                                                var silinsin = DetayliSalesList.Where(x => x.sth_stok_kod == itemikitanevarmichk.sth_stok_kod).ToList();
+
+                                                foreach (var itemsilinsin in silinsin)
+                                                {
+                                                    DetayliSalesList.Remove(itemsilinsin);
+
+                                                }
+                                                HelpME.MessageShow("Uyari", "Kampanya tanimlarina uymayan stok hareketleri silindi...", "ok");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        foreach (var itemstokkarti in _LSTMANAGER.STOCKLIST)
+                        {
+                            if (
+                                       (!gecerliolanfaturalar.Any() || gecerliolanfaturalar.Contains("0"))
+                                    && (!carikodlar.Any() || carikodlar.Contains(SelectedCustomerModel.cari_kod))
+                                    && (!carigruplar.Any() || carigruplar.Contains(SelectedCustomerModel.cari_grup_kodu))
+                                    && (!carisektorlar.Any() || carisektorlar.Contains(SelectedCustomerModel.cari_sektor_kodu))
+                                    && (!caribolgeler.Any() || caribolgeler.Contains(SelectedCustomerModel.cari_bolge_kodu))
+                                    && (!caritemsilciler.Any() || caritemsilciler.Contains(SelectedCustomerModel.cari_temsilci_kodu))
+                                    && (!odemeplanlari.Any() || odemeplanlari.Contains(SelectedOdemePlani.odp_no.ToString()))
+                                    && (!projeler.Any() || projeler.Contains(SelectedProje.pro_kodu))
+                                    && (!srmler.Any() || srmler.Contains(SelectedSorumluluk.som_kod))
+                                    && (!odemeyontemleri.Any() || odemeyontemleri.Contains(SelectedOdemePlani.odp_no.ToString()))
+                                    && (!stoklar.Any() || stoklar.Contains(itemstokkarti.sto_kod))
+                                    && (!stokkategorileri.Any() || stokkategorileri.Contains(itemstokkarti.sto_kategori_kodu))
+                                    && (!stokanagruplari.Any() || stokanagruplari.Contains(itemstokkarti.sto_anagrup_kod))
+                                    && (!stokaltgruplari.Any() || stokaltgruplari.Contains(itemstokkarti.sto_altgrup_kod))
+                                    && (!stokureticileri.Any() || stokureticileri.Contains(itemstokkarti.sto_uretici_kodu))
+                                    && (!stoksektorlari.Any() || stoksektorlari.Contains(itemstokkarti.sto_sektor_kodu))
+                                    && (!stokreyonlari.Any() || stokreyonlari.Contains(itemstokkarti.sto_reyon_kodu))
+                                    && (!stokambalajlari.Any() || stokambalajlari.Contains(itemstokkarti.sto_ambalaj_kodu))
+                                    && (!stokmarkalari.Any() || stokmarkalari.Contains(itemstokkarti.sto_marka_kodu))
+                                     && (!fiyatlisteleri.Any() || fiyatlisteleri.Contains(SelectedFiyatListesi.sfl_sirano.ToString()))
+                                    && toplamtutars >= item.KAMP_MINUMUM_TUTAR && toplammiktars >= item.KAMP_MINUMUM_TUTAR
+                                )
+                            {
+
+                                if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
+                                {
+                                    itemstokkarti.sto_bedavadurumu.Add(AppResources.Yok);
+                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR1.ToString() + " + " + item.KAMP_THEN_MIKTAR1);
+                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR2.ToString() + " + " + item.KAMP_THEN_MIKTAR2);
+                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR3.ToString() + " + " + item.KAMP_THEN_MIKTAR3);
+                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR4.ToString() + " + " + item.KAMP_THEN_MIKTAR4);
+                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR5.ToString() + " + " + item.KAMP_THEN_MIKTAR5);
+                                    itemstokkarti.kampanyavisible = true;
+                                }
+                                else if (item.KAMP_TUTAR > 0)
+                                {
+                                    itemstokkarti.sto_indirimbilgisi = item.KAMP_TUTAR.ToString() + itemstokkarti.sto_doviz_ad;
+                                }
+                                else if (item.KAMP_YUZDESEL > 0)
+                                {
+                                    itemstokkarti.sto_indirimbilgisi = item.KAMP_YUZDESEL.ToString() + " %";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await HelpME.MessageShow("error", "Kampanya hatasi " + ex.Message, "ok");
+            }
+        }
+        private void SumRenkBedenSeriNoMiktarlari()
+        {
+            MainMiktar = (NumericConverter.StringToDouble(RenkBedenMiktar1) + NumericConverter.StringToDouble(RenkBedenMiktar2) + NumericConverter.StringToDouble(RenkBedenMiktar3) + NumericConverter.StringToDouble(RenkBedenMiktar4) + NumericConverter.StringToDouble(RenkBedenMiktar5) + NumericConverter.StringToDouble(RenkBedenMiktar6) + NumericConverter.StringToDouble(RenkBedenMiktar7) + NumericConverter.StringToDouble(RenkBedenMiktar8) + NumericConverter.StringToDouble(RenkBedenMiktar9) + NumericConverter.StringToDouble(RenkBedenMiktar10) + NumericConverter.StringToDouble(SeriNoMiktar1) + NumericConverter.StringToDouble(SeriNoMiktar2) + NumericConverter.StringToDouble(SeriNoMiktar3) + NumericConverter.StringToDouble(SeriNoMiktar4) + NumericConverter.StringToDouble(SeriNoMiktar5) + NumericConverter.StringToDouble(SeriNoMiktar6)).ToString();
+        }
         private async void Amount_Decrease_SadeGO(object obj)
         {
             try
@@ -622,8 +1711,6 @@ namespace KayaApp.ViewModels
             StockList = new ObservableCollection<StockModel>(_LSTMANAGER.STOCKLIST);
             await HelpME.PopKapat();
         }
-
-        #endregion
 
         private void EditSTHGOAsync(object obj)
         {
@@ -1364,1515 +2451,7 @@ namespace KayaApp.ViewModels
             stoklistyardimcisi++;
 
         }
-
-        private ObservableCollection<StokPaketleriModel> _TEMPPaketTanimlariVeya_bedava_stoklist;
-
-        public ObservableCollection<StokPaketleriModel> TEMPPaketTanimlariVeya_bedava_stoklist
-        {
-            get
-            {
-                if (_TEMPPaketTanimlariVeya_bedava_stoklist == null)
-                {
-                    _TEMPPaketTanimlariVeya_bedava_stoklist = new ObservableCollection<StokPaketleriModel>();
-                }
-                return _TEMPPaketTanimlariVeya_bedava_stoklist;
-            }
-            set
-            {
-                _TEMPPaketTanimlariVeya_bedava_stoklist = value;
-            }
-        }
-
-        private StokPaketleriModel _TEMPSelected_PaketTanimlariVeya_bedava_stok;
-
-        public StokPaketleriModel TEMPSelected_PaketTanimlariVeya_bedava_stok
-        {
-            get
-            {
-                return _TEMPSelected_PaketTanimlariVeya_bedava_stok;
-            }
-            set
-            {
-                _TEMPSelected_PaketTanimlariVeya_bedava_stok = value;
-                if (_TEMPSelected_PaketTanimlariVeya_bedava_stok != null)
-                {
-                    var analist = _LSTMANAGER.STOKPAKETLERI.Where(x => x.pak_kod == _TEMPSelected_PaketTanimlariVeya_bedava_stok.pak_kod).ToList();
-                    if (analist.Any())
-                    {
-                        var cikarmamgerekenler = analist.Where(x => x.pak_ve_veya == 1).ToList();
-
-                        foreach (var item in cikarmamgerekenler)
-                        {
-                            analist.Remove(item);
-                        }
-                        analist.Add(_TEMPSelected_PaketTanimlariVeya_bedava_stok);
-
-                        paketislemlerinindevami(analist);
-                        HelpME.PopKapat();
-
-                    }
-                }
-            }
-        }
-         
-
-     
-        private List<StockFilterModel> _StockFilter;
-
-        public List<StockFilterModel> StockFilter
-        {
-            get
-            {
-                if (_StockFilter == null)
-                {
-
-                    if (StockList.Any())
-                    {
-                        _StockFilter = new List<StockFilterModel>();
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Markalara göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-
-                        var markaisimleri = StockList.ToList().GroupBy(x => x.sto_marka_ismi).ToList().Where(x => x.Key != "");
-
-
-
-                        if (markaisimleri.Any())
-                        {
-                            foreach (var item in markaisimleri)
-                            {
-                                _StockFilter[0].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 0 });
-                            }
-                        }
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Ana gruba göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var anagrupisimleri = StockList.ToList().GroupBy(x => x.sto_anagrup_ismi).ToList().Where(x => x.Key != "");
-
-                        if (anagrupisimleri.Any())
-                        {
-                            foreach (var item in anagrupisimleri)
-                            {
-                                _StockFilter[1].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 1 });
-                            }
-                        }
-
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Alt gruba göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var altgrupisimleri = StockList.ToList().GroupBy(x => x.sto_altgrup_ismi).ToList().Where(x => x.Key != "");
-
-                        if (altgrupisimleri.Any())
-                        {
-                            foreach (var item in altgrupisimleri)
-                            {
-                                _StockFilter[2].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 2 });
-                            }
-                        }
-
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Üreticilere göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var ureticiisimleri = StockList.ToList().GroupBy(x => x.sto_uretici_ismi).ToList().Where(x => x.Key != "");
-
-                        if (ureticiisimleri.Any())
-                        {
-                            foreach (var item in ureticiisimleri)
-                            {
-                                _StockFilter[3].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 3 });
-                            }
-                        }
-
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Kategorilere göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var kategoriisimleri = StockList.ToList().GroupBy(x => x.sto_kategori_ismi).ToList().Where(x => x.Key != "");
-
-                        if (kategoriisimleri.Any())
-                        {
-                            foreach (var item in kategoriisimleri)
-                            {
-                                _StockFilter[4].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 4 });
-                            }
-                        }
-
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Reyonlara göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var reyonisimleri = StockList.ToList().GroupBy(x => x.sto_reyon_ismi).ToList().Where(x => x.Key != "");
-
-                        if (reyonisimleri.Any())
-                        {
-                            foreach (var item in reyonisimleri)
-                            {
-                                _StockFilter[5].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 5 });
-                            }
-                        }
-
-                    }
-                }
-                return _StockFilter;
-            }
-            set
-            {
-                _StockFilter = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private StockFilterModel _selectedStockFilter;
-
-        public StockFilterModel selectedStockFilter
-        {
-            get
-            {
-                return _selectedStockFilter;
-            }
-            set
-            {
-                //_selectedStockFilter.FilterHeaderIsVisible = true;
-                _selectedStockFilter = value;
-                if (value != null)
-                {
-
-                    if (_selectedStockFilter.FilterHeaderIsVisible)
-                    {
-                        _selectedStockFilter.FilterHeaderIsVisible = false;
-                    }
-                    else
-                    {
-                        foreach (var item in StockFilter)
-                        {
-                            item.FilterHeaderIsVisible = false;
-                        }
-                        _selectedStockFilter.FilterHeaderIsVisible = true;
-                    }
-
-                }
-
-                INotifyPropertyChanged();
-            }
-        }
-
-        private FilterItems _SelectedFilterItem;
-
-        public FilterItems SelectedFilterItem
-        {
-            get
-            {
-                return _SelectedFilterItem;
-            }
-            set
-            {
-                _SelectedFilterItem = value;
-            }
-        }
-
-    
-
-        private KasaModel _SelectedKasa;
-        public KasaModel SelectedKasa
-        {
-            get { return _SelectedKasa; }
-            set
-            {
-                _SelectedKasa = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private BankaModel _SelectedBanka;
-        public BankaModel SelectedBanka
-        {
-            get { return _SelectedBanka; }
-            set
-            {
-                _SelectedBanka = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private ObservableCollection<KasaModel> _Kasalar;
-
-        public ObservableCollection<KasaModel> Kasalar
-        {
-            get { return _Kasalar; }
-            set
-            {
-                _Kasalar = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private ObservableCollection<BankaModel> _Bankalar;
-
-        public ObservableCollection<BankaModel> Bankalar
-        {
-            get { return _Bankalar; }
-            set
-            {
-                _Bankalar = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-      
-        private void temizlikisleri()
-        {
-            if (DetayliSalesList.Count == 0 && DetayliSalesList.Sum(x => x.sth_tutar) <= 0)
-            {
-                GenelIndirimTL = "0";
-                GenelIndirimYUZDE = "0";
-                BurutTutar = 0;
-                tutar = "0";
-            }
-        }
-
-        private bool _isVisibleGRID;
-        public bool isVisibleGRID
-        {
-            get { return _isVisibleGRID; }
-            set
-            {
-                _isVisibleGRID = value;
-                INotifyPropertyChanged();
-            }
-        }
-        private void BtnTemizlikYapGO(object obj)
-        {
-            GenelIndirimYUZDE = "0";
-            GenelIndirimTL = "0";
-            DetayliSalesList.Clear();
-            CalculateSumGO(obj);
-        }
-
-        private async void EkleStockButtonGO(object obj)
-        {
-            //garip2
-            if (NumericConverter.StringToDouble(MainMiktar) <= 0)
-            {
-                await HelpME.MessageShow("Miktar Hatasi", "Miktar sifir Veya Sifirdan Kucuk Olamaz", "ok");
-                return;
-            }
-            if (NumericConverter.StringToDouble(MainTutar) <= 0)
-            {
-                await HelpME.MessageShow("Tutar Hatasi", "Tutar Sifir Veya Sifirdan Kucuk Olamaz", "ok");
-                return;
-            }
-
-            int Olusan_Hareket_No = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK1, SelectedBeden1);
-
-            List<OlusanRenkBedenSeriHareketleriModel> GidecekListe = new List<OlusanRenkBedenSeriHareketleriModel>();
-            string stokgun_renk_beden_serino_aciklamasi = "";
-
-            string FinalParti = "";
-            string FinalLot = "";
-            //stok renk beden detayli veya serino detayli ise bu kriterlerden gecicek, aksi halde, direk satis listesine eklenecek.
-            if (SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_detay_takip == 3 || SelectedStockModel.sto_detay_takip == 1 || SelectedStockModel.sto_detay_takip == 2)
-            {
-                int renkbedensonuc1 = 0;
-                int renkbedensonuc2 = 0;
-                int renkbedensonuc3 = 0;
-                int renkbedensonuc4 = 0;
-                int renkbedensonuc5 = 0;
-                int renkbedensonuc6 = 0;
-                int renkbedensonuc7 = 0;
-                int renkbedensonuc8 = 0;
-                int renkbedensonuc9 = 0;
-                int renkbedensonuc10 = 0;
-
-                if (SelectedParti == null)
-                {
-                    FinalParti = PartiTxt;
-                    FinalLot = LotTxt;
-                }
-                else
-                {
-                    FinalParti = SelectedParti.pl_partikodu;
-                    FinalLot = SelectedLot.ToString();
-
-                }
-                if (FinalParti == null) FinalParti = "";
-                if (FinalLot == null) FinalLot = "";
-
-                if (SelectedStockModel.sto_detay_takip == 1) FinalLot = " ";
-
-
-
-                try
-                {
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar1) > 0 || NumericConverter.StringToDouble(SeriNoMiktar1) > 0 || (!string.IsNullOrWhiteSpace(FinalParti) && FinalLot != ""))
-                    {
-                        if (SelectedRENK1.rnk_IndicatorName != "" || SelectedBeden1.bdn_IndicatorName != "" || Serinotext1 != "" ||
-                           !string.IsNullOrWhiteSpace(FinalParti) || FinalLot != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar1) > 0 || NumericConverter.StringToDouble(SeriNoMiktar1) > 0 || !string.IsNullOrWhiteSpace(FinalParti) || FinalLot != "")
-                            {
-                                renkbedensonuc1 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK1, SelectedBeden1);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel
-                                {
-                                    Olusan_Stok_kodu = SelectedStockModel.sto_kod,
-                                    Olusan_Renk_Indicatoru = SelectedRENK1.rnk_IndicatorName,
-                                    Olusan_Beden_Indicatoru = SelectedBeden1.bdn_IndicatorName,
-                                    Olusan_RenkBeden_Miktar = RenkBedenMiktar1,
-                                    Olusan_Serino = Serinotext1,
-                                    Olusan_Serino_Miktar = SeriNoMiktar1,
-                                    Olusan_SiraNo = 1,
-                                    Olusan_Parti = FinalParti,
-                                    Olusan_Lot = NumericConverter.StringToInt(FinalLot),
-                                });
-
-                                stokgun_renk_beden_serino_aciklamasi = SelectedRENK1.rnk_IndicatorValue + " " + SelectedBeden1.bdn_IndicatorValue + Serinotext1 + FinalParti + " " + FinalLot.ToString() + " ; ";
-
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar1 = "0";
-                            SeriNoMiktar1 = "0";
-                        }
-
-                    }
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar2) > 0 || NumericConverter.StringToDouble(SeriNoMiktar2) > 0)
-                    {
-                        if (SelectedRENK2.rnk_IndicatorName != "" || SelectedBeden2.bdn_IndicatorName != "" || Serinotext2 != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar2) > 0 || NumericConverter.StringToDouble(SeriNoMiktar2) > 0)
-                            {
-                                renkbedensonuc2 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK2, SelectedBeden2);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK2.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden2.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar2, Olusan_Serino = Serinotext2, Olusan_Serino_Miktar = SeriNoMiktar2, Olusan_SiraNo = 2 });
-                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK2.rnk_IndicatorValue + " " + SelectedBeden2.bdn_IndicatorValue + Serinotext2 + " ; ";
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar2 = "0";
-                            SeriNoMiktar2 = "0";
-                        }
-                    }
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar3) > 0 || NumericConverter.StringToDouble(SeriNoMiktar3) > 0)
-                    {
-                        if (SelectedRENK3.rnk_IndicatorName != "" || SelectedBeden3.bdn_IndicatorName != "" || Serinotext3 != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar3) > 0 || NumericConverter.StringToDouble(SeriNoMiktar3) > 0)
-                            {
-                                renkbedensonuc3 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK3, SelectedBeden3);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK3.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden3.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar3, Olusan_Serino = Serinotext3, Olusan_Serino_Miktar = SeriNoMiktar3, Olusan_SiraNo = 3 });
-                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK3.rnk_IndicatorValue + " " + SelectedBeden3.bdn_IndicatorValue + Serinotext3 + " ; ";
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar3 = "0";
-                            SeriNoMiktar3 = "0";
-                        }
-                    }
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar4) > 0 || NumericConverter.StringToDouble(SeriNoMiktar4) > 0)
-                    {
-                        if (SelectedRENK4.rnk_IndicatorName != "" || SelectedBeden4.bdn_IndicatorName != "" || Serinotext4 != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar4) > 0 || NumericConverter.StringToDouble(SeriNoMiktar4) > 0)
-                            {
-                                renkbedensonuc4 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK4, SelectedBeden4);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK4.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden4.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar4, Olusan_Serino = Serinotext4, Olusan_Serino_Miktar = SeriNoMiktar4, Olusan_SiraNo = 4 });
-                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK4.rnk_IndicatorValue + " " + SelectedBeden4.bdn_IndicatorValue + Serinotext4 + " ; ";
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar4 = "0";
-                            SeriNoMiktar4 = "0";
-                        }
-                    }
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar5) > 0 || NumericConverter.StringToDouble(SeriNoMiktar5) > 0)
-                    {
-                        if (SelectedRENK5.rnk_IndicatorName != "" || SelectedBeden5.bdn_IndicatorName != "" || Serinotext5 != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar5) > 0 || NumericConverter.StringToDouble(SeriNoMiktar5) > 0)
-                            {
-                                renkbedensonuc5 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK5, SelectedBeden5);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK5.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden5.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar5, Olusan_Serino = Serinotext5, Olusan_Serino_Miktar = SeriNoMiktar5, Olusan_SiraNo = 5 });
-                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK5.rnk_IndicatorValue + " " + SelectedBeden5.bdn_IndicatorValue + Serinotext5 + " ; ";
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar5 = "0";
-                            SeriNoMiktar5 = "0";
-                        }
-                    }
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar6) > 0 || NumericConverter.StringToDouble(SeriNoMiktar6) > 0)
-                    {
-                        if (SelectedRENK6.rnk_IndicatorName != "" || SelectedBeden6.bdn_IndicatorName != "" || Serinotext6 != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar6) > 0 || NumericConverter.StringToDouble(SeriNoMiktar6) > 0)
-                            {
-                                renkbedensonuc6 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK6, SelectedBeden6);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK6.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden6.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar6, Olusan_Serino = Serinotext6, Olusan_Serino_Miktar = SeriNoMiktar6, Olusan_SiraNo = 6 });
-                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK6.rnk_IndicatorValue + " " + SelectedBeden6.bdn_IndicatorValue + Serinotext6 + " ; ";
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar6 = "0";
-                            SeriNoMiktar6 = "0";
-                        }
-                    }
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar7) > 0)
-                    {
-                        if (SelectedRENK7.rnk_IndicatorName != "" || SelectedBeden7.bdn_IndicatorName != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar7) > 0)
-                            {
-                                renkbedensonuc7 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK7, SelectedBeden7);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK7.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden7.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar7, Olusan_Serino = "", Olusan_SiraNo = 7 });
-                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK7.rnk_IndicatorValue + " " + SelectedBeden7.bdn_IndicatorValue + " ; ";
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar7 = "0";
-
-                        }
-                    }
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar8) > 0)
-                    {
-                        if (SelectedRENK8.rnk_IndicatorName != "" || SelectedBeden8.bdn_IndicatorName != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar8) > 0)
-                            {
-                                renkbedensonuc8 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK8, SelectedBeden8);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK8.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden8.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar8, Olusan_Serino = "", Olusan_SiraNo = 8 });
-                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK8.rnk_IndicatorValue + " " + SelectedBeden8.bdn_IndicatorValue + " ; ";
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar8 = "0";
-
-                        }
-                    }
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar9) > 0)
-                    {
-                        if (SelectedRENK9.rnk_IndicatorName != "" || SelectedBeden9.bdn_IndicatorName != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar9) > 0)
-                            {
-                                renkbedensonuc9 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK9, SelectedBeden9);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK9.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden9.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar9, Olusan_Serino = "", Olusan_SiraNo = 9 });
-                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK9.rnk_IndicatorValue + " " + SelectedBeden9.bdn_IndicatorValue + " ; ";
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar9 = "0";
-
-                        }
-                    }
-                    if (NumericConverter.StringToDouble(RenkBedenMiktar10) > 0)
-                    {
-                        if (SelectedRENK10.rnk_IndicatorName != "" || SelectedBeden10.bdn_IndicatorName != "")
-                        {
-                            if (NumericConverter.StringToDouble(RenkBedenMiktar10) > 0)
-                            {
-                                renkbedensonuc10 = NumericConverter.RenkBedenModeltoIntConvertor(SelectedRENK10, SelectedBeden10);
-                                GidecekListe.Add(new OlusanRenkBedenSeriHareketleriModel { Olusan_Stok_kodu = SelectedStockModel.sto_kod, Olusan_Renk_Indicatoru = SelectedRENK10.rnk_IndicatorName, Olusan_Beden_Indicatoru = SelectedBeden10.bdn_IndicatorName, Olusan_RenkBeden_Miktar = RenkBedenMiktar10, Olusan_Serino = "", Olusan_SiraNo = 10 });
-                                stokgun_renk_beden_serino_aciklamasi += SelectedRENK10.rnk_IndicatorValue + " " + SelectedBeden10.bdn_IndicatorValue + " ; ";
-                            }
-                        }
-                        else
-                        {
-                            RenkBedenMiktar10 = "0";
-
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await HelpME.MessageShow("error", ex.Message, "OK");
-                }
-                if (GidecekListe.Count == 0)
-                {
-                    await HelpME.MessageShow("Detay Hatasi", "Lutfen Stok Detayi Giriniz", "OK");
-                    return;
-                }
-
-                #region Benzerlik kontrolu
-                //mesela bazi kullanicilar beyaz xl i 2 farkli yerde kullaniyor. bunun karsisini almak icin, boyle bir yontem uyguluyoruz.
-                // distinct ile normal liste aynimi degilmi diye bakiyoruz...
-
-                if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip)
-                {
-
-                    List<int> benzerlikkontrol = new List<int>();
-
-                    if (renkbedensonuc1 != 0) benzerlikkontrol.Add(renkbedensonuc1);
-                    if (renkbedensonuc2 != 0) benzerlikkontrol.Add(renkbedensonuc2);
-                    if (renkbedensonuc3 != 0) benzerlikkontrol.Add(renkbedensonuc3);
-                    if (renkbedensonuc4 != 0) benzerlikkontrol.Add(renkbedensonuc4);
-                    if (renkbedensonuc5 != 0) benzerlikkontrol.Add(renkbedensonuc5);
-                    if (renkbedensonuc6 != 0) benzerlikkontrol.Add(renkbedensonuc6);
-                    if (renkbedensonuc7 != 0) benzerlikkontrol.Add(renkbedensonuc7);
-                    if (renkbedensonuc8 != 0) benzerlikkontrol.Add(renkbedensonuc8);
-                    if (renkbedensonuc9 != 0) benzerlikkontrol.Add(renkbedensonuc9);
-                    if (renkbedensonuc10 != 0) benzerlikkontrol.Add(renkbedensonuc10);
-
-                    var dist = benzerlikkontrol.Distinct().Count();
-
-                    bool isUnique = dist == benzerlikkontrol.Count();
-                    if (!isUnique)
-                    {
-                        await HelpME.MessageShow("Warning", "Renk beden hareketleri benzersiz olmali, ayni kayitlar kabul edilemez...", "OK");
-                        return;
-                    }
-                }
-                #endregion
-
-                //renk bilgisini, stok bazli yaziyoruz ki kullanici ne renk beden secmis onu gorsun
-            }
-
-            string Myguid = Guid.NewGuid().ToString();
-            //bu renk beden hareketlerini tutan tabloda, bu stogun onceden yapilmis hareketleri varsa siliyor.yenisiyle guncelliyoruz...
-            var stokbazliliste = _LSTMANAGER.DETAYLI_SATIS_RENK_BEDEN_SERI_HAREKETLERI.Where(x => x.Olusan_Stok_kodu == SelectedStockModel.sto_kod).ToList();
-            foreach (var item in stokbazliliste)
-            {
-                _LSTMANAGER.DETAYLI_SATIS_RENK_BEDEN_SERI_HAREKETLERI.Remove(item);
-            }
-
-            foreach (var item in GidecekListe)
-            {
-                item.Olusan_Baglantisi_sth = Myguid;
-                _LSTMANAGER.DETAYLI_SATIS_RENK_BEDEN_SERI_HAREKETLERI.Add(item);
-            }
-            //garip4
-            var mevcutsatislist = DetayliSalesList.Where(x => x.sth_stok_kod == SelectedStockModel.sto_kod).ToList();
-
-            //eger stokhareketinde zaten bu stoktan 2 tane varsa, bu demektir ki, bu kampanyaile alakali bi stok, bu yuzden kampanyali hareketleri sifirliyoruz.
-            //bu tur uyanikliklarin onune gecmeliyiz.
-            if (mevcutsatislist.Count > 1)
-            {
-                foreach (var item in mevcutsatislist)
-                {
-                    DetayliSalesList.Remove(item);
-                }
-            }
-            if (mevcutsatislist.Count == 1)
-            {
-                mevcutsatislist[0].sth_fiyat_gosterge = MainFiyat;
-                mevcutsatislist[0].sth_miktar_gosterge = MainMiktar;
-                mevcutsatislist[0].sth_stok_kod = SelectedStockModel.sto_kod;
-                mevcutsatislist[0].sth_stok_isim = SelectedStockModel.sto_isim;
-                mevcutsatislist[0].sth_birim_ad = SelectedStockModel.sto_birim1_ad;
-                mevcutsatislist[0].sth_tarih = DateTime.Now.Date;
-                mevcutsatislist[0].sth_vergi_pntr = SelectedStockModel.VERGI_NO;
-                mevcutsatislist[0].sth_vryuzde = SelectedStockModel.vryuzde;
-                mevcutsatislist[0].sth_doviz_cins = SelectedDovizKuru.Kur_no;
-                mevcutsatislist[0].sth_har_doviz_kur = NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1);
-                mevcutsatislist[0].sth_doviz_ismi = SelectedDovizKuru.Kur_sembol;
-                mevcutsatislist[0].sth_resim_url = SelectedStockModel.stok_resim_url;
-                mevcutsatislist[0].sth_renk_beden_seri_baglanti = Myguid;
-                mevcutsatislist[0].Renk_beden_full_bilgi = stokgun_renk_beden_serino_aciklamasi;
-                mevcutsatislist[0].sth_parti_kodu = FinalParti;
-                mevcutsatislist[0].sth_lot_no = NumericConverter.StringToInt(FinalLot);
-                mevcutsatislist[0].sth_cari = SelectedCustomerModel.cari_kod;
-
-            }
-            else
-            {
-
-                DetayliSalesList.Add
-                    (
-                    new SatisSthModel
-                    {
-                        sth_fiyat_gosterge = MainFiyat,
-                        sth_miktar_gosterge = MainMiktar,
-                        sth_stok_kod = SelectedStockModel.sto_kod,
-                        sth_stok_isim = SelectedStockModel.sto_isim,
-                        sth_birim_ad = SelectedStockModel.sto_birim1_ad,
-                        sth_tarih = DateTime.Now.Date,
-                        sth_vergi_pntr = SelectedStockModel.VERGI_NO,
-                        sth_vryuzde = SelectedStockModel.vryuzde,
-                        sth_doviz_cins = SelectedDovizKuru.Kur_no,
-                        sth_har_doviz_kur = NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1),
-                        sth_doviz_ismi = SelectedDovizKuru.Kur_sembol,
-                        sth_resim_url = SelectedStockModel.stok_resim_url,
-                        sth_renk_beden_seri_baglanti = Myguid,
-                        Renk_beden_full_bilgi = stokgun_renk_beden_serino_aciklamasi,
-                        sth_parti_kodu = FinalParti,
-                        sth_lot_no = NumericConverter.StringToInt(FinalLot),
-                        sth_cari = SelectedCustomerModel.cari_kod,
-                    });
-            }
-            FinalParti = "";
-            FinalLot = "";
-            SelectedParti = null;
-            SelectedLot = "";
-            PartiTxt = "";
-            LotTxt = "";
-            await HelpME.PopKapat();
-            //CalculateSumGO(this);
-            CalculateSumGO(this);
-        }
-        private void satissartlariuygula()
-        {
-            try
-            {
-                if (_LSTMANAGER.SATISSARTLARI.ToList().Any())
-                {
-
-                    StokFiyatGuncelle();
-
-                    foreach (var item in _LSTMANAGER.SATISSARTLARI.ToList())
-                    {
-                        foreach (var itemstoklar in _LSTMANAGER.STOCKLIST.ToList())
-                        {
-                            int depokotnrol = 0;
-                            if (item.sat_depo_no == 0)
-                                depokotnrol = SelectedDepo.dep_no;
-                            else depokotnrol = item.sat_depo_no;
-
-                            if (
-
-                       item.sat_basla_tarih <= DateTime.Now
-                       && item.sat_bitis_tarih >= DateTime.Now
-                       && item.sat_cari_kod == SelectedCustomerModel.cari_kod
-                       && depokotnrol == SelectedDepo.dep_no
-                       && item.sat_doviz_cinsi == SelectedDovizKuru.Kur_no
-                       && item.sat_odeme_plan == SelectedOdemePlani.odp_no
-                       && item.sat_stok_kod == itemstoklar.sto_kod
-                       )
-                            {
-                                //abla
-                                itemstoklar.sto_fiyat = Math.Round(item.sat_brut_fiyat, 2);
-                                itemstoklar.sto_indirimbilgisi = "Satış Şartı:" + Math.Round((item.sat_brut_fiyat - item.sat_sonfiyat), 2).ToString();
-                            }
-                        }
-
-                        foreach (var itemsth in DetayliSalesList.ToList())
-                        {
-
-                            int depokotnrol = 0;
-                            if (item.sat_depo_no == 0)
-                                depokotnrol = SelectedDepo.dep_no;
-                            else depokotnrol = item.sat_depo_no;
-
-                            if (
-
-                           item.sat_basla_tarih <= DateTime.Now
-                           && item.sat_bitis_tarih >= DateTime.Now
-                           && item.sat_cari_kod == SelectedCustomerModel.cari_kod
-                           && depokotnrol == SelectedDepo.dep_no
-                           && item.sat_doviz_cinsi == SelectedDovizKuru.Kur_no
-                           && item.sat_odeme_plan == SelectedOdemePlani.odp_no
-                           && item.sat_stok_kod == itemsth.sth_stok_kod
-                           )
-                            {
-                                itemsth.sth_fiyat = Math.Round(item.sat_brut_fiyat, 2);
-                                itemsth.sth_iskonto2 = Math.Round((item.sat_brut_fiyat - item.sat_sonfiyat) * itemsth.sth_miktar, 2);
-                                itemsth.sth_iskonto2_info = "Satış Şartı: "; //+ itemsth.sth_iskonto2.ToString();
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-
-                HelpME.MessageShow("Satis Sartlari Hata", ex.Message, "Ok");
-            }
-
-        }
-
-        private async void kampanyauygula()
-        {
-
-            if (SelectedCustomerModel == null || SelectedDepo == null || SelectedDovizKuru == null || SelectedOdemePlani == null) return;
-
-            try
-            {
-                if (_LSTMANAGER.KampanyalarList.ToList().Any())
-                {
-
-                    foreach (var itemsxxsx in _LSTMANAGER.STOCKLIST.ToList())
-                    {
-                        itemsxxsx.sto_bedavadurumu.Clear();
-                        itemsxxsx.sto_indirimbilgisi = "";
-                        itemsxxsx.kampanyavisible = false;
-                    }
-                    foreach (var item in DetayliSalesList.ToList())
-                    {
-                        if (!item.isbedavalikampanya)
-                        {
-                            item.sth_iskonto2 = 0;
-                            item.sth_iskonto2_info = "";
-                        }
-                    }
-
-                    var toplamtutars = DetayliSalesList.Sum(x => x.sth_tutar) / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1);
-                    var toplammiktars = DetayliSalesList.Sum(x => x.sth_miktar);
-
-                    foreach (var item in _LSTMANAGER.KampanyalarList)
-                    {
-
-                        List<string> carikodlar = item.KAMP_CARI_KODLAR.Split(';').ToList();
-                        List<string> carigruplar = item.KAMP_CARI_GRUPLAR.Split(';').ToList();
-                        List<string> carisektorlar = item.KAMP_CARI_SEKTORLAR.Split(';').ToList();
-                        List<string> caribolgeler = item.KAMP_CARI_BOLGELER.Split(';').ToList();
-                        List<string> caritemsilciler = item.KAMP_CARI_TEMSILCI.Split(';').ToList();
-                        List<string> odemeplanlari = item.KAMP_CARI_ODEMEPLANI.Split(';').ToList();
-                        List<string> projeler = item.KAMP_CARI_PROJE.Split(';').ToList();
-                        List<string> srmler = item.KAMP_CARI_SRM.Split(';').ToList();
-                        List<string> odemeyontemleri = item.KAMP_CARI_ODEMEYONTEMI.Split(';').ToList();
-                        List<string> stoklar = item.KAMP_STOKLAR.Split(';').ToList();
-                        List<string> stokkategorileri = item.KAMP_STOKLAR_KATEGORI.Split(';').ToList();
-                        List<string> stokanagruplari = item.KAMP_STOKLAR_ANAGRUP.Split(';').ToList();
-                        List<string> stokaltgruplari = item.KAMP_STOKLAR_ALTGRUP.Split(';').ToList();
-                        List<string> stokureticileri = item.KAMP_STOKLAR_URETICI.Split(';').ToList();
-                        List<string> stoksektorlari = item.KAMP_STOKLAR_SEKTOR.Split(';').ToList();
-                        List<string> stokreyonlari = item.KAMP_STOKLAR_REYON.Split(';').ToList();
-                        List<string> stokambalajlari = item.KAMP_STOKLAR_AMBALAJ.Split(';').ToList();
-                        List<string> stokmarkalari = item.KAMP_STOKLAR_MARKA.Split(';').ToList();
-                        List<string> fiyatlisteleri = item.KAMP_FIYATLISTELERI.Split(';').ToList();
-                        var minimumtutar = item.KAMP_MINUMUM_TUTAR;
-                        var minimummiktar = item.KAMP_MIMINUM_MIKTAR;
-                        var alana1 = item.KAMP_IF_MIKTAR1;
-                        var alana2 = item.KAMP_IF_MIKTAR2;
-                        var alana3 = item.KAMP_IF_MIKTAR3;
-                        var alana4 = item.KAMP_IF_MIKTAR4;
-                        var alana5 = item.KAMP_IF_MIKTAR5;
-                        var bedava1 = item.KAMP_THEN_MIKTAR1;
-                        var bedava2 = item.KAMP_THEN_MIKTAR2;
-                        var bedava3 = item.KAMP_THEN_MIKTAR3;
-                        var bedava4 = item.KAMP_THEN_MIKTAR4;
-                        var bedava5 = item.KAMP_THEN_MIKTAR5;
-
-                        var gecerliolanfaturalar = item.KAMP_UYGULANACAK_FATLAR.Split(';');
-
-                        #region listekontrol
-                        if (item.KAMP_CARI_KODLAR == "")
-                        {
-                            carikodlar.Clear();
-                        }
-                        if (item.KAMP_CARI_GRUPLAR == "")
-                        {
-                            carigruplar.Clear();
-                        }
-                        if (item.KAMP_CARI_SEKTORLAR == "")
-                        {
-                            carisektorlar.Clear();
-                        }
-                        if (item.KAMP_CARI_BOLGELER == "")
-                        {
-                            caribolgeler.Clear();
-                        }
-                        if (item.KAMP_CARI_TEMSILCI == "")
-                        {
-                            caritemsilciler.Clear();
-                        }
-                        if (item.KAMP_CARI_ODEMEPLANI == "")
-                        {
-                            odemeplanlari.Clear();
-                        }
-                        if (item.KAMP_CARI_PROJE == "")
-                        {
-                            projeler.Clear();
-                        }
-                        if (item.KAMP_CARI_SRM == "")
-                        {
-                            srmler.Clear();
-                        }
-                        if (item.KAMP_CARI_ODEMEYONTEMI == "")
-                        {
-                            odemeyontemleri.Clear();
-                        }
-                        if (item.KAMP_STOKLAR == "")
-                        {
-                            stoklar.Clear();
-                        }
-                        if (item.KAMP_STOKLAR_KATEGORI == "")
-                        {
-                            stokkategorileri.Clear();
-                        }
-                        if (item.KAMP_STOKLAR_ANAGRUP == "")
-                        {
-                            stokanagruplari.Clear();
-                        }
-                        if (item.KAMP_STOKLAR_ALTGRUP == "")
-                        {
-                            stokaltgruplari.Clear();
-                        }
-                        if (item.KAMP_STOKLAR_URETICI == "")
-                        {
-                            stokureticileri.Clear();
-                        }
-                        if (item.KAMP_STOKLAR_SEKTOR == "")
-                        {
-                            stoksektorlari.Clear();
-                        }
-                        if (item.KAMP_STOKLAR_REYON == "")
-                        {
-                            stokreyonlari.Clear();
-                        }
-                        if (item.KAMP_STOKLAR_AMBALAJ == "")
-                        {
-                            stokambalajlari.Clear();
-                        }
-                        if (item.KAMP_STOKLAR_MARKA == "")
-                        {
-                            stokmarkalari.Clear();
-                        }
-                        if (item.KAMP_FIYATLISTELERI == "")
-                        {
-                            fiyatlisteleri.Clear();
-                        }
-
-                        #endregion
-
-                        foreach (var itemsth in DetayliSalesList.ToList())
-                        {
-
-                            if (itemsth.sth_tutar <= item.KAMP_MINUMUM_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1) || itemsth.sth_miktar <= item.KAMP_MIMINUM_MIKTAR)
-                            {
-                                itemsth.sth_iskonto2 = 0;
-                                itemsth.sth_iskonto2_info = "";
-                            }
-                            else
-                            {
-                                //GARIP5
-                                var stockinfo = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == itemsth.sth_stok_kod).FirstOrDefault();
-
-                                if (
-                                         (!gecerliolanfaturalar.Any() || gecerliolanfaturalar.Contains("0"))
-                                      && (!carikodlar.Any() || carikodlar.Contains(SelectedCustomerModel.cari_kod))
-                                      && (!carigruplar.Any() || carigruplar.Contains(SelectedCustomerModel.cari_grup_kodu))
-                                      && (!carisektorlar.Any() || carisektorlar.Contains(SelectedCustomerModel.cari_sektor_kodu))
-                                      && (!caribolgeler.Any() || caribolgeler.Contains(SelectedCustomerModel.cari_bolge_kodu))
-                                      && (!caritemsilciler.Any() || caritemsilciler.Contains(SelectedCustomerModel.cari_temsilci_kodu))
-                                      && (!odemeplanlari.Any() || odemeplanlari.Contains(SelectedOdemePlani.odp_no.ToString()))
-                                      && (!projeler.Any() || projeler.Contains(SelectedProje.pro_kodu))
-                                      && (!srmler.Any() || srmler.Contains(SelectedSorumluluk.som_kod))
-                                      && (!odemeyontemleri.Any() || odemeyontemleri.Contains(SelectedOdemePlani.odp_no.ToString()))
-                                      && (!stoklar.Any() || stoklar.Contains(itemsth.sth_stok_kod))
-                                      && (!stokkategorileri.Any() || stokkategorileri.Contains(stockinfo.sto_kategori_kodu))
-                                      && (!stokanagruplari.Any() || stokanagruplari.Contains(stockinfo.sto_anagrup_kod))
-                                      && (!stokaltgruplari.Any() || stokaltgruplari.Contains(stockinfo.sto_altgrup_kod))
-                                      && (!stokureticileri.Any() || stokureticileri.Contains(stockinfo.sto_uretici_kodu))
-                                      && (!stoksektorlari.Any() || stoksektorlari.Contains(stockinfo.sto_sektor_kodu))
-                                      && (!stokreyonlari.Any() || stokreyonlari.Contains(stockinfo.sto_reyon_kodu))
-                                      && (!stokambalajlari.Any() || stokambalajlari.Contains(stockinfo.sto_ambalaj_kodu))
-                                      && (!stokmarkalari.Any() || stokmarkalari.Contains(stockinfo.sto_marka_kodu))
-                                       && (!fiyatlisteleri.Any() || fiyatlisteleri.Contains(SelectedFiyatListesi.sfl_sirano.ToString()))
-
-                                  )
-                                {
-                                    if (item.KAMP_YUZDESEL > 0 || item.KAMP_TUTAR > 0)
-                                    {
-
-
-                                        if (item.KAMP_YUZDESEL != 0)
-                                        {
-                                            itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat * item.KAMP_YUZDESEL / 100 * itemsth.sth_miktar / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
-                                            itemsth.sth_iskonto2_info = "(%" + item.KAMP_YUZDESEL.ToString() + ")";
-                                        }
-                                        else if (item.KAMP_TUTAR != 0)
-                                        {
-                                            itemsth.sth_iskonto2 = Math.Round(stockinfo.sto_fiyat - item.KAMP_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1), 2);
-                                        }
-                                    }
-
-
-                                }
-                                else
-                                //burda cok dikkatli olmaliyim.
-                                // eger bir stokhareketi, 10 alana 2 bedava kampanyasina uymuyorsa, bunu runtime zamani listeden kaldirmamiz gerekli. 
-                                // aksi halde kullanicilar hile yapabilir. bunun onune gecmemiz lazim
-
-                                 if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
-                                {
-
-
-                                    if (SelectedFirma != null && SelectedSube != null && SelectedCustomerModel != null && SelectedDepo != null && SelectedProje != null && SelectedSorumluluk != null
-                                        && SelectedFiyatListesi != null && SelectedOdemePlani != null && SelectedAcikKapali != null
-                                        && SelectedDovizKuru != null)
-                                    {
-                                        //bu stok hareketinde 2 tane varmi ona bakiyoruz.
-
-                                        var birstoktan2tanevarmi = from p in DetayliSalesList.Where(xx => xx.sth_stok_kod == itemsth.sth_stok_kod).GroupBy(p => p.sth_stok_kod)
-                                                                   select new
-                                                                   {
-                                                                       count = p.Count(),
-                                                                       p.First().sth_stok_kod,
-                                                                   };
-                                        //eger varsa bu 2 stok hareketini silmeliyiz,
-                                        //cunku kampanya sartlarina uymuyor. 
-                                        foreach (var itemikitanevarmichk in birstoktan2tanevarmi)
-                                        {
-                                            if (itemikitanevarmichk.count == 2)
-                                            {
-                                                var silinsin = DetayliSalesList.Where(x => x.sth_stok_kod == itemikitanevarmichk.sth_stok_kod).ToList();
-
-                                                foreach (var itemsilinsin in silinsin)
-                                                {
-                                                    DetayliSalesList.Remove(itemsilinsin);
-
-                                                }
-                                                HelpME.MessageShow("Uyari", "Kampanya tanimlarina uymayan stok hareketleri silindi...", "ok");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        foreach (var itemstokkarti in _LSTMANAGER.STOCKLIST)
-                        {
-                            if (
-                                       (!gecerliolanfaturalar.Any() || gecerliolanfaturalar.Contains("0"))
-                                    && (!carikodlar.Any() || carikodlar.Contains(SelectedCustomerModel.cari_kod))
-                                    && (!carigruplar.Any() || carigruplar.Contains(SelectedCustomerModel.cari_grup_kodu))
-                                    && (!carisektorlar.Any() || carisektorlar.Contains(SelectedCustomerModel.cari_sektor_kodu))
-                                    && (!caribolgeler.Any() || caribolgeler.Contains(SelectedCustomerModel.cari_bolge_kodu))
-                                    && (!caritemsilciler.Any() || caritemsilciler.Contains(SelectedCustomerModel.cari_temsilci_kodu))
-                                    && (!odemeplanlari.Any() || odemeplanlari.Contains(SelectedOdemePlani.odp_no.ToString()))
-                                    && (!projeler.Any() || projeler.Contains(SelectedProje.pro_kodu))
-                                    && (!srmler.Any() || srmler.Contains(SelectedSorumluluk.som_kod))
-                                    && (!odemeyontemleri.Any() || odemeyontemleri.Contains(SelectedOdemePlani.odp_no.ToString()))
-                                    && (!stoklar.Any() || stoklar.Contains(itemstokkarti.sto_kod))
-                                    && (!stokkategorileri.Any() || stokkategorileri.Contains(itemstokkarti.sto_kategori_kodu))
-                                    && (!stokanagruplari.Any() || stokanagruplari.Contains(itemstokkarti.sto_anagrup_kod))
-                                    && (!stokaltgruplari.Any() || stokaltgruplari.Contains(itemstokkarti.sto_altgrup_kod))
-                                    && (!stokureticileri.Any() || stokureticileri.Contains(itemstokkarti.sto_uretici_kodu))
-                                    && (!stoksektorlari.Any() || stoksektorlari.Contains(itemstokkarti.sto_sektor_kodu))
-                                    && (!stokreyonlari.Any() || stokreyonlari.Contains(itemstokkarti.sto_reyon_kodu))
-                                    && (!stokambalajlari.Any() || stokambalajlari.Contains(itemstokkarti.sto_ambalaj_kodu))
-                                    && (!stokmarkalari.Any() || stokmarkalari.Contains(itemstokkarti.sto_marka_kodu))
-                                     && (!fiyatlisteleri.Any() || fiyatlisteleri.Contains(SelectedFiyatListesi.sfl_sirano.ToString()))
-                                    && toplamtutars >= item.KAMP_MINUMUM_TUTAR && toplammiktars >= item.KAMP_MINUMUM_TUTAR
-                                )
-                            {
-
-                                if (item.KAMP_IF_MIKTAR1 > 0 || item.KAMP_IF_MIKTAR2 > 0 || item.KAMP_IF_MIKTAR3 > 0 || item.KAMP_IF_MIKTAR4 > 0 || item.KAMP_IF_MIKTAR5 > 0)
-                                {
-                                    itemstokkarti.sto_bedavadurumu.Add(AppResources.Yok);
-                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR1.ToString() + " + " + item.KAMP_THEN_MIKTAR1);
-                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR2.ToString() + " + " + item.KAMP_THEN_MIKTAR2);
-                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR3.ToString() + " + " + item.KAMP_THEN_MIKTAR3);
-                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR4.ToString() + " + " + item.KAMP_THEN_MIKTAR4);
-                                    itemstokkarti.sto_bedavadurumu.Add(item.KAMP_IF_MIKTAR5.ToString() + " + " + item.KAMP_THEN_MIKTAR5);
-                                    itemstokkarti.kampanyavisible = true;
-                                }
-                                else if (item.KAMP_TUTAR > 0)
-                                {
-                                    itemstokkarti.sto_indirimbilgisi = item.KAMP_TUTAR.ToString() + itemstokkarti.sto_doviz_ad;
-                                }
-                                else if (item.KAMP_YUZDESEL > 0)
-                                {
-                                    itemstokkarti.sto_indirimbilgisi = item.KAMP_YUZDESEL.ToString() + " %";
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                await HelpME.MessageShow("error", "Kampanya hatasi " + ex.Message, "ok");
-            }
-        }
-        private void SumRenkBedenSeriNoMiktarlari()
-        {
-            MainMiktar = (NumericConverter.StringToDouble(RenkBedenMiktar1) + NumericConverter.StringToDouble(RenkBedenMiktar2) + NumericConverter.StringToDouble(RenkBedenMiktar3) + NumericConverter.StringToDouble(RenkBedenMiktar4) + NumericConverter.StringToDouble(RenkBedenMiktar5) + NumericConverter.StringToDouble(RenkBedenMiktar6) + NumericConverter.StringToDouble(RenkBedenMiktar7) + NumericConverter.StringToDouble(RenkBedenMiktar8) + NumericConverter.StringToDouble(RenkBedenMiktar9) + NumericConverter.StringToDouble(RenkBedenMiktar10) + NumericConverter.StringToDouble(SeriNoMiktar1) + NumericConverter.StringToDouble(SeriNoMiktar2) + NumericConverter.StringToDouble(SeriNoMiktar3) + NumericConverter.StringToDouble(SeriNoMiktar4) + NumericConverter.StringToDouble(SeriNoMiktar5) + NumericConverter.StringToDouble(SeriNoMiktar6)).ToString();
-        }
-
-        private double _YuzdeToTutar;
-        public double YuzdeToTutar
-        {
-            get { return _YuzdeToTutar; }
-            set { _YuzdeToTutar = value; }
-        }
-
-        private string _GenelIndirimYUZDE;
-        public string GenelIndirimYUZDE
-        {
-            get
-            {
-                if (_GenelIndirimYUZDE == null)
-                {
-                    _GenelIndirimYUZDE = "0";
-                }
-                if (NumericConverter.StringToDouble(_GenelIndirimYUZDE) > 99)
-                {
-                    _GenelIndirimYUZDE = "99";
-                }
-                YuzdeToTutar = NumericConverter.StringToDouble(_GenelIndirimYUZDE) * BurutTutar / 100;
-                return NumericConverter.StringDecor(_GenelIndirimYUZDE);
-            }
-            set
-            {
-                if (NumericConverter.StringToDouble(_GenelIndirimYUZDE) > 99)
-                {
-                    _GenelIndirimYUZDE = "99";
-                }
-                _GenelIndirimYUZDE = NumericConverter.StringDecor(value);
-                CalculateSumGO(_GenelIndirimYUZDE);
-                YuzdeToTutar = NumericConverter.StringToDouble(_GenelIndirimYUZDE) * BurutTutar / 100;
-
-                INotifyPropertyChanged();
-            }
-        }
-
-        private double _BurutTutar;
-        public double BurutTutar
-        {
-            get
-            {
-                return _BurutTutar;
-            }
-            set
-            {
-                _BurutTutar = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private string _GenelIndirimTL;
-        public string GenelIndirimTL
-        {
-            get
-            {
-                if (_GenelIndirimTL == null)
-                {
-                    _GenelIndirimTL = "0";
-                }
-                return NumericConverter.StringDecor(_GenelIndirimTL);
-            }
-            set
-            {
-                _GenelIndirimTL = NumericConverter.StringDecor(value);
-
-                CalculateSumGO(_GenelIndirimTL);
-                INotifyPropertyChanged();
-            }
-        }
-        private void CalculateSumGO(object obj)
-        {
-            if (SelectedFirma == null || SelectedSube == null || SelectedCustomerModel == null || SelectedDepo == null || SelectedProje == null || SelectedSorumluluk == null
-                                         || SelectedFiyatListesi == null || SelectedOdemePlani == null || SelectedAcikKapali == null
-                                         || SelectedDovizKuru == null) return;
-            kampanyauygula();
-            satissartlariuygula();
-
-            foreach (var item in DetayliSalesList)
-            {
-                if (NumericConverter.StringToDouble(GenelIndirimTL) != 0 || NumericConverter.StringToDouble(GenelIndirimYUZDE) != 0)
-                {
-                    item.sth_iskonto2 = 0;
-                    item.sth_iskonto2_info = "";
-                }
-                item.sth_vergi_burut = item.sth_tutar * item.sth_vryuzde / 100;
-
-                item.sth_vergi = (
-                         item.sth_tutar - item.sth_iskonto2
-                       - (item.sth_tutar * NumericConverter.StringToDouble(GenelIndirimYUZDE) / 100)
-                       )
-                       * item.sth_vryuzde
-                       / 100;
-
-                var eldeki_mik = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sth_stok_kod).FirstOrDefault().sto_eldeki_miktar;
-            }
-            double netx2 = 0;
-
-            var vergi_toplami = DetayliSalesList.Sum(x => x.sth_vergi);
-
-            var tutar_toplami = DetayliSalesList.Sum(x => x.sth_tutar);
-
-            var isk2 = DetayliSalesList.Sum(x => x.sth_iskonto2);
-
-            var netx1 = tutar_toplami - (tutar_toplami * NumericConverter.StringToDouble(GenelIndirimYUZDE) / 100) + vergi_toplami;
-
-            if (netx1 > 0)
-            {
-                netx2 = (netx1 - NumericConverter.StringToDouble(GenelIndirimTL) - isk2);
-            }
-            if (netx2 <= 0)
-            {
-
-                tutar = "0";
-            }
-            else
-            {
-                tutar = Math.Round(netx2, 2).ToString();
-            }
-
-            BurutTutar = DetayliSalesList.Sum(x => x.sth_tutar) + DetayliSalesList.Sum(Z => Z.sth_vergi_burut);
-            KalemAdeti = DetayliSalesList.Count;
-            TopalmStokAdeti = DetayliSalesList.Sum(x => x.sth_miktar);
-            BarkodReaderText = "";
-        }
-        async public Task<string> ScannerKAYA(bool flashOn)
-        {
-            MobileBarcodeScanner scanner = new MobileBarcodeScanner();
-
-            scanner.BottomText = "Barkodun dik ve Kirmizi cizgi hizasinda olduğundan emin olun.";
-            ZXing.Result result = null;
-            scanner.AutoFocus();
-            TimeSpan ts = new TimeSpan(0, 0, 0, 1, 0);
-            Device.StartTimer(ts, () =>
-            {
-                if (result == null)
-                {
-                    scanner.AutoFocus();
-                    if (flashOn)
-                    {
-                        scanner.Torch(true);
-                    }
-                    return true;
-                }
-                return false;
-            });
-
-            try
-            {
-
-                result = await scanner.Scan();
-
-                if (result != null)
-                {
-                    return result.Text;
-                }
-
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("error:", ex.Message, "ok");
-                return string.Empty;
-            }
-
-        }
-        private async void CameraBarcodeGO(object obj)
-        {
-            //Barcode_Islemi_yapiliyor = true;
-
-            try
-            {
-                var okunandeger = await ScannerKAYA(false);
-
-                if (okunandeger != "")
-                {
-                    var gelenbarkod = _LSTMANAGER.BARCODELIST.Where(x => x.bar_kodu == okunandeger).FirstOrDefault();
-
-                    if (gelenbarkod != null)
-                    {
-                        var gereklistok = _LSTMANAGER.STOCKLIST.Where(c => c.sto_kod == gelenbarkod.bar_stokkodu).FirstOrDefault();
-
-                        if (gereklistok != null)
-                        {
-                            SelectedStockModel = gereklistok;
-                        }
-                        else
-                        {
-                            await Application.Current.MainPage.DisplayAlert("No Stock found", "No Barcode Found in the Database...", "OK");
-                        }
-                    }
-                    else
-                    {
-                        await Application.Current.MainPage.DisplayAlert("No Barcode", "No Barcode Found in the Database...", "OK");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
-            }
-
-            //Barcode_Islemi_yapiliyor = false;
-        }
-
-        private string _BarkodReaderText;
-        public string BarkodReaderText
-        {
-            get { return _BarkodReaderText; }
-            set
-            {
-                _BarkodReaderText = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private double _TopalmStokAdeti;
-        public double TopalmStokAdeti
-        {
-            get
-            {
-                return DetayliSalesList.Sum(x => x.sth_miktar);
-            }
-            set
-            {
-                _TopalmStokAdeti = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private int _KalemAdeti;
-
-        public int KalemAdeti
-        {
-            get
-            {
-                return DetayliSalesList.Count;
-            }
-            set
-            {
-                _KalemAdeti = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private string _tutar;
-        public string tutar
-        {
-            get
-            {
-                if (_tutar == null)
-                {
-                    tutar = "";
-                }
-                return _tutar.Replace(",", ".");
-            }
-
-            set
-            {
-                _tutar = value.Replace(",", ".");
-                //INotifyPropertyChanged("tutar");
-                INotifyPropertyChanged();
-            }
-        }
-        private void SeriNoDOWN6GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext6 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar6);
-            if (sayi > 0)
-            {
-                sayi--;
-                SeriNoMiktar6 = sayi.ToString();
-            }
-
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoDOWN5GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext5 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar5);
-            if (sayi > 0)
-            {
-                sayi--;
-                SeriNoMiktar5 = sayi.ToString();
-            }
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoDOWN4GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext4 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar4);
-            if (sayi > 0)
-            {
-                sayi--;
-                SeriNoMiktar4 = sayi.ToString();
-            }
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoDOWN3GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext3 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar3);
-            if (sayi > 0)
-            {
-                sayi--;
-                SeriNoMiktar3 = sayi.ToString();
-            }
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoDOWN2GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext2 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar2);
-            if (sayi > 0)
-            {
-                sayi--;
-                SeriNoMiktar2 = sayi.ToString();
-            }
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoDOWN1GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext1 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar1);
-            if (sayi > 0)
-            {
-                sayi--;
-                SeriNoMiktar1 = sayi.ToString();
-            }
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoUP6GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext6 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar6);
-            sayi++;
-            SeriNoMiktar6 = sayi.ToString();
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoUP5GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext5 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar5);
-
-            sayi++;
-            SeriNoMiktar5 = sayi.ToString();
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoUP4GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext4 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar4);
-            sayi++;
-            SeriNoMiktar4 = sayi.ToString();
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoUP3GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext3 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar3);
-            sayi++;
-            SeriNoMiktar3 = sayi.ToString();
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoUP2GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext2 == "") return;
-
-            }
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar2);
-            sayi++;
-            SeriNoMiktar2 = sayi.ToString();
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void SeriNoUP1GO(object obj)
-        {
-            if (SelectedStockModel.sto_detay_takip == 3)
-            {
-                if (Serinotext1 == "") return;
-
-            }
-
-            double sayi = NumericConverter.StringToDouble(SeriNoMiktar1);
-            sayi++;
-            SeriNoMiktar1 = sayi.ToString();
-            SumRenkBedenSeriNoMiktarlari();
-        }
-        private void Amount_DecreaseGO(object obj)
-        {
-            if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_detay_takip == 3)
-                return;
-
-
-            double MIKKKK = NumericConverter.StringToDouble(MainMiktar);
-            if (MIKKKK > 0)
-            {
-
-                MIKKKK--;
-                MainMiktar = MIKKKK.ToString();
-            }
-        }
-        private void Amount_IncreaseGO(object obj)
-        {
-            if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_detay_takip == 3)
-                return;
-
-
-            double MIKKKK = NumericConverter.StringToDouble(MainMiktar);
-            MIKKKK++;
-            MainMiktar = MIKKKK.ToString();
-
-        }
-        private async void BtnStokGosterGO(object obj)
-        {
-            SearchStockText = "";
-            await HelpME.PopAc(new BuyStockSelectPopUp(this));
-        }
-        private async void BtnCariGosterGO(object obj)
-        {
-
-            SearchCustomerText = "";
-            await HelpME.PopAc(new BuyCustomerSelectPopUp(this));
-        }
+        #endregion
 
         #region RENKBEDEN MIKTAR ISLEMLERI 
 
@@ -3600,8 +3179,424 @@ namespace KayaApp.ViewModels
 
         #endregion
 
-      
-        #region Properties 
+        #region PROPERTIES 
+
+
+        private bool _isVisibleGRID;
+        public bool isVisibleGRID
+        {
+            get { return _isVisibleGRID; }
+            set
+            {
+                _isVisibleGRID = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+
+
+        private double _YuzdeToTutar;
+        public double YuzdeToTutar
+        {
+            get { return _YuzdeToTutar; }
+            set { _YuzdeToTutar = value; }
+        }
+
+        private string _GenelIndirimYUZDE;
+        public string GenelIndirimYUZDE
+        {
+            get
+            {
+                if (_GenelIndirimYUZDE == null)
+                {
+                    _GenelIndirimYUZDE = "0";
+                }
+                if (NumericConverter.StringToDouble(_GenelIndirimYUZDE) > 99)
+                {
+                    _GenelIndirimYUZDE = "99";
+                }
+                YuzdeToTutar = NumericConverter.StringToDouble(_GenelIndirimYUZDE) * BurutTutar / 100;
+                return NumericConverter.StringDecor(_GenelIndirimYUZDE);
+            }
+            set
+            {
+                if (NumericConverter.StringToDouble(_GenelIndirimYUZDE) > 99)
+                {
+                    _GenelIndirimYUZDE = "99";
+                }
+                _GenelIndirimYUZDE = NumericConverter.StringDecor(value);
+                CalculateSumGO(_GenelIndirimYUZDE);
+                YuzdeToTutar = NumericConverter.StringToDouble(_GenelIndirimYUZDE) * BurutTutar / 100;
+
+                INotifyPropertyChanged();
+            }
+        }
+
+        private double _BurutTutar;
+        public double BurutTutar
+        {
+            get
+            {
+                return _BurutTutar;
+            }
+            set
+            {
+                _BurutTutar = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private string _GenelIndirimTL;
+        public string GenelIndirimTL
+        {
+            get
+            {
+                if (_GenelIndirimTL == null)
+                {
+                    _GenelIndirimTL = "0";
+                }
+                return NumericConverter.StringDecor(_GenelIndirimTL);
+            }
+            set
+            {
+                _GenelIndirimTL = NumericConverter.StringDecor(value);
+
+                CalculateSumGO(_GenelIndirimTL);
+                INotifyPropertyChanged();
+            }
+        }
+
+
+        private string _BarkodReaderText;
+        public string BarkodReaderText
+        {
+            get { return _BarkodReaderText; }
+            set
+            {
+                _BarkodReaderText = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private double _TopalmStokAdeti;
+        public double TopalmStokAdeti
+        {
+            get
+            {
+                return DetayliSalesList.Sum(x => x.sth_miktar);
+            }
+            set
+            {
+                _TopalmStokAdeti = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private int _KalemAdeti;
+
+        public int KalemAdeti
+        {
+            get
+            {
+                return DetayliSalesList.Count;
+            }
+            set
+            {
+                _KalemAdeti = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private string _tutar;
+        public string tutar
+        {
+            get
+            {
+                if (_tutar == null)
+                {
+                    tutar = "";
+                }
+                return _tutar.Replace(",", ".");
+            }
+
+            set
+            {
+                _tutar = value.Replace(",", ".");
+                //INotifyPropertyChanged("tutar");
+                INotifyPropertyChanged();
+            }
+        }
+        private ObservableCollection<StokPaketleriModel> _TEMPPaketTanimlariVeya_bedava_stoklist;
+
+        public ObservableCollection<StokPaketleriModel> TEMPPaketTanimlariVeya_bedava_stoklist
+        {
+            get
+            {
+                if (_TEMPPaketTanimlariVeya_bedava_stoklist == null)
+                {
+                    _TEMPPaketTanimlariVeya_bedava_stoklist = new ObservableCollection<StokPaketleriModel>();
+                }
+                return _TEMPPaketTanimlariVeya_bedava_stoklist;
+            }
+            set
+            {
+                _TEMPPaketTanimlariVeya_bedava_stoklist = value;
+            }
+        }
+
+        private StokPaketleriModel _TEMPSelected_PaketTanimlariVeya_bedava_stok;
+
+        public StokPaketleriModel TEMPSelected_PaketTanimlariVeya_bedava_stok
+        {
+            get
+            {
+                return _TEMPSelected_PaketTanimlariVeya_bedava_stok;
+            }
+            set
+            {
+                _TEMPSelected_PaketTanimlariVeya_bedava_stok = value;
+                if (_TEMPSelected_PaketTanimlariVeya_bedava_stok != null)
+                {
+                    var analist = _LSTMANAGER.STOKPAKETLERI.Where(x => x.pak_kod == _TEMPSelected_PaketTanimlariVeya_bedava_stok.pak_kod).ToList();
+                    if (analist.Any())
+                    {
+                        var cikarmamgerekenler = analist.Where(x => x.pak_ve_veya == 1).ToList();
+
+                        foreach (var item in cikarmamgerekenler)
+                        {
+                            analist.Remove(item);
+                        }
+                        analist.Add(_TEMPSelected_PaketTanimlariVeya_bedava_stok);
+
+                        paketislemlerinindevami(analist);
+                        HelpME.PopKapat();
+
+                    }
+                }
+            }
+        }
+
+        private List<StockFilterModel> _StockFilter;
+
+        public List<StockFilterModel> StockFilter
+        {
+            get
+            {
+                if (_StockFilter == null)
+                {
+
+                    if (StockList.Any())
+                    {
+                        _StockFilter = new List<StockFilterModel>();
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Markalara göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+
+                        var markaisimleri = StockList.ToList().GroupBy(x => x.sto_marka_ismi).ToList().Where(x => x.Key != "");
+
+
+
+                        if (markaisimleri.Any())
+                        {
+                            foreach (var item in markaisimleri)
+                            {
+                                _StockFilter[0].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 0 });
+                            }
+                        }
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Ana gruba göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var anagrupisimleri = StockList.ToList().GroupBy(x => x.sto_anagrup_ismi).ToList().Where(x => x.Key != "");
+
+                        if (anagrupisimleri.Any())
+                        {
+                            foreach (var item in anagrupisimleri)
+                            {
+                                _StockFilter[1].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 1 });
+                            }
+                        }
+
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Alt gruba göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var altgrupisimleri = StockList.ToList().GroupBy(x => x.sto_altgrup_ismi).ToList().Where(x => x.Key != "");
+
+                        if (altgrupisimleri.Any())
+                        {
+                            foreach (var item in altgrupisimleri)
+                            {
+                                _StockFilter[2].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 2 });
+                            }
+                        }
+
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Üreticilere göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var ureticiisimleri = StockList.ToList().GroupBy(x => x.sto_uretici_ismi).ToList().Where(x => x.Key != "");
+
+                        if (ureticiisimleri.Any())
+                        {
+                            foreach (var item in ureticiisimleri)
+                            {
+                                _StockFilter[3].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 3 });
+                            }
+                        }
+
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Kategorilere göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var kategoriisimleri = StockList.ToList().GroupBy(x => x.sto_kategori_ismi).ToList().Where(x => x.Key != "");
+
+                        if (kategoriisimleri.Any())
+                        {
+                            foreach (var item in kategoriisimleri)
+                            {
+                                _StockFilter[4].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 4 });
+                            }
+                        }
+
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Reyonlara göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var reyonisimleri = StockList.ToList().GroupBy(x => x.sto_reyon_ismi).ToList().Where(x => x.Key != "");
+
+                        if (reyonisimleri.Any())
+                        {
+                            foreach (var item in reyonisimleri)
+                            {
+                                _StockFilter[5].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 5 });
+                            }
+                        }
+
+                    }
+                }
+                return _StockFilter;
+            }
+            set
+            {
+                _StockFilter = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private StockFilterModel _selectedStockFilter;
+
+        public StockFilterModel selectedStockFilter
+        {
+            get
+            {
+                return _selectedStockFilter;
+            }
+            set
+            {
+                //_selectedStockFilter.FilterHeaderIsVisible = true;
+                _selectedStockFilter = value;
+                if (value != null)
+                {
+
+                    if (_selectedStockFilter.FilterHeaderIsVisible)
+                    {
+                        _selectedStockFilter.FilterHeaderIsVisible = false;
+                    }
+                    else
+                    {
+                        foreach (var item in StockFilter)
+                        {
+                            item.FilterHeaderIsVisible = false;
+                        }
+                        _selectedStockFilter.FilterHeaderIsVisible = true;
+                    }
+
+                }
+
+                INotifyPropertyChanged();
+            }
+        }
+
+        private FilterItems _SelectedFilterItem;
+
+        public FilterItems SelectedFilterItem
+        {
+            get
+            {
+                return _SelectedFilterItem;
+            }
+            set
+            {
+                _SelectedFilterItem = value;
+            }
+        }
+
+        private KasaModel _SelectedKasa;
+        public KasaModel SelectedKasa
+        {
+            get { return _SelectedKasa; }
+            set
+            {
+                _SelectedKasa = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private BankaModel _SelectedBanka;
+        public BankaModel SelectedBanka
+        {
+            get { return _SelectedBanka; }
+            set
+            {
+                _SelectedBanka = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<KasaModel> _Kasalar;
+
+        public ObservableCollection<KasaModel> Kasalar
+        {
+            get { return _Kasalar; }
+            set
+            {
+                _Kasalar = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<BankaModel> _Bankalar;
+
+        public ObservableCollection<BankaModel> Bankalar
+        {
+            get { return _Bankalar; }
+            set
+            {
+                _Bankalar = value;
+                INotifyPropertyChanged();
+            }
+        }
+
         public ObservableCollection<DovizKurlariModel> DovizKurlari { get; set; }
 
         private ObservableCollection<CustomerModel> _CustomerList;
