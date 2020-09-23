@@ -1,5 +1,4 @@
-﻿using KayaApp.Helpers;
-using Rg.Plugins.Popup.Pages;
+﻿using Rg.Plugins.Popup.Pages;
 using System;
 using Xamarin.Forms.Xaml;
 
@@ -13,12 +12,12 @@ namespace KayaApp.Views.REPORT
             InitializeComponent();
         }
 
-       
 
-        private  void BtnAktarimMerkezi_Clicked(object sender, EventArgs e)
+
+        private void BtnAktarimMerkezi_Clicked(object sender, EventArgs e)
         {
-             Navigation.PushAsync((new AktarimMerkezi()));
-           // await HelpME.SayfaAc(new AktarimMerkezi());
+            Navigation.PushAsync((new AktarimMerkezi()));
+            // await HelpME.SayfaAc(new AktarimMerkezi());
         }
     }
 }

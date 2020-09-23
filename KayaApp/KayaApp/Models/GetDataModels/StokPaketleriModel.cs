@@ -31,10 +31,10 @@ namespace KayaApp.Models.GetDataModels
         public string pak_kod { get; set; }
         public double pak_fiyat { get; set; }
         public string pak_ismi { get; set; }
-         
-        public string pak_doviz_cins { get; set; } 
 
-        private string _pak_carpan; 
+        public string pak_doviz_cins { get; set; }
+
+        private string _pak_carpan;
         public string pak_carpan
         {
             get { return _pak_carpan; }
@@ -46,7 +46,7 @@ namespace KayaApp.Models.GetDataModels
         }
 
 
-        
+
     }
 
 }

@@ -1,12 +1,6 @@
 ﻿using KayaApp.Views.SALES;
 using Rg.Plugins.Popup.Pages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace KayaApp.Views.POPUP
@@ -17,7 +11,7 @@ namespace KayaApp.Views.POPUP
         public EvrakCagirPopupPage()
         {
             InitializeComponent();
-            if (SatisFaturasiPage.SATVMZ!=null)
+            if (SatisFaturasiPage.SATVMZ != null)
             {
                 BindingContext = SatisFaturasiPage.SATVMZ;
             }

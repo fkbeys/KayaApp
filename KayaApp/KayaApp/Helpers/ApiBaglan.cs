@@ -8,11 +8,10 @@ namespace KayaApp.Helpers
 {
     public class ApiBaglan<T> where T : class
     {
-
-
+        //burayi lazy loading yapppp
         private static HttpClient myclient;
 
-        public static async Task<HttpClient> Gethttpclient()
+        public static HttpClient Gethttpclient()
         {
             if (myclient == null)
             {
@@ -29,7 +28,7 @@ namespace KayaApp.Helpers
 
             try
             {
-                var subclient = await Gethttpclient();
+                var subclient = Gethttpclient();
 
                 var myContent = await subclient.GetStringAsync(requesturl);
 
@@ -40,17 +39,17 @@ namespace KayaApp.Helpers
             catch (System.Exception ex)
             {
 
-                await HelpME.MessageShow("VeriListeAl  Hatasi", ex.Message,"OK");
+                await HelpME.MessageShow("VeriListeAl  Hatasi", ex.Message, "OK");
                 return null;
             }
-          
+
         }
 
         //  nedense calismadi 
         public static async Task<T> VerisadeAl(string requesturl)
         {
 
-            var subclient = await Gethttpclient();
+            var subclient = Gethttpclient();
 
             var myContent = await subclient.GetStringAsync(requesturl);
 
@@ -60,7 +59,7 @@ namespace KayaApp.Helpers
         }
         public static async Task<bool> VeriGonder(string requestURL, List<T> GidecekListe)
         {
-            var subclient = await Gethttpclient();
+            var subclient = Gethttpclient();
             var serialize = JsonConvert.SerializeObject(GidecekListe, Formatting.None);
 
             HttpContent contentPost = new StringContent(serialize, Encoding.UTF8, "application/json");

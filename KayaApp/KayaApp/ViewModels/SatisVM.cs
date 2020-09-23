@@ -20,9 +20,11 @@ namespace KayaApp.ViewModels
 {
     public class SatisVM : BaseViewModel
     {
-        LISTMANAGER _LSTMANAGER;
+        readonly LISTMANAGER _LSTMANAGER;
         public static bool AktarimTaraftanGeliyorum = false;
         private static int stoklistyardimcisi = 0;
+
+        #region commands
         public ICommand RenkBedenUP1 { get; set; }
         public ICommand RenkBedenUP2 { get; set; }
         public ICommand RenkBedenUP3 { get; set; }
@@ -83,6 +85,14 @@ namespace KayaApp.ViewModels
         public ICommand EvrakCagirBtn { get; set; }
 
         public ICommand SelectedStockPaketi { get; set; }
+
+        public ICommand Amount_Decrease_Sade { get; set; }
+        public ICommand Amount_Increase_Sade { get; set; }
+        public ICommand Stock_Add_Sade { get; set; }
+
+        #endregion
+        
+        //ctor
         public SatisVM()
         {
             _LSTMANAGER = DataClass._LSTMANAGER;
@@ -147,13 +157,17 @@ namespace KayaApp.ViewModels
             StokListFiltre = new Command(StokListFiltreGO);
 
 
-
             FilitreUygula = new Command(FilitreUygulaGO);
             FilitreTemizle = new Command(FilitreTemizleGO);
 
             EvrakCagirBtn = new Command(EvrakCagirBtnGO);
 
             SelectedStockPaketi = new Command(SelectedStockPaketiGO);
+
+            Amount_Decrease_Sade = new Command(Amount_Decrease_SadeGO);
+            Amount_Increase_Sade = new Command(Amount_Increase_SadeGO);
+
+            Stock_Add_Sade = new Command(Stock_Add_SadeGO);
 
             Firmalar_list = _LSTMANAGER.FirmalarList;
             Subeler_list = _LSTMANAGER.SubelerList;
@@ -193,57 +207,104 @@ namespace KayaApp.ViewModels
 
         }
 
-        private ObservableCollection<StokPaketleriModel> _TEMPPaketTanimlariVeya_bedava_stoklist;
-
-        public ObservableCollection<StokPaketleriModel> TEMPPaketTanimlariVeya_bedava_stoklist
+        #region GO METHODS
+        private async void Amount_Decrease_SadeGO(object obj)
         {
-            get
+            try
             {
-                if (_TEMPPaketTanimlariVeya_bedava_stoklist == null)
+                StockModel Stokinfo = (StockModel)obj;
+                double.TryParse(Stokinfo.sto_miktar.Replace('.', ','), out double miktar);
+                if (miktar > 1)
                 {
-                    _TEMPPaketTanimlariVeya_bedava_stoklist = new ObservableCollection<StokPaketleriModel>();
+                    miktar--;
                 }
-                return _TEMPPaketTanimlariVeya_bedava_stoklist;
+                Stokinfo.sto_miktar = miktar.ToString().Replace(',', '.');
+
             }
-            set
+            catch (Exception ex)
             {
-                _TEMPPaketTanimlariVeya_bedava_stoklist = value;
+                await HelpME.MessageShow("Stok miktar Decrease Hatası:", ex.Message, "Ok");
+
             }
+
+
         }
 
-        private StokPaketleriModel _TEMPSelected_PaketTanimlariVeya_bedava_stok;
-
-        public StokPaketleriModel TEMPSelected_PaketTanimlariVeya_bedava_stok
+        private async void Amount_Increase_SadeGO(object obj)
         {
-            get
+            try
             {
-                return _TEMPSelected_PaketTanimlariVeya_bedava_stok;
+                StockModel Stokinfo = (StockModel)obj;
+                double.TryParse(Stokinfo.sto_miktar.Replace('.', ','), out double miktar);
+                miktar++;
+                Stokinfo.sto_miktar = miktar.ToString().Replace(',', '.');
             }
-            set
+            catch (Exception ex)
             {
-                _TEMPSelected_PaketTanimlariVeya_bedava_stok = value;
-                if (_TEMPSelected_PaketTanimlariVeya_bedava_stok != null)
-                {
-                    var analist = _LSTMANAGER.STOKPAKETLERI.Where(x => x.pak_kod == _TEMPSelected_PaketTanimlariVeya_bedava_stok.pak_kod).ToList();
-                    if (analist.Any())
-                    {
-                        var cikarmamgerekenler = analist.Where(x => x.pak_ve_veya == 1).ToList();
+                await HelpME.MessageShow("Stok miktar Increase Hatası:", ex.Message, "Ok");
 
-                        foreach (var item in cikarmamgerekenler)
-                        {
-                            analist.Remove(item);
-                        }
-                        analist.Add(_TEMPSelected_PaketTanimlariVeya_bedava_stok);
-
-                        paketislemlerinindevami(analist);
-                        HelpME.PopKapat();
-
-                    }
-                }
             }
+
+
         }
+        private async void Stock_Add_SadeGO(object obj)
+        {
+            try
+            {
+                StockModel Stokinfo = (StockModel)obj;
+
+                if (Stokinfo.sto_miktar == "0") return;
 
 
+                var hareketvarmi = DetayliSalesList.Where(x => x.sth_stok_kod == Stokinfo.sto_kod).FirstOrDefault();
+
+                if (hareketvarmi == null)
+                {
+                    DetayliSalesList.Add
+                 (
+                 new SatisSthModel
+                 {
+                     sth_fiyat_gosterge = Stokinfo.sto_fiyat.ToString(),
+                     sth_miktar_gosterge = Stokinfo.sto_miktar,
+                     sth_stok_kod = Stokinfo.sto_kod,
+                     sth_stok_isim = Stokinfo.sto_isim,
+                     sth_birim_ad = Stokinfo.sto_birim1_ad,
+                     sth_tarih = DateTime.Now.Date,
+                     sth_vergi_pntr = Stokinfo.VERGI_NO,
+                     sth_vryuzde = Stokinfo.vryuzde,
+                     sth_doviz_cins = SelectedDovizKuru.Kur_no,
+                     sth_har_doviz_kur = NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1),
+                     sth_doviz_ismi = SelectedDovizKuru.Kur_sembol,
+                     sth_resim_url = Stokinfo.stok_resim_url,
+                     sth_renk_beden_seri_baglanti = "",
+                     Renk_beden_full_bilgi = "",
+                     sth_parti_kodu = "",
+                     sth_lot_no = 0,
+                     sth_cari = SelectedCustomerModel.cari_kod,
+                 });
+
+                }
+                else
+                {
+                    double.TryParse(Stokinfo.sto_miktar.Replace('.', ','), out double miktar);
+                    hareketvarmi.sth_miktar += miktar;
+                    hareketvarmi.sth_miktar_gosterge = hareketvarmi.sth_miktar.ToString();
+
+
+                }
+
+
+                CalculateSumGO(this);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                await HelpME.MessageShow("Stock_Add_SadeGO Hatası:", ex.Message, "Ok");
+            }
+
+        }
 
         //Paket tanimlarindan bir paket secince bu calisiyor
         private async void SelectedStockPaketiGO(object obj)
@@ -438,9 +499,9 @@ namespace KayaApp.ViewModels
                             Olusan_Beden_Indicatoru = bedenbul.First().bdn_IndicatorName,
                             Olusan_RenkBeden_Miktar = renkbedenmiktar[i],
                             Olusan_Serino = "",
-                            Olusan_Baglantisi_sth= renkbedenguid,
+                            Olusan_Baglantisi_sth = renkbedenguid,
                             Olusan_Serino_Miktar = "",
-                            Olusan_SiraNo = i+1,
+                            Olusan_SiraNo = i + 1,
                             Olusan_Parti = "",
                             Olusan_Lot = 0,
                         };
@@ -473,22 +534,12 @@ namespace KayaApp.ViewModels
             CalculateSumGO(this);
         }
 
-        //private StokPaketleriHeaders _SelectedStockPaketi;
-
-        //public StokPaketleriHeaders SelectedStockPaketi
-        //{
-        //    get { return _SelectedStockPaketi; }
-        //    set { _SelectedStockPaketi = value; }
-        //}
-
-
         private async void EvrakCagirBtnGO(object obj)
         {
 
             await HelpME.PopAc(new EvrakCagirPopupPage());
 
         }
-
 
         private async void FilitreUygulaGO(object obj)
         {
@@ -572,247 +623,7 @@ namespace KayaApp.ViewModels
             await HelpME.PopKapat();
         }
 
-
-
-
-        private List<StockFilterModel> _StockFilter;
-
-        public List<StockFilterModel> StockFilter
-        {
-            get
-            {
-                if (_StockFilter == null)
-                {
-
-                    if (StockList.Any())
-                    {
-                        _StockFilter = new List<StockFilterModel>();
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Markalara göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-
-                        var markaisimleri = StockList.ToList().GroupBy(x => x.sto_marka_ismi).ToList().Where(x => x.Key != "");
-
-
-
-                        if (markaisimleri.Any())
-                        {
-                            foreach (var item in markaisimleri)
-                            {
-                                _StockFilter[0].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 0 });
-                            }
-                        }
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Ana gruba göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var anagrupisimleri = StockList.ToList().GroupBy(x => x.sto_anagrup_ismi).ToList().Where(x => x.Key != "");
-
-                        if (anagrupisimleri.Any())
-                        {
-                            foreach (var item in anagrupisimleri)
-                            {
-                                _StockFilter[1].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 1 });
-                            }
-                        }
-
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Alt gruba göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var altgrupisimleri = StockList.ToList().GroupBy(x => x.sto_altgrup_ismi).ToList().Where(x => x.Key != "");
-
-                        if (altgrupisimleri.Any())
-                        {
-                            foreach (var item in altgrupisimleri)
-                            {
-                                _StockFilter[2].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 2 });
-                            }
-                        }
-
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Üreticilere göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var ureticiisimleri = StockList.ToList().GroupBy(x => x.sto_uretici_ismi).ToList().Where(x => x.Key != "");
-
-                        if (ureticiisimleri.Any())
-                        {
-                            foreach (var item in ureticiisimleri)
-                            {
-                                _StockFilter[3].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 3 });
-                            }
-                        }
-
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Kategorilere göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var kategoriisimleri = StockList.ToList().GroupBy(x => x.sto_kategori_ismi).ToList().Where(x => x.Key != "");
-
-                        if (kategoriisimleri.Any())
-                        {
-                            foreach (var item in kategoriisimleri)
-                            {
-                                _StockFilter[4].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 4 });
-                            }
-                        }
-
-
-                        _StockFilter.Add(new StockFilterModel
-                        {
-                            FilterHeaderName = "Reyonlara göre filtrele",
-                            FilterHeaderIsVisible = false
-
-                        });
-                        var reyonisimleri = StockList.ToList().GroupBy(x => x.sto_reyon_ismi).ToList().Where(x => x.Key != "");
-
-                        if (reyonisimleri.Any())
-                        {
-                            foreach (var item in reyonisimleri)
-                            {
-                                _StockFilter[5].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 5 });
-                            }
-                        }
-
-                    }
-                }
-                return _StockFilter;
-            }
-            set
-            {
-                _StockFilter = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private StockFilterModel _selectedStockFilter;
-
-        public StockFilterModel selectedStockFilter
-        {
-            get
-            {
-                return _selectedStockFilter;
-            }
-            set
-            {
-                //_selectedStockFilter.FilterHeaderIsVisible = true;
-                _selectedStockFilter = value;
-                if (value != null)
-                {
-
-                    if (_selectedStockFilter.FilterHeaderIsVisible)
-                    {
-                        _selectedStockFilter.FilterHeaderIsVisible = false;
-                    }
-                    else
-                    {
-                        foreach (var item in StockFilter)
-                        {
-                            item.FilterHeaderIsVisible = false;
-                        }
-                        _selectedStockFilter.FilterHeaderIsVisible = true;
-                    }
-
-                }
-
-                INotifyPropertyChanged();
-            }
-        }
-
-        private FilterItems _SelectedFilterItem;
-
-        public FilterItems SelectedFilterItem
-        {
-            get
-            {
-                return _SelectedFilterItem;
-            }
-            set
-            {
-                _SelectedFilterItem = value;
-            }
-        }
-
-        private async void StokListFiltreGO(object obj)
-        {
-            await HelpME.PopAc(new StockFilterPage());
-        }
-
-        private void StokListSiralaGO(object obj)
-        {//ablax
-            if (stoklistyardimcisi % 2 == 0)
-            {
-                StockList = new ObservableCollection<StockModel>(StockList.OrderByDescending(x => x.sto_isim).ToList());
-            }
-            else
-            {
-                StockList = new ObservableCollection<StockModel>(StockList.OrderBy(x => x.sto_isim).ToList());
-            }
-            stoklistyardimcisi++;
-
-        }
-
-        private KasaModel _SelectedKasa;
-        public KasaModel SelectedKasa
-        {
-            get { return _SelectedKasa; }
-            set
-            {
-                _SelectedKasa = value;
-                INotifyPropertyChanged();
-            }
-        }
-        private BankaModel _SelectedBanka;
-        public BankaModel SelectedBanka
-        {
-            get { return _SelectedBanka; }
-            set
-            {
-                _SelectedBanka = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private ObservableCollection<KasaModel> _Kasalar;
-
-        public ObservableCollection<KasaModel> Kasalar
-        {
-            get { return _Kasalar; }
-            set
-            {
-                _Kasalar = value;
-                INotifyPropertyChanged();
-            }
-        }
-
-        private ObservableCollection<BankaModel> _Bankalar;
-
-        public ObservableCollection<BankaModel> Bankalar
-        {
-            get { return _Bankalar; }
-            set
-            {
-                _Bankalar = value;
-                INotifyPropertyChanged();
-            }
-        }
+        #endregion
 
         private void EditSTHGOAsync(object obj)
         {
@@ -1156,7 +967,6 @@ namespace KayaApp.ViewModels
 
         }
 
-
         private void DeleteSTHGO(object obj)
         {
             if (obj == null) return;
@@ -1168,7 +978,6 @@ namespace KayaApp.ViewModels
                 CalculateSumGO(this);
             }
         }
-
 
         private async void BtnKaydetGO(object obj)
         {
@@ -1537,6 +1346,301 @@ namespace KayaApp.ViewModels
             }
 
         }
+        private async void StokListFiltreGO(object obj)
+        {
+            await HelpME.PopAc(new StockFilterPage());
+        }
+
+        private void StokListSiralaGO(object obj)
+        {//ablax
+            if (stoklistyardimcisi % 2 == 0)
+            {
+                StockList = new ObservableCollection<StockModel>(StockList.OrderByDescending(x => x.sto_isim).ToList());
+            }
+            else
+            {
+                StockList = new ObservableCollection<StockModel>(StockList.OrderBy(x => x.sto_isim).ToList());
+            }
+            stoklistyardimcisi++;
+
+        }
+
+        private ObservableCollection<StokPaketleriModel> _TEMPPaketTanimlariVeya_bedava_stoklist;
+
+        public ObservableCollection<StokPaketleriModel> TEMPPaketTanimlariVeya_bedava_stoklist
+        {
+            get
+            {
+                if (_TEMPPaketTanimlariVeya_bedava_stoklist == null)
+                {
+                    _TEMPPaketTanimlariVeya_bedava_stoklist = new ObservableCollection<StokPaketleriModel>();
+                }
+                return _TEMPPaketTanimlariVeya_bedava_stoklist;
+            }
+            set
+            {
+                _TEMPPaketTanimlariVeya_bedava_stoklist = value;
+            }
+        }
+
+        private StokPaketleriModel _TEMPSelected_PaketTanimlariVeya_bedava_stok;
+
+        public StokPaketleriModel TEMPSelected_PaketTanimlariVeya_bedava_stok
+        {
+            get
+            {
+                return _TEMPSelected_PaketTanimlariVeya_bedava_stok;
+            }
+            set
+            {
+                _TEMPSelected_PaketTanimlariVeya_bedava_stok = value;
+                if (_TEMPSelected_PaketTanimlariVeya_bedava_stok != null)
+                {
+                    var analist = _LSTMANAGER.STOKPAKETLERI.Where(x => x.pak_kod == _TEMPSelected_PaketTanimlariVeya_bedava_stok.pak_kod).ToList();
+                    if (analist.Any())
+                    {
+                        var cikarmamgerekenler = analist.Where(x => x.pak_ve_veya == 1).ToList();
+
+                        foreach (var item in cikarmamgerekenler)
+                        {
+                            analist.Remove(item);
+                        }
+                        analist.Add(_TEMPSelected_PaketTanimlariVeya_bedava_stok);
+
+                        paketislemlerinindevami(analist);
+                        HelpME.PopKapat();
+
+                    }
+                }
+            }
+        }
+         
+
+     
+        private List<StockFilterModel> _StockFilter;
+
+        public List<StockFilterModel> StockFilter
+        {
+            get
+            {
+                if (_StockFilter == null)
+                {
+
+                    if (StockList.Any())
+                    {
+                        _StockFilter = new List<StockFilterModel>();
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Markalara göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+
+                        var markaisimleri = StockList.ToList().GroupBy(x => x.sto_marka_ismi).ToList().Where(x => x.Key != "");
+
+
+
+                        if (markaisimleri.Any())
+                        {
+                            foreach (var item in markaisimleri)
+                            {
+                                _StockFilter[0].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 0 });
+                            }
+                        }
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Ana gruba göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var anagrupisimleri = StockList.ToList().GroupBy(x => x.sto_anagrup_ismi).ToList().Where(x => x.Key != "");
+
+                        if (anagrupisimleri.Any())
+                        {
+                            foreach (var item in anagrupisimleri)
+                            {
+                                _StockFilter[1].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 1 });
+                            }
+                        }
+
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Alt gruba göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var altgrupisimleri = StockList.ToList().GroupBy(x => x.sto_altgrup_ismi).ToList().Where(x => x.Key != "");
+
+                        if (altgrupisimleri.Any())
+                        {
+                            foreach (var item in altgrupisimleri)
+                            {
+                                _StockFilter[2].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 2 });
+                            }
+                        }
+
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Üreticilere göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var ureticiisimleri = StockList.ToList().GroupBy(x => x.sto_uretici_ismi).ToList().Where(x => x.Key != "");
+
+                        if (ureticiisimleri.Any())
+                        {
+                            foreach (var item in ureticiisimleri)
+                            {
+                                _StockFilter[3].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 3 });
+                            }
+                        }
+
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Kategorilere göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var kategoriisimleri = StockList.ToList().GroupBy(x => x.sto_kategori_ismi).ToList().Where(x => x.Key != "");
+
+                        if (kategoriisimleri.Any())
+                        {
+                            foreach (var item in kategoriisimleri)
+                            {
+                                _StockFilter[4].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 4 });
+                            }
+                        }
+
+
+                        _StockFilter.Add(new StockFilterModel
+                        {
+                            FilterHeaderName = "Reyonlara göre filtrele",
+                            FilterHeaderIsVisible = false
+
+                        });
+                        var reyonisimleri = StockList.ToList().GroupBy(x => x.sto_reyon_ismi).ToList().Where(x => x.Key != "");
+
+                        if (reyonisimleri.Any())
+                        {
+                            foreach (var item in reyonisimleri)
+                            {
+                                _StockFilter[5].Filter_Items.Add(new FilterItems { filteritem_isselected = false, filteritem_aciklama = item.Key, filteritem_nereyeait = 5 });
+                            }
+                        }
+
+                    }
+                }
+                return _StockFilter;
+            }
+            set
+            {
+                _StockFilter = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private StockFilterModel _selectedStockFilter;
+
+        public StockFilterModel selectedStockFilter
+        {
+            get
+            {
+                return _selectedStockFilter;
+            }
+            set
+            {
+                //_selectedStockFilter.FilterHeaderIsVisible = true;
+                _selectedStockFilter = value;
+                if (value != null)
+                {
+
+                    if (_selectedStockFilter.FilterHeaderIsVisible)
+                    {
+                        _selectedStockFilter.FilterHeaderIsVisible = false;
+                    }
+                    else
+                    {
+                        foreach (var item in StockFilter)
+                        {
+                            item.FilterHeaderIsVisible = false;
+                        }
+                        _selectedStockFilter.FilterHeaderIsVisible = true;
+                    }
+
+                }
+
+                INotifyPropertyChanged();
+            }
+        }
+
+        private FilterItems _SelectedFilterItem;
+
+        public FilterItems SelectedFilterItem
+        {
+            get
+            {
+                return _SelectedFilterItem;
+            }
+            set
+            {
+                _SelectedFilterItem = value;
+            }
+        }
+
+    
+
+        private KasaModel _SelectedKasa;
+        public KasaModel SelectedKasa
+        {
+            get { return _SelectedKasa; }
+            set
+            {
+                _SelectedKasa = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private BankaModel _SelectedBanka;
+        public BankaModel SelectedBanka
+        {
+            get { return _SelectedBanka; }
+            set
+            {
+                _SelectedBanka = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<KasaModel> _Kasalar;
+
+        public ObservableCollection<KasaModel> Kasalar
+        {
+            get { return _Kasalar; }
+            set
+            {
+                _Kasalar = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<BankaModel> _Bankalar;
+
+        public ObservableCollection<BankaModel> Bankalar
+        {
+            get { return _Bankalar; }
+            set
+            {
+                _Bankalar = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+      
         private void temizlikisleri()
         {
             if (DetayliSalesList.Count == 0 && DetayliSalesList.Sum(x => x.sth_tutar) <= 0)
@@ -1547,6 +1651,7 @@ namespace KayaApp.ViewModels
                 tutar = "0";
             }
         }
+
         private bool _isVisibleGRID;
         public bool isVisibleGRID
         {
@@ -1932,7 +2037,7 @@ namespace KayaApp.ViewModels
             //CalculateSumGO(this);
             CalculateSumGO(this);
         }
-        private async void satissartlariuygula()
+        private void satissartlariuygula()
         {
             try
             {
@@ -2302,6 +2407,7 @@ namespace KayaApp.ViewModels
         {
             MainMiktar = (NumericConverter.StringToDouble(RenkBedenMiktar1) + NumericConverter.StringToDouble(RenkBedenMiktar2) + NumericConverter.StringToDouble(RenkBedenMiktar3) + NumericConverter.StringToDouble(RenkBedenMiktar4) + NumericConverter.StringToDouble(RenkBedenMiktar5) + NumericConverter.StringToDouble(RenkBedenMiktar6) + NumericConverter.StringToDouble(RenkBedenMiktar7) + NumericConverter.StringToDouble(RenkBedenMiktar8) + NumericConverter.StringToDouble(RenkBedenMiktar9) + NumericConverter.StringToDouble(RenkBedenMiktar10) + NumericConverter.StringToDouble(SeriNoMiktar1) + NumericConverter.StringToDouble(SeriNoMiktar2) + NumericConverter.StringToDouble(SeriNoMiktar3) + NumericConverter.StringToDouble(SeriNoMiktar4) + NumericConverter.StringToDouble(SeriNoMiktar5) + NumericConverter.StringToDouble(SeriNoMiktar6)).ToString();
         }
+
         private double _YuzdeToTutar;
         public double YuzdeToTutar
         {
@@ -2338,6 +2444,7 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
+
         private double _BurutTutar;
         public double BurutTutar
         {
@@ -2351,6 +2458,7 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
+
         private string _GenelIndirimTL;
         public string GenelIndirimTL
         {
@@ -2370,7 +2478,6 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
         private void CalculateSumGO(object obj)
         {
             if (SelectedFirma == null || SelectedSube == null || SelectedCustomerModel == null || SelectedDepo == null || SelectedProje == null || SelectedSorumluluk == null
@@ -2516,8 +2623,8 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-        private double _TopalmStokAdeti;
 
+        private double _TopalmStokAdeti;
         public double TopalmStokAdeti
         {
             get
@@ -2530,7 +2637,6 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
 
         private int _KalemAdeti;
 
@@ -2546,6 +2652,7 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
+
         private string _tutar;
         public string tutar
         {
@@ -2596,7 +2703,6 @@ namespace KayaApp.ViewModels
             }
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoDOWN4GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2612,7 +2718,6 @@ namespace KayaApp.ViewModels
             }
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoDOWN3GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2628,7 +2733,6 @@ namespace KayaApp.ViewModels
             }
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoDOWN2GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2644,7 +2748,6 @@ namespace KayaApp.ViewModels
             }
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoDOWN1GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2660,7 +2763,6 @@ namespace KayaApp.ViewModels
             }
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoUP6GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2673,7 +2775,6 @@ namespace KayaApp.ViewModels
             SeriNoMiktar6 = sayi.ToString();
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoUP5GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2687,7 +2788,6 @@ namespace KayaApp.ViewModels
             SeriNoMiktar5 = sayi.ToString();
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoUP4GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2700,7 +2800,6 @@ namespace KayaApp.ViewModels
             SeriNoMiktar4 = sayi.ToString();
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoUP3GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2713,7 +2812,6 @@ namespace KayaApp.ViewModels
             SeriNoMiktar3 = sayi.ToString();
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoUP2GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2726,7 +2824,6 @@ namespace KayaApp.ViewModels
             SeriNoMiktar2 = sayi.ToString();
             SumRenkBedenSeriNoMiktarlari();
         }
-
         private void SeriNoUP1GO(object obj)
         {
             if (SelectedStockModel.sto_detay_takip == 3)
@@ -2740,7 +2837,42 @@ namespace KayaApp.ViewModels
             SeriNoMiktar1 = sayi.ToString();
             SumRenkBedenSeriNoMiktarlari();
         }
+        private void Amount_DecreaseGO(object obj)
+        {
+            if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_detay_takip == 3)
+                return;
 
+
+            double MIKKKK = NumericConverter.StringToDouble(MainMiktar);
+            if (MIKKKK > 0)
+            {
+
+                MIKKKK--;
+                MainMiktar = MIKKKK.ToString();
+            }
+        }
+        private void Amount_IncreaseGO(object obj)
+        {
+            if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_detay_takip == 3)
+                return;
+
+
+            double MIKKKK = NumericConverter.StringToDouble(MainMiktar);
+            MIKKKK++;
+            MainMiktar = MIKKKK.ToString();
+
+        }
+        private async void BtnStokGosterGO(object obj)
+        {
+            SearchStockText = "";
+            await HelpME.PopAc(new BuyStockSelectPopUp(this));
+        }
+        private async void BtnCariGosterGO(object obj)
+        {
+
+            SearchCustomerText = "";
+            await HelpME.PopAc(new BuyCustomerSelectPopUp(this));
+        }
 
         #region RENKBEDEN MIKTAR ISLEMLERI 
 
@@ -3468,44 +3600,7 @@ namespace KayaApp.ViewModels
 
         #endregion
 
-        private void Amount_DecreaseGO(object obj)
-        {
-            if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_detay_takip == 3)
-                return;
-
-
-            double MIKKKK = NumericConverter.StringToDouble(MainMiktar);
-            if (MIKKKK > 0)
-            {
-
-                MIKKKK--;
-                MainMiktar = MIKKKK.ToString();
-            }
-        }
-
-        private void Amount_IncreaseGO(object obj)
-        {
-            if (SelectedStockModel.sto_renkDetayli || SelectedStockModel.sto_bedenli_takip || SelectedStockModel.sto_detay_takip == 3)
-                return;
-
-
-            double MIKKKK = NumericConverter.StringToDouble(MainMiktar);
-            MIKKKK++;
-            MainMiktar = MIKKKK.ToString();
-
-        }
-
-        private async void BtnStokGosterGO(object obj)
-        {
-            SearchStockText = "";
-            await HelpME.PopAc(new BuyStockSelectPopUp(this));
-        }
-        private async void BtnCariGosterGO(object obj)
-        {
-
-            SearchCustomerText = "";
-            await HelpME.PopAc(new BuyCustomerSelectPopUp(this));
-        }
+      
         #region Properties 
         public ObservableCollection<DovizKurlariModel> DovizKurlari { get; set; }
 
@@ -3530,6 +3625,28 @@ namespace KayaApp.ViewModels
             set
             {
                 _StockList = value;
+                StockList_sade = _StockList;
+                INotifyPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<StockModel> _StockList_sade;
+        public ObservableCollection<StockModel> StockList_sade
+        {
+            get
+            {
+                if (_StockList_sade == null)
+                {
+                    _StockList_sade = new ObservableCollection<StockModel>(_LSTMANAGER.STOCKLIST.Where(x => x.sto_detay_takip == 0 && x.sto_bedenli_takip == false && x.sto_renkDetayli == false));
+
+                }
+
+                return new ObservableCollection<StockModel>(StockList.Where(x => x.sto_detay_takip == 0 && x.sto_bedenli_takip == false && x.sto_renkDetayli == false));
+
+            }
+            set
+            {
+                _StockList_sade = value;
                 INotifyPropertyChanged();
             }
         }
@@ -3594,7 +3711,6 @@ namespace KayaApp.ViewModels
         }
 
 
-
         private ObservableCollection<SatisSthModel> _DetayliSalesList;
         public ObservableCollection<SatisSthModel> DetayliSalesList
         {
@@ -3614,7 +3730,6 @@ namespace KayaApp.ViewModels
         }
 
         private DateTime _Tarih;
-
         public DateTime Tarih
         {
             get { return _Tarih; }
@@ -3624,7 +3739,6 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
         public ObservableCollection<FirmalarModel> Firmalar_list { get; set; }
         public ObservableCollection<SubelerModel> Subeler_list { get; set; }
         public ObservableCollection<DepoIsimleriModel> Depolar_List { get; set; }
@@ -3731,7 +3845,6 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private StokListeTanimlamalariModel _SelectedFiyatListesi;
         public StokListeTanimlamalariModel SelectedFiyatListesi
         {
@@ -3745,7 +3858,6 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
         private void StokFiyatGuncelle()
         {
             if (_SelectedFiyatListesi != null)
@@ -3778,7 +3890,6 @@ namespace KayaApp.ViewModels
         }
 
         private Normal_Iade_Model _SelectedNormalIade;
-
         public Normal_Iade_Model SelectedNormalIade
         {
             get { return _SelectedNormalIade; }
@@ -3834,7 +3945,6 @@ namespace KayaApp.ViewModels
         }
 
         private bool _isKasaVisible;
-
         public bool isKasaVisible
         {
             get { return _isKasaVisible; }
@@ -3844,8 +3954,8 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-        private bool _isBankaVisible;
 
+        private bool _isBankaVisible;
         public bool isBankaVisible
         {
             get { return _isBankaVisible; }
@@ -3855,7 +3965,6 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
 
         private CustomerModel _SelectedCustomerModel;
         public CustomerModel SelectedCustomerModel
@@ -3930,7 +4039,6 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private ObservableCollection<RenkModel> _SelectedRenkforaStock;
 
         public ObservableCollection<RenkModel> SelectedRenkforaStock
@@ -3971,10 +4079,7 @@ namespace KayaApp.ViewModels
             }
         }
 
-
-
         private bool _SeriNoisEnabled1;
-
         public bool SeriNoisEnabled1
         {
             get { return _SeriNoisEnabled1; }
@@ -3985,9 +4090,7 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private bool _SeriNoisEnabled2;
-
         public bool SeriNoisEnabled2
         {
             get { return _SeriNoisEnabled2; }
@@ -3998,9 +4101,7 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private bool _SeriNoisEnabled3;
-
         public bool SeriNoisEnabled3
         {
             get { return _SeriNoisEnabled3; }
@@ -4011,9 +4112,7 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private bool _SeriNoisEnabled4;
-
         public bool SeriNoisEnabled4
         {
             get { return _SeriNoisEnabled4; }
@@ -4024,9 +4123,7 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private bool _SeriNoisEnabled5;
-
         public bool SeriNoisEnabled5
         {
             get { return _SeriNoisEnabled5; }
@@ -4037,9 +4134,7 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private bool _SeriNoisEnabled6;
-
         public bool SeriNoisEnabled6
         {
             get { return _SeriNoisEnabled6; }
@@ -4134,7 +4229,6 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private bool _RenkBedenMiktarIsEnabled7;
         public bool RenkBedenMiktarIsEnabled7
         {
@@ -4148,7 +4242,6 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
 
         private bool _RenkBedenMiktarIsEnabled8;
         public bool RenkBedenMiktarIsEnabled8
@@ -4780,9 +4873,6 @@ namespace KayaApp.ViewModels
             }
         }
 
-
-
-
         private BedenModel _SelectedBeden1;
         public BedenModel SelectedBeden1
         {
@@ -5361,7 +5451,6 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private string _Serinotext1;
         public string Serinotext1
         {
@@ -5524,7 +5613,6 @@ namespace KayaApp.ViewModels
             }
         }
         private ObservableCollection<PartiLotModel> _PartiLotList;
-
         public ObservableCollection<PartiLotModel> PartiLotList
         {
             get { return _PartiLotList; }
@@ -5534,7 +5622,6 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
 
         private PartiLotModel _SelectedParti;
 
@@ -5566,8 +5653,8 @@ namespace KayaApp.ViewModels
 
             }
         }
-        private string _PartiTxt;
 
+        private string _PartiTxt;
         public string PartiTxt
         {
             get { return _PartiTxt; }
@@ -5586,8 +5673,8 @@ namespace KayaApp.ViewModels
 
             }
         }
-        private string _LotTxt;
 
+        private string _LotTxt;
         public string LotTxt
         {
             get
@@ -5607,10 +5694,8 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
-        //mesela
+        
         private string _SelectedLot;
-
         public string SelectedLot
         {
 
@@ -5628,7 +5713,6 @@ namespace KayaApp.ViewModels
             }
         }
 
-
         private ObservableCollection<string> _LotList;
 
         public ObservableCollection<string> LotList
@@ -5643,7 +5727,6 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
 
         private StockModel _SelectedStockModel;
         public StockModel SelectedStockModel
@@ -5948,8 +6031,6 @@ namespace KayaApp.ViewModels
             }
         }
 
-
-
         private string _SearchStockText;
         public string SearchStockText
         {
@@ -5960,11 +6041,11 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
                 var stcklist = new ObservableCollection<StockModel>(SearchClass.SearchStockCls(_SearchStockText));
                 StockList = stcklist;
+
             }
         }
 
         private bool _MainMiktarIsEnabled;
-
         public bool MainMiktarIsEnabled
         {
             get { return _MainMiktarIsEnabled; }
@@ -5974,7 +6055,6 @@ namespace KayaApp.ViewModels
                 INotifyPropertyChanged();
             }
         }
-
 
         private bool _RenkIsVisible;
 
@@ -5987,7 +6067,6 @@ namespace KayaApp.ViewModels
 
             }
         }
-
 
         private bool _SerinoIsVisible;
 
@@ -6023,10 +6102,7 @@ namespace KayaApp.ViewModels
             }
         }
 
-
-
         #endregion
-
 
     }
 }

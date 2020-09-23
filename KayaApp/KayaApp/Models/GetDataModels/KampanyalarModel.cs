@@ -1,13 +1,11 @@
 ﻿using SQLite;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace KayaApp.Models
 {
     public class KampanyalarModel
     {
-        [PrimaryKey,AutoIncrement]
+        [PrimaryKey, AutoIncrement]
         public int KAMP_LOCALID { get; set; }
         public int KAMP_ID { get; set; }
         public string KAMP_ADI { get; set; }
@@ -23,7 +21,7 @@ namespace KayaApp.Models
         public string KAMP_CARI_PROJE { get; set; }
         public string KAMP_CARI_SRM { get; set; }
         public string KAMP_CARI_ODEMEYONTEMI { get; set; }
-         public string KAMP_UYGULANACAK_FATLAR { get; set; }
+        public string KAMP_UYGULANACAK_FATLAR { get; set; }
         public double KAMP_YUZDESEL { get; set; }
         public double KAMP_TUTAR { get; set; }
         public string KAMP_STOKLAR { get; set; }

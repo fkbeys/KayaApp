@@ -43,7 +43,7 @@ namespace KayaApp.Views.POPUP
                     {
                         foreach (var item in list)
                         {
-                           var bulunan= item.Filter_Items.Where(x => x.filteritem_aciklama == tt.filteritem_aciklama);
+                            var bulunan = item.Filter_Items.Where(x => x.filteritem_aciklama == tt.filteritem_aciklama);
                             if (bulunan.Any())
                             {
                                 if (bulunan.FirstOrDefault().filteritem_isselected == false)
@@ -54,7 +54,7 @@ namespace KayaApp.Views.POPUP
                                 {
                                     bulunan.FirstOrDefault().filteritem_isselected = false;
                                 }
-                               
+
                             }
 
                         }

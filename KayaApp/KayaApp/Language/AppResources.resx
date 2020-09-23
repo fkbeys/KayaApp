@@ -137,6 +137,10 @@
     <value>Veriler Yükleniyor. Lütfen bekleyiniz...</value>
     <comment>LoginPage</comment>
   </data>
+  <data name="Fiyat" xml:space="preserve">
+    <value>Fiyat</value>
+    <comment>StockSelectPopUp</comment>
+  </data>
   <data name="loginbtn" xml:space="preserve">
     <value>GİRİŞ YAP</value>
     <comment>LoginPage</comment>

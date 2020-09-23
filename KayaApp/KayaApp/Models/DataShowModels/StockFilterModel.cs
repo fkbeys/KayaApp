@@ -43,7 +43,7 @@ namespace KayaApp.Models.DataShowModels
         //selected item ozelligi kapatilacak.
     }
 
-    public class FilterItems:BaseViewModel
+    public class FilterItems : BaseViewModel
     {
         //public bool filteritem_isselected { get; set; }
 

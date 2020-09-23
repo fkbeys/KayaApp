@@ -1,6 +1,4 @@
-﻿using KayaApp.Views.SALES;
-using Rg.Plugins.Popup.Pages;
-using Xamarin.Forms;
+﻿using Rg.Plugins.Popup.Pages;
 using Xamarin.Forms.Xaml;
 
 namespace KayaApp.Views.POPUP

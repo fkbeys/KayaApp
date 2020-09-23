@@ -56,7 +56,7 @@ namespace KayaApp.Views.REPORT
 
                         SatisFaturasiPage.SATVMZ.SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == gelendeger.Aktarim_Cari_Kod).FirstOrDefault();
 
-                        _LSTMANAGER.DETAYLISALESLIST.Clear(); 
+                        _LSTMANAGER.DETAYLISALESLIST.Clear();
 
                         var SatisFatList = await LocalSQL<SatisFatModel>.GETLISTALL();
                         var secimFatura = SatisFatList.Where(x => x.fat_sth_baglanti == gelendeger.Aktarim_Baglanti_guid).FirstOrDefault();

@@ -87,7 +87,7 @@ namespace KayaApp.Helpers
                 await Baglan();
                 return await conn.Table<T>().ToListAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 //  await HelpME.MessageShow("Local SQL List Error", ex.Message, "okkk");

@@ -3,7 +3,6 @@ using KayaApp.Models;
 using KayaApp.Models.GetDataModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace KayaApp.Helpers
 {
@@ -11,36 +10,6 @@ namespace KayaApp.Helpers
     {
 
         public static LISTMANAGER Instance { get; set; } = new LISTMANAGER();
-
-        public LISTMANAGER()
-        {
-            Getdata();
-        }
-
-        private async Task Getdata()
-        {
-
-            //if (STOCKLIST.Count == 0 && CUSTOMERLIST.Count == 0)
-            //{
-
-            //    List<StockModel> stokum = await LocalSQL<StockModel>.GETLISTALL();
-            //    STOCKLIST = new ObservableCollection<StockModel>(stokum);
-
-
-            //    List<CustomerModel> carim = await LocalSQL<CustomerModel>.GETLISTALL();
-            //    CUSTOMERLIST = new ObservableCollection<CustomerModel>(carim);
-
-            //    List<BarcodeModel> barkodum = await LocalSQL<BarcodeModel>.GETLISTALL();
-            //    BARCODELIST = new ObservableCollection<BarcodeModel>(barkodum);
-
-            //    List<MasrafModel> Masrafim = await LocalSQL<MasrafModel>.GETLISTALL();
-            //    MASRAFLIST = new ObservableCollection<MasrafModel>(Masrafim);
-
-                
-            //}
-
-
-        }
 
         private ObservableCollection<KurIsimleriFullKurusModel> _KurIsimleriFullKurus;
         public ObservableCollection<KurIsimleriFullKurusModel> KurIsimleriFullKurus
@@ -959,7 +928,7 @@ namespace KayaApp.Helpers
                 INotifyPropertyChanged();
             }
         }
-        
+
 
     }
 }

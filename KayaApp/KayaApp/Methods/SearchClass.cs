@@ -18,7 +18,7 @@ namespace KayaApp.Methods
         {
             //if (_LSTMANAGER == null)
             //{
-                _LSTMANAGER = DataClass._LSTMANAGER;
+            _LSTMANAGER = DataClass._LSTMANAGER;
             //}
 
         }
@@ -30,7 +30,7 @@ namespace KayaApp.Methods
             {
                 SearchCustomerText = "";
             }
-          
+
 
             List<CustomerModel> data1 = new List<CustomerModel>();
             try

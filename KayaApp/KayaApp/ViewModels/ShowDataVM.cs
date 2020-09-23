@@ -4,9 +4,7 @@ using KayaApp.Methods;
 using KayaApp.Models;
 using KayaApp.Views.CUSTOMERS;
 using KayaApp.Views.STOCKS;
-using Rg.Plugins.Popup.Extensions;
 using System.Collections.ObjectModel;
-using Xamarin.Forms;
 
 namespace KayaApp.ViewModels
 {
@@ -49,10 +47,10 @@ namespace KayaApp.ViewModels
                 }
             }
         }
-        private async void  stokdetayinagit()
+        private async void stokdetayinagit()
         {
 
-         await   HelpME.PopAc(new StockDetailPopUp(SelectedStockModel));
+            await HelpME.PopAc(new StockDetailPopUp(SelectedStockModel));
         }
 
         private string _StockSearchText;

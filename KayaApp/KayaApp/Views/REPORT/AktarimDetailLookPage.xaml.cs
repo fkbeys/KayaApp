@@ -5,10 +5,6 @@ using Rg.Plugins.Popup.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace KayaApp.Views.REPORT
@@ -18,7 +14,7 @@ namespace KayaApp.Views.REPORT
     {
         LISTMANAGER _LSTMANAGER;
         public AktarimDetailLookPage(AktarimModel gelendeger)
-        { 
+        {
             InitializeComponent();
             _LSTMANAGER = DataClass._LSTMANAGER;
             GelenDatayaGoreFormGoster(gelendeger);

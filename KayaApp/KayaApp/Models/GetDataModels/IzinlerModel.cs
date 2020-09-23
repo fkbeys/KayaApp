@@ -2,7 +2,7 @@
 
 namespace KayaApp.Models
 {
-   public class IzinlerModel
+    public class IzinlerModel
     {
         [PrimaryKey]
         public int izin_id { get; set; }

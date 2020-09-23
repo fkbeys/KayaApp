@@ -329,7 +329,7 @@ namespace KayaApp.Views.CUSTOMERS
                     });
 
 
-                    var urlCARI =  SabitUrl.SendCustomer(_LSTMANAGER.ACTIVECOMPANY.COMPANY_IP.ToString(), _LSTMANAGER.ACTIVECOMPANY.COMPANY_PORT.ToString(), _LSTMANAGER.ACTIVECOMPANY.COMPANY_DB_NAME);
+                    var urlCARI = SabitUrl.SendCustomer(_LSTMANAGER.ACTIVECOMPANY.COMPANY_IP.ToString(), _LSTMANAGER.ACTIVECOMPANY.COMPANY_PORT.ToString(), _LSTMANAGER.ACTIVECOMPANY.COMPANY_DB_NAME);
 
                     if (urlCARI != null)
                     {

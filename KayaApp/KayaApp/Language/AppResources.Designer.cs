@@ -106,6 +106,15 @@ namespace KayaApp.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fiyat.
+        /// </summary>
+        internal static string Fiyat {
+            get {
+                return ResourceManager.GetString("Fiyat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GİRİŞ YAP.
         /// </summary>
         internal static string loginbtn {

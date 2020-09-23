@@ -35,10 +35,10 @@ namespace KayaApp.Views.STOCKS
         {
             await Application.Current.MainPage.Navigation.PopPopupAsync();
         }
-        protected  override bool OnBackButtonPressed()
+        protected override bool OnBackButtonPressed()
         {
-              HelpME.PopKapat();
-           
+            HelpME.PopKapat();
+
             return base.OnBackButtonPressed();
         }
     }

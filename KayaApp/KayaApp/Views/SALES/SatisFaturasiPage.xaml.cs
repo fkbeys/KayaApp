@@ -1,9 +1,4 @@
 ﻿using KayaApp.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -17,13 +12,13 @@ namespace KayaApp.Views.SALES
         public SatisFaturasiPage()
         {
             InitializeComponent();
-             
+
             BindingContext = SATVMZ = new SatisVM();
 
-            if (SATVMZ.SelectedCustomerModel.cari_kod=="")
+            if (SATVMZ.SelectedCustomerModel.cari_kod == "")
             {
                 SATVMZ.BtnCariGoster.Execute(this);
-            }            
+            }
         }
     }
 }

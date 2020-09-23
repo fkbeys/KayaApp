@@ -34,7 +34,7 @@ namespace KayaApp.Droid
             //FF IMAGE
             Xamarin.Forms.Forms.SetFlags("FastRenderers_Experimental");
             CachedImageRenderer.Init(enableFastRenderer: true);
-           
+
             var config = new FFImageLoading.Config.Configuration()
             {
                 VerboseLogging = false,
@@ -67,12 +67,11 @@ namespace KayaApp.Droid
             LoadApplication(new App(constringANDROID));
         }
 
- 
-
+        [Obsolete]
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             // BARCODE ICIN IZIN ALMAKLAZIM
-            global::ZXing.Net.Mobile.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults); 
+            global::ZXing.Net.Mobile.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 

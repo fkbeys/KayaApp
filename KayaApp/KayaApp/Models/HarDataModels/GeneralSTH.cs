@@ -1,9 +1,8 @@
-﻿using KayaApp.Helpers;
-using System;
+﻿using System;
 
 namespace KayaApp.Models
 {
-    public class GeneralSTH:SatisSthModel
+    public class GeneralSTH : SatisSthModel
     {
 
         //public int sth_id

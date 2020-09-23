@@ -69,7 +69,7 @@ namespace KayaApp.Models
         {
             get
             {
-                if (_selectedKampanyabedavaitem==null)
+                if (_selectedKampanyabedavaitem == null)
                 {
                     _selectedKampanyabedavaitem = AppResources.Yok;
                 }
@@ -77,12 +77,12 @@ namespace KayaApp.Models
             }
             set
             {
-                if (value!=null)
+                if (value != null)
                 {
                     _selectedKampanyabedavaitem = value;
                     INotifyPropertyChanged();
                 }
-               
+
             }
         }
 
@@ -143,6 +143,20 @@ namespace KayaApp.Models
 
         public double sto_fiyat { get; set; }
 
+        private string _sto_fiyat_gosterge;
+
+        public string sto_fiyat_gosterge
+        {
+            get
+            {
+
+                return sto_fiyat.ToString().Replace(',', '.');
+                //  return _sto_fiyat_gosterge;
+            }
+            set { _sto_fiyat_gosterge = value; }
+        }
+
+
 
         private double _sto_eldeki_miktar;
 
@@ -192,5 +206,38 @@ namespace KayaApp.Models
         public int stok_islemkodu { get; set; }
 
         public int sto_detay_takip { get; set; }
+
+        //private double _sto_miktar;
+
+        //public double sto_miktar
+        //{
+        //    get { return _sto_miktar; }
+        //    set
+        //    {
+        //        _sto_miktar = value;
+        //        INotifyPropertyChanged();
+        //    }
+        //}
+
+        private string _sto_miktar;
+
+        public string sto_miktar
+        {
+            get
+            {
+                if (_sto_miktar == null)
+                {
+                    _sto_miktar = "0";
+                }
+                return _sto_miktar;
+            }
+            set
+            {
+                _sto_miktar = value;
+                INotifyPropertyChanged();
+            }
+        }
+
+
     }
 }

@@ -37,7 +37,7 @@ namespace KayaApp.Helpers
 
         }
 
-        public static string CustomerURL_(string ip, string port, String DB, int syncID,int UserID)
+        public static string CustomerURL_(string ip, string port, String DB, int syncID, int UserID)
         {
             return "http://" + ip + ":" + port + "/Values/GETALLCUSTOMERS?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
@@ -51,7 +51,7 @@ namespace KayaApp.Helpers
         {
             return "http://" + ip + ":" + port + "/Values/GETALLMASRAF?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
-        public static string DepoIsimleriURL_(string ip, string port, String DB, int syncID,int UserID)
+        public static string DepoIsimleriURL_(string ip, string port, String DB, int syncID, int UserID)
         {
             return "http://" + ip + ":" + port + "/Values/GETALLDEPOISIMLERI?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }
@@ -197,7 +197,7 @@ namespace KayaApp.Helpers
             return "http://" + ip + ":" + port + "/Values/GETALL_KAMPANYALAR?DB=" + DB + "&syncID=" + syncID + " ";
         }
 
-        public static string IZINLER(string ip, string port, String DB, int syncID,int UserID)
+        public static string IZINLER(string ip, string port, String DB, int syncID, int UserID)
         {
             return "http://" + ip + ":" + port + "/Values/GETALL_IZINLER?DB=" + DB + "&syncID=" + syncID + "&UserID=" + UserID + " ";
         }

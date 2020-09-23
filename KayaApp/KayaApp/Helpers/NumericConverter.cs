@@ -1,9 +1,7 @@
-﻿using Java.Util;
-using KayaApp.Models;
+﻿using KayaApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading.Tasks;
 
 namespace KayaApp.Helpers
 {
@@ -33,7 +31,7 @@ namespace KayaApp.Helpers
         public class renk_beden_kirilim
         {
             public int renk_kirilimi { get; set; }
-            public int beden_kirilimi { get; set; } 
+            public int beden_kirilimi { get; set; }
         }
 
         public static renk_beden_kirilim RenkBedenNumarasiniRenkBedenObjesineDondur(string gelensayi)
@@ -48,15 +46,15 @@ namespace KayaApp.Helpers
 
             int beden = gelenint - ((renk - 1) * 40);
 
-            var gonderilecek = new Dictionary<int, int>(); 
+            var gonderilecek = new Dictionary<int, int>();
             return new renk_beden_kirilim { renk_kirilimi = renk, beden_kirilimi = beden };
         }
 
 
-     
+
 
         public static int RenkBedenModeltoIntConvertor(RenkModel gelenrenk, BedenModel gelenbeden)
-        { 
+        {
             try
             {
                 int renkkodu = 0;

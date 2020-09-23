@@ -3,9 +3,7 @@ using KayaApp.Helpers;
 using KayaApp.Language;
 using KayaApp.Models;
 using KayaApp.Models.GetDataModels;
-using Org.Apache.Http.Conn;
 using Plugin.Connectivity;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -117,7 +115,7 @@ namespace KayaApp.GetData
 
                     var url28 = SabitUrl.STOKFIYATLARI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
-                    var url29= SabitUrl.SATIS_SARTLARI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
+                    var url29 = SabitUrl.SATIS_SARTLARI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
                     var url30 = SabitUrl.STOK_PAKETLERI(Mycompany.COMPANY_IP.ToString(), Mycompany.COMPANY_PORT.ToString(), Mycompany.COMPANY_DB_NAME, SyncID);
 
@@ -163,7 +161,7 @@ namespace KayaApp.GetData
 
                     var durumSubeler = await ApiBaglan<SubelerModel>.VeriListeAl(url14);
 
-                     var durumRenkler = await ApiBaglan<RenkModel>.VeriListeAl(url15);
+                    var durumRenkler = await ApiBaglan<RenkModel>.VeriListeAl(url15);
 
                     var durumBedenler = await ApiBaglan<BedenModel>.VeriListeAl(url16);
 
@@ -596,10 +594,10 @@ namespace KayaApp.GetData
                         await LocalSQL<StockModel>.DBIslem("DELETE FROM StockModel where sto_RECno in (" + tt.ToString() + ") ");
                     }
                     if (durumKampanyalar.Count > 0)
-                    { 
+                    {
                         foreach (var item in durumKampanyalar)
                         {
-                            await LocalSQL<KampanyalarModel>.DBIslem("DELETE FROM KampanyalarModel where KAMP_ADI = ('" +item.KAMP_ADI+ "') ");
+                            await LocalSQL<KampanyalarModel>.DBIslem("DELETE FROM KampanyalarModel where KAMP_ADI = ('" + item.KAMP_ADI + "') ");
                         }
                     }
 
@@ -715,16 +713,16 @@ namespace KayaApp.GetData
                     _LSTMANAGER.STOKFIYATLARI = new ObservableCollection<StokFiyatlariModel>(STOKFIYATLARI);
 
                     var SATISSARTLARI = await LocalSQL<SatisSartlariModel>.GETLISTALL();
-                    _LSTMANAGER.SATISSARTLARI= new ObservableCollection<SatisSartlariModel>(SATISSARTLARI);
+                    _LSTMANAGER.SATISSARTLARI = new ObservableCollection<SatisSartlariModel>(SATISSARTLARI);
 
                     var STOKPAKETLERI = await LocalSQL<StokPaketleriModel>.GETLISTALL();
-                    _LSTMANAGER.STOKPAKETLERI= new ObservableCollection<StokPaketleriModel>(STOKPAKETLERI);
+                    _LSTMANAGER.STOKPAKETLERI = new ObservableCollection<StokPaketleriModel>(STOKPAKETLERI);
 
 
                     _LSTMANAGER.Sorumluluklar.Insert(0, new SorumlulukModel { som_isim = "", som_kod = "" });
                     _LSTMANAGER.Projeler.Insert(0, new ProjeModel { pro_adi = "", pro_kodu = "" });
-                     _LSTMANAGER.OdemePlanlari.Insert(0, new OdemePlanlariModel { odp_no = 0, odp_adi = AppResources.Pesin });
-                    
+                    _LSTMANAGER.OdemePlanlari.Insert(0, new OdemePlanlariModel { odp_no = 0, odp_adi = AppResources.Pesin });
+
 
 
 
@@ -833,7 +831,7 @@ namespace KayaApp.GetData
 
                 foreach (var item in odemeyontemIDleri)
                 {
-                    if (item!="")
+                    if (item != "")
                     {
                         int sonuc = 0;
                         int.TryParse(item, out sonuc);
@@ -841,7 +839,7 @@ namespace KayaApp.GetData
                         string odemeyontemi = "";
                         switch (sonuc)
                         {
-                          case  0:odemeyontemi = AppResources.AcikHesap; break;
+                            case 0: odemeyontemi = AppResources.AcikHesap; break;
 
                             case 1: odemeyontemi = AppResources.Nakit; break;
 
@@ -853,10 +851,10 @@ namespace KayaApp.GetData
 
                         _LSTMANAGER.Acik_Kapali.Add(new Acik_Kapali_Model { Acik_Kapali_ID = sonuc, Kapama_Sekli = odemeyontemi });
 
-                        
+
                     }
                 }
-                 
+
 
                 return true;
             }
@@ -865,10 +863,10 @@ namespace KayaApp.GetData
 
                 return false;
             }
-             
+
         }
 
-     
+
 
         private static async Task DELETEALLDATA()
         {
@@ -903,6 +901,6 @@ namespace KayaApp.GetData
             await LocalSQL<IzinlerModel>.DELETEALL();
             await LocalSQL<StokFiyatlariModel>.DELETEALL();
             await LocalSQL<SatisSartlariModel>.DELETEALL();
-         }
+        }
     }
 }
