@@ -29,11 +29,11 @@
     </pages:PopupPage.Animation  >
     
     <StackLayout BackgroundColor="Gray"  >
-    <Grid RowDefinitions="auto,*" ColumnDefinitions="*,*,*" >
+    <Grid RowDefinitions="auto,*" ColumnDefinitions="*,AUTO,AUTO" >
 
-            <Button Grid.Row="0" Grid.Column="0" Clicked="Button_Clicked" Text="Paket"/>
-            <Button Grid.Row="0" Grid.Column="1" Clicked="Button_Clicked_1" Text="Siparis Satir"/>
-            <Button Grid.Row="0" Grid.Column="2" Clicked="Button_Clicked_2"  Text="Siparis Evrak"/>
+            <Button x:Name="BtnPaket" Grid.Row="0" Grid.Column="0" Clicked="Button_Clicked" Text="Paket"/>
+            <Button x:Name="BtnSiparisSatir" Grid.Row="0" Grid.Column="1" Clicked="Button_Clicked_1" Text="Siparis Satir"/>
+            <Button x:Name="BtnSiparisEvrak" Grid.Row="0" Grid.Column="2" Clicked="Button_Clicked_2"  Text="Siparis Evrak"/>
 
 
             <ListView x:Name="StokPaketleriList"   Grid.Row="1" Grid.ColumnSpan="3"  ItemsSource="{Binding StokPaketleriHeaders}" CachingStrategy="RecycleElement"  HasUnevenRows="True" >

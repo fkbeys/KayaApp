@@ -18,7 +18,7 @@ using ZXing.Mobile;
 
 namespace KayaApp.ViewModels
 {
-    public class SatisVM : BaseViewModel
+    public class AlisVM : BaseViewModel
     {
         readonly LISTMANAGER _LSTMANAGER;
         public static bool AktarimTaraftanGeliyorum = false;
@@ -91,8 +91,7 @@ namespace KayaApp.ViewModels
         public ICommand Stock_Add_Sade { get; set; }
 
         #endregion
-
-        public SatisVM()
+        public AlisVM()
         {
             _LSTMANAGER = DataClass._LSTMANAGER;
 
@@ -202,8 +201,6 @@ namespace KayaApp.ViewModels
             tutar = "0";
             isVisibleGRID = true;
             PartiLotList = _LSTMANAGER.PartiLotList;
-
-
         }
 
         #region GO METHODS
@@ -212,10 +209,10 @@ namespace KayaApp.ViewModels
             if (SelectedFirma == null || SelectedSube == null || SelectedCustomerModel == null || SelectedDepo == null || SelectedProje == null || SelectedSorumluluk == null
                                          || SelectedFiyatListesi == null || SelectedOdemePlani == null || SelectedAcikKapali == null
                                          || SelectedDovizKuru == null) return;
-            kampanyauygula();
-            satissartlariuygula();
+            //kampanyauygula();
+            //satissartlariuygula();
 
-            foreach (var item in DetayliSalesList)
+            foreach (var item in BuyList)
             {
                 if (NumericConverter.StringToDouble(GenelIndirimTL) != 0 || NumericConverter.StringToDouble(GenelIndirimYUZDE) != 0)
                 {
@@ -235,11 +232,11 @@ namespace KayaApp.ViewModels
             }
             double netx2 = 0;
 
-            var vergi_toplami = DetayliSalesList.Sum(x => x.sth_vergi);
+            var vergi_toplami = BuyList.Sum(x => x.sth_vergi);
 
-            var tutar_toplami = DetayliSalesList.Sum(x => x.sth_tutar);
+            var tutar_toplami = BuyList.Sum(x => x.sth_tutar);
 
-            var isk2 = DetayliSalesList.Sum(x => x.sth_iskonto2);
+            var isk2 = BuyList.Sum(x => x.sth_iskonto2);
 
             var netx1 = tutar_toplami - (tutar_toplami * NumericConverter.StringToDouble(GenelIndirimYUZDE) / 100) + vergi_toplami;
 
@@ -257,9 +254,9 @@ namespace KayaApp.ViewModels
                 tutar = Math.Round(netx2, 2).ToString();
             }
 
-            BurutTutar = DetayliSalesList.Sum(x => x.sth_tutar) + DetayliSalesList.Sum(Z => Z.sth_vergi_burut);
-            KalemAdeti = DetayliSalesList.Count;
-            TopalmStokAdeti = DetayliSalesList.Sum(x => x.sth_miktar);
+            BurutTutar = BuyList.Sum(x => x.sth_tutar) + BuyList.Sum(Z => Z.sth_vergi_burut);
+            KalemAdeti = BuyList.Count;
+            TopalmStokAdeti = BuyList.Sum(x => x.sth_miktar);
             BarkodReaderText = "";
         }
 
@@ -547,12 +544,12 @@ namespace KayaApp.ViewModels
         {
             GenelIndirimYUZDE = "0";
             GenelIndirimTL = "0";
-            DetayliSalesList.Clear();
+            BuyList.Clear();
             CalculateSumGO(obj);
         }
         private void temizlikisleri()
         {
-            if (DetayliSalesList.Count == 0 && DetayliSalesList.Sum(x => x.sth_tutar) <= 0)
+            if (BuyList.Count == 0 && BuyList.Sum(x => x.sth_tutar) <= 0)
             {
                 GenelIndirimTL = "0";
                 GenelIndirimYUZDE = "0";
@@ -859,7 +856,7 @@ namespace KayaApp.ViewModels
                 _LSTMANAGER.DETAYLI_SATIS_RENK_BEDEN_SERI_HAREKETLERI.Add(item);
             }
             //garip4
-            var mevcutsatislist = DetayliSalesList.Where(x => x.sth_stok_kod == SelectedStockModel.sto_kod).ToList();
+            var mevcutsatislist = BuyList.Where(x => x.sth_stok_kod == SelectedStockModel.sto_kod).ToList();
 
             //eger stokhareketinde zaten bu stoktan 2 tane varsa, bu demektir ki, bu kampanyaile alakali bi stok, bu yuzden kampanyali hareketleri sifirliyoruz.
             //bu tur uyanikliklarin onune gecmeliyiz.
@@ -867,7 +864,7 @@ namespace KayaApp.ViewModels
             {
                 foreach (var item in mevcutsatislist)
                 {
-                    DetayliSalesList.Remove(item);
+                    BuyList.Remove(item);
                 }
             }
             if (mevcutsatislist.Count == 1)
@@ -894,9 +891,9 @@ namespace KayaApp.ViewModels
             else
             {
 
-                DetayliSalesList.Add
+                BuyList.Add
                     (
-                    new SatisSthModel
+                    new AlisSthModel
                     {
                         sth_fiyat_gosterge = MainFiyat,
                         sth_miktar_gosterge = MainMiktar,
@@ -962,7 +959,7 @@ namespace KayaApp.ViewModels
                             }
                         }
 
-                        foreach (var itemsth in DetayliSalesList.ToList())
+                        foreach (var itemsth in BuyList.ToList())
                         {
 
                             int depokotnrol = 0;
@@ -1013,7 +1010,7 @@ namespace KayaApp.ViewModels
                         itemsxxsx.sto_indirimbilgisi = "";
                         itemsxxsx.kampanyavisible = false;
                     }
-                    foreach (var item in DetayliSalesList.ToList())
+                    foreach (var item in BuyList.ToList())
                     {
                         if (!item.isbedavalikampanya)
                         {
@@ -1022,8 +1019,8 @@ namespace KayaApp.ViewModels
                         }
                     }
 
-                    var toplamtutars = DetayliSalesList.Sum(x => x.sth_tutar) / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1);
-                    var toplammiktars = DetayliSalesList.Sum(x => x.sth_miktar);
+                    var toplamtutars = BuyList.Sum(x => x.sth_tutar) / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1);
+                    var toplammiktars = BuyList.Sum(x => x.sth_miktar);
 
                     foreach (var item in _LSTMANAGER.KampanyalarList)
                     {
@@ -1142,7 +1139,7 @@ namespace KayaApp.ViewModels
 
                         #endregion
 
-                        foreach (var itemsth in DetayliSalesList.ToList())
+                        foreach (var itemsth in BuyList.ToList())
                         {
 
                             if (itemsth.sth_tutar <= item.KAMP_MINUMUM_TUTAR / NumericConverter.StringToDouble(SelectedDovizKuru.Kur_fiyat1) || itemsth.sth_miktar <= item.KAMP_MIMINUM_MIKTAR)
@@ -1211,7 +1208,7 @@ namespace KayaApp.ViewModels
                                     {
                                         //bu stok hareketinde 2 tane varmi ona bakiyoruz.
 
-                                        var birstoktan2tanevarmi = from p in DetayliSalesList.Where(xx => xx.sth_stok_kod == itemsth.sth_stok_kod).GroupBy(p => p.sth_stok_kod)
+                                        var birstoktan2tanevarmi = from p in BuyList.Where(xx => xx.sth_stok_kod == itemsth.sth_stok_kod).GroupBy(p => p.sth_stok_kod)
                                                                    select new
                                                                    {
                                                                        count = p.Count(),
@@ -1223,11 +1220,11 @@ namespace KayaApp.ViewModels
                                         {
                                             if (itemikitanevarmichk.count == 2)
                                             {
-                                                var silinsin = DetayliSalesList.Where(x => x.sth_stok_kod == itemikitanevarmichk.sth_stok_kod).ToList();
+                                                var silinsin = BuyList.Where(x => x.sth_stok_kod == itemikitanevarmichk.sth_stok_kod).ToList();
 
                                                 foreach (var itemsilinsin in silinsin)
                                                 {
-                                                    DetayliSalesList.Remove(itemsilinsin);
+                                                    BuyList.Remove(itemsilinsin);
 
                                                 }
                                                 HelpME.MessageShow("Uyari", "Kampanya tanimlarina uymayan stok hareketleri silindi...", "ok");
@@ -1345,13 +1342,13 @@ namespace KayaApp.ViewModels
                 if (Stokinfo.sto_miktar == "0") return;
 
 
-                var hareketvarmi = DetayliSalesList.Where(x => x.sth_stok_kod == Stokinfo.sto_kod).FirstOrDefault();
+                var hareketvarmi = BuyList.Where(x => x.sth_stok_kod == Stokinfo.sto_kod).FirstOrDefault();
 
                 if (hareketvarmi == null)
                 {
-                    DetayliSalesList.Add
+                    BuyList.Add
                  (
-                 new SatisSthModel
+                 new AlisSthModel
                  {
                      sth_fiyat_gosterge = Stokinfo.sto_fiyat.ToString(),
                      sth_miktar_gosterge = Stokinfo.sto_miktar,
@@ -1537,7 +1534,7 @@ namespace KayaApp.ViewModels
 
                 string renkbedenguid = Guid.NewGuid().ToString();
 
-                DetayliSalesList.Add(new SatisSthModel
+                BuyList.Add(new AlisSthModel
                 {
                     sth_fiyat_gosterge = fiyat.ToString(),
 
@@ -1602,30 +1599,20 @@ namespace KayaApp.ViewModels
                     foreach (var itemss in renkbedenmiktar)
                     {
 
-                    }
-
-
-
-                }
-
-                //}
-                //else
-                //{
-
-                //    await HelpME.MessageShow("Uyari", "Suan Renk Beden olayini yapmiyoruz.sonra yapcaz..", "OK");
-
-                //}
+                    } 
+                } 
 
             }
             await HelpME.MessageShow("Ok", "Paket Eklendi", "OK");
-            //throw new NotImplementedException();
-
+            
             CalculateSumGO(this);
         }
 
         private async void EvrakCagirBtnGO(object obj)
         {
+
             await HelpME.PopAc(new EvrakCagirPopupPage(this));
+
         }
 
         private async void FilitreUygulaGO(object obj)
@@ -2058,8 +2045,8 @@ namespace KayaApp.ViewModels
 
             if (obj is SatisSthModel)
             {
-                var gelendeger = (SatisSthModel)obj;
-                DetayliSalesList.Remove(gelendeger);
+                var gelendeger = (AlisSthModel)obj;
+                BuyList.Remove(gelendeger);
                 CalculateSumGO(this);
             }
         }
@@ -2069,20 +2056,20 @@ namespace KayaApp.ViewModels
 
             try
             {
-                if (DetayliSalesList.Count == 0) return;
+                if (BuyList.Count == 0) return;
 
                 if (SelectedCustomerModel == null) { await HelpME.MessageShow("Uyari", "Lutfen Cari Seciniz", "OK"); return; }
 
                 if (tutar == "0") { await HelpME.MessageShow("Uyari", "Tutar Sifir Olamaz", "OK"); return; }
 
-                var tutarsifirlar = DetayliSalesList.Where(x => x.sth_miktar <= 0).ToList();
+                var tutarsifirlar = BuyList.Where(x => x.sth_miktar <= 0).ToList();
                 foreach (var item in tutarsifirlar)
                 {
                     var res = await App.Current.MainPage.DisplayAlert("Zero", "Bazi stok miktarlari sifir. Silmek istiyormusunuz?", "Ok", "Cancel");
 
                     if (res)
                     {
-                        DetayliSalesList.Remove(item);
+                        BuyList.Remove(item);
                     }
                     else return;
                 }
@@ -2091,7 +2078,7 @@ namespace KayaApp.ViewModels
                 #region INDIRIM DUZENLEME MERKEZI
                 double hedef_tutar = NumericConverter.StringToDouble(tutar); //199.99
 
-                double ham_tutar = DetayliSalesList.Sum(x => x.sth_tutar); //169.48
+                double ham_tutar = BuyList.Sum(x => x.sth_tutar); //169.48
 
                 double yeni_indirim_toplam_tl = 0;
 
@@ -2099,14 +2086,13 @@ namespace KayaApp.ViewModels
 
                 if (GenelIndirimTL != "0" || GenelIndirimYUZDE != "0")
                 {
-                    foreach (var item in DetayliSalesList)
+                    foreach (var item in BuyList)
                     {
 
                         //varan1
                         item.sth_iskonto2 = 0;
                         /////////////////////////////////////
-
-
+                         
                         double Carpan = 0;
 
                         //KAFAM YANDI BURDA TAM 2 GUN UGRASTIM.. COK KRITIK KOD. SAKIN KARISMA
@@ -2164,9 +2150,9 @@ namespace KayaApp.ViewModels
 
                 string myfat_cari_kod = SelectedCustomerModel.cari_kod;
 
-                double fat_topam_plus_vergi = DetayliSalesList.Sum(x => x.sth_tutar) + DetayliSalesList.Sum(x => x.sth_vergi);
+                double fat_topam_plus_vergi = BuyList.Sum(x => x.sth_tutar) + BuyList.Sum(x => x.sth_vergi);
 
-                double fat_toplam = DetayliSalesList.Sum(x => x.sth_tutar);
+                double fat_toplam = BuyList.Sum(x => x.sth_tutar);
 
                 double vergi1 = 0;
                 double vergi2 = 0;
@@ -2179,57 +2165,57 @@ namespace KayaApp.ViewModels
                 double vergi9 = 0;
                 double vergi10 = 0;
 
-                for (int i = 0; i < DetayliSalesList.Count; i++)
+                for (int i = 0; i < BuyList.Count; i++)
                 {
-                    int deger = DetayliSalesList[i].sth_vergi_pntr;
-                    var StokBilgi = _LSTMANAGER.STOCKLIST.Where(S => S.sto_kod == DetayliSalesList[i].sth_stok_kod).FirstOrDefault();
+                    int deger = BuyList[i].sth_vergi_pntr;
+                    var StokBilgi = _LSTMANAGER.STOCKLIST.Where(S => S.sto_kod == BuyList[i].sth_stok_kod).FirstOrDefault();
                     int vergi_karsilastirmasi = StokBilgi.VERGI_NO;
 
 
                     if (vergi_karsilastirmasi == 2)
                     {
-                        vergi2 += DetayliSalesList[i].sth_vergi;
+                        vergi2 += BuyList[i].sth_vergi;
                     }
                     else
                      if (vergi_karsilastirmasi == 3)
                     {
-                        vergi3 += DetayliSalesList[i].sth_vergi;
+                        vergi3 += BuyList[i].sth_vergi;
                     }
                     else
                    if (vergi_karsilastirmasi == 4)
                     {
 
-                        vergi4 += DetayliSalesList[i].sth_vergi;
+                        vergi4 += BuyList[i].sth_vergi;
 
                     }
                     else
                     if (vergi_karsilastirmasi == 5)
                     {
-                        vergi5 += DetayliSalesList[i].sth_vergi;
+                        vergi5 += BuyList[i].sth_vergi;
                     }
                     else
                      if (vergi_karsilastirmasi == 6)
                     {
-                        vergi6 += DetayliSalesList[i].sth_vergi;
+                        vergi6 += BuyList[i].sth_vergi;
                     }
                     else
                    if (vergi_karsilastirmasi == 7)
                     {
-                        vergi7 += DetayliSalesList[i].sth_vergi;
+                        vergi7 += BuyList[i].sth_vergi;
                     }
                     else
                      if (vergi_karsilastirmasi == 8)
                     {
-                        vergi8 += DetayliSalesList[i].sth_vergi;
+                        vergi8 += BuyList[i].sth_vergi;
                     }
                     else
                    if (vergi_karsilastirmasi == 9)
                     {
-                        vergi9 += DetayliSalesList[i].sth_vergi;
+                        vergi9 += BuyList[i].sth_vergi;
                     }
                     if (vergi_karsilastirmasi == 10)
                     {
-                        vergi10 += DetayliSalesList[i].sth_vergi;
+                        vergi10 += BuyList[i].sth_vergi;
                     }
                 }
 
@@ -2269,8 +2255,8 @@ namespace KayaApp.ViewModels
 
 
                 string islem_baglanti_guidi = Guid.NewGuid().ToString();
-                List<SatisFatModel> faturalar = new List<SatisFatModel>();
-                faturalar.Add(new SatisFatModel
+                List<AlisFatModel> faturalar = new List<AlisFatModel>();
+                faturalar.Add(new AlisFatModel
                 {
 
                     fat_cari_cins = xfat_cari_cins,
@@ -2298,9 +2284,9 @@ namespace KayaApp.ViewModels
                     fat_vergi9 = vergi9,
                     fat_vergi10 = vergi10,
                     fat_evrak_seri = _LSTMANAGER.ACTIVEUSER.USERS_SHORT_NAME,
-                    fat_tip = 0,
-                    fat_evrak_tip = 63,
-                    fat_aciklama = "Detayli Satis -MIKRON ERP",
+                    fat_tip = 1,
+                    fat_evrak_tip = 0,
+                    fat_aciklama = "Alış -MIKRON ERP",
                     fat_normal_Iade = SelectedNormalIade.Normal_Iade_ID,
                     fat_kasa_hizkod = "",  //userin kasa kodu olmali
                     fat_kasa_hizmet = 0,
@@ -2309,7 +2295,7 @@ namespace KayaApp.ViewModels
                     fat_cinsi = 6,  //
                     fat_ft_iskonto1 = yeni_indirim_toplam_tl,
                     fat_sth_baglanti = islem_baglanti_guidi,
-                    fat_islemkodu = 1,
+                    fat_islemkodu = 2,
                     fat_firma = SelectedFirma.fir_sirano,
                     fat_sube = SelectedSube.Sube_no,
                     mikro_user_id = _LSTMANAGER.ACTIVEUSER.USERS_MIKROID,
@@ -2321,35 +2307,33 @@ namespace KayaApp.ViewModels
                 int sonuc_Fatura_okey = 0;
                 int sonuc_STH_okey = 0;
 
-                for (int i = 0; i < DetayliSalesList.Count; i++)
+                for (int i = 0; i < BuyList.Count; i++)
                 {
-                    DetayliSalesList[i].sth_cari = SelectedCustomerModel.cari_kod;
-                    DetayliSalesList[i].sth_giris_depo_no = SelectedDepo.dep_no;
-                    DetayliSalesList[i].sth_cikis_depo_no = SelectedDepo.dep_no;
-                    DetayliSalesList[i].sth_fiyat_liste_no = _LSTMANAGER.ACTIVEUSER.USERS_DEFAULT_FIYATLISTESI;
-                    DetayliSalesList[i].sth_username_seri = _LSTMANAGER.ACTIVEUSER.USERS_SHORT_NAME;
-                    DetayliSalesList[i].sth_evraktip = 4;
-                    DetayliSalesList[i].sth_tip = 1;
-                    DetayliSalesList[i].sth_fat_baglanti = islem_baglanti_guidi;
-                    DetayliSalesList[i].sth_islemkodu = 1;
-                    DetayliSalesList[i].sth_firma = SelectedFirma.fir_sirano;
-                    DetayliSalesList[i].sth_sube = SelectedSube.Sube_no;
-                    DetayliSalesList[i].mikro_user_id = _LSTMANAGER.ACTIVEUSER.USERS_MIKROID;
-                    DetayliSalesList[i].sth_mikronfaturaid = 1;
-                    DetayliSalesList[i].sth_normal_iade = SelectedNormalIade.Normal_Iade_ID;
-                    DetayliSalesList[i].sth_odeme_op = SelectedOdemePlani.odp_no;
-                    DetayliSalesList[i].sth_fiyat_liste_no = SelectedFiyatListesi.sfl_sirano;
-                    DetayliSalesList[i].sth_srm_merkezi = SelectedSorumluluk.som_kod;
-                    DetayliSalesList[i].sth_proje = SelectedProje.pro_kodu;
-                    DetayliSalesList[i].sth_tarih = Tarih;
+                    BuyList[i].sth_cari = SelectedCustomerModel.cari_kod;
+                    BuyList[i].sth_giris_depo_no = SelectedDepo.dep_no;
+                    BuyList[i].sth_cikis_depo_no = SelectedDepo.dep_no;
+                    BuyList[i].sth_fiyat_liste_no = _LSTMANAGER.ACTIVEUSER.USERS_DEFAULT_FIYATLISTESI;
+                    BuyList[i].sth_username_seri = _LSTMANAGER.ACTIVEUSER.USERS_SHORT_NAME;
+                    BuyList[i].sth_evraktip = 3;
+                    BuyList[i].sth_tip = 0;
+                    BuyList[i].sth_fat_baglanti = islem_baglanti_guidi;
+                    BuyList[i].sth_islemkodu = 2;
+                    BuyList[i].sth_firma = SelectedFirma.fir_sirano;
+                    BuyList[i].sth_sube = SelectedSube.Sube_no;
+                    BuyList[i].mikro_user_id = _LSTMANAGER.ACTIVEUSER.USERS_MIKROID;
+                    BuyList[i].sth_mikronfaturaid = 2;
+                    BuyList[i].sth_normal_iade = SelectedNormalIade.Normal_Iade_ID;
+                    BuyList[i].sth_odeme_op = SelectedOdemePlani.odp_no;
+                    BuyList[i].sth_fiyat_liste_no = SelectedFiyatListesi.sfl_sirano;
+                    BuyList[i].sth_srm_merkezi = SelectedSorumluluk.som_kod;
+                    BuyList[i].sth_proje = SelectedProje.pro_kodu;
+                    BuyList[i].sth_tarih = Tarih;
 
-                }
-
-
+                } 
 
                 //FATURA VE STOK HAREKETLERINI TELEFONA KAYDEDIYORUZ. AKTARIM OLSA DA OLMASADA BIZIM PROBLEMIMIZ DEGIL...
-                sonuc_Fatura_okey = await LocalSQL<SatisFatModel>.DBINSERTALL(faturalar);
-                sonuc_STH_okey = await LocalSQL<SatisSthModel>.DBINSERTALL(DetayliSalesList.ToList());
+                sonuc_Fatura_okey = await LocalSQL<AlisFatModel>.DBINSERTALL(faturalar);
+                sonuc_STH_okey = await LocalSQL<AlisSthModel>.DBINSERTALL(BuyList.ToList());
                 var renkbedenseriliste = _LSTMANAGER.DETAYLI_SATIS_RENK_BEDEN_SERI_HAREKETLERI.ToList();
 
                 foreach (var item in renkbedenseriliste)
@@ -2359,7 +2343,7 @@ namespace KayaApp.ViewModels
 
                 //renk beden temizligi
                 var tumRenkHareketleri = await LocalSQL<OlusanRenkBedenSeriHareketleriModel>.GETLISTALL();
-                foreach (var item in DetayliSalesList)
+                foreach (var item in BuyList)
                 {
                     var BizeAitRenkHareketleri = tumRenkHareketleri.Where(x => x.Olusan_Baglantisi_sth == item.sth_renk_beden_seri_baglanti).ToList();
                     foreach (var itemxxx in BizeAitRenkHareketleri)
@@ -2384,13 +2368,12 @@ namespace KayaApp.ViewModels
 
 
                 List<KirilimliSth> krlmsth = new List<KirilimliSth>();
+                  
+                krlmsth.Add(new KirilimliSth { SthHareketTablosu = new List<SatisSthModel>(BuyList.ToList()), RenkBedenSeriDetayTablosu = renkbedenseriliste });
 
+                durumFATURA = await SendData.AlisFaturasi(krlmsth, faturalar);
 
-                krlmsth.Add(new KirilimliSth { SthHareketTablosu = DetayliSalesList.ToList(), RenkBedenSeriDetayTablosu = renkbedenseriliste });
-
-                durumFATURA = await SendData.SendDetayliSatisFaturasi(krlmsth, faturalar);
-
-                var ssi = await LocalSQL<SatisFatModel>.DBIslem("SELECT * FROM SatisFatModel ORDER BY fat_id DESC LIMIT 1 ");
+                var ssi = await LocalSQL<AlisFatModel>.DBIslem("SELECT * FROM AlisFatModel ORDER BY fat_id DESC LIMIT 1 ");
                 var son_id = ssi.ToList()[0].fat_id;
 
                 List<AktarimModel> AktarimLogOlustur = new List<AktarimModel>();
@@ -2398,8 +2381,8 @@ namespace KayaApp.ViewModels
                 {
                     Aktarim_Tarih = DateTime.Now,
                     Aktarim_IslemRecNo = son_id,
-                    Aktarim_IslemKodu = 1,
-                    Aktarim_IslemAdi = AppResources.xSatisFaturasi_1,
+                    Aktarim_IslemKodu = 2,
+                    Aktarim_IslemAdi = AppResources.xAlisFaturasi_2,
                     Aktarim_Sent = durumFATURA,
                     Aktarim_Cari_Kod = myfat_cari_kod,
                     Aktarim_Tutar = NumericConverter.StringToDouble(tutar),
@@ -2410,7 +2393,7 @@ namespace KayaApp.ViewModels
 
                 await LocalSQL<AktarimModel>.DBINSERTALL(AktarimLogOlustur);
 
-                DetayliSalesList.Clear();
+                BuyList.Clear();
                 temizlikisleri();
                 SelectedCustomerModel = null;
 
@@ -3281,7 +3264,7 @@ namespace KayaApp.ViewModels
         {
             get
             {
-                return DetayliSalesList.Sum(x => x.sth_miktar);
+                return BuyList.Sum(x => x.sth_miktar);
             }
             set
             {
@@ -3296,7 +3279,7 @@ namespace KayaApp.ViewModels
         {
             get
             {
-                return DetayliSalesList.Count;
+                return BuyList.Count;
             }
             set
             {
@@ -3704,20 +3687,20 @@ namespace KayaApp.ViewModels
         }
 
 
-        private ObservableCollection<SatisSthModel> _DetayliSalesList;
-        public ObservableCollection<SatisSthModel> DetayliSalesList
+        private ObservableCollection<AlisSthModel> _BuyList;
+        public ObservableCollection<AlisSthModel> BuyList
         {
             get
             {
-                if (_DetayliSalesList == null)
+                if (_BuyList == null)
                 {
-                    _DetayliSalesList = _LSTMANAGER.DETAYLISALESLIST;
+                    _BuyList = _LSTMANAGER.BUYLIST;
                 }
-                return _DetayliSalesList;
+                return _BuyList;
             }
             set
             {
-                _DetayliSalesList = value;
+                _BuyList = value;
                 INotifyPropertyChanged();
             }
         }
@@ -3969,9 +3952,9 @@ namespace KayaApp.ViewModels
 
 
 
-                    if (DetayliSalesList.Count > 0)
+                    if (BuyList.Count > 0)
                     {
-                        _SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == DetayliSalesList[0].sth_cari).FirstOrDefault();
+                        _SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == BuyList[0].sth_cari).FirstOrDefault();
 
                     }
                     else
@@ -3996,7 +3979,7 @@ namespace KayaApp.ViewModels
 
                         //onceden cari secilmis ise, ve biz o cari yi degistirmek istersek, stok hareketlerindeki cari bolumunu de guncellememiz gerekiyor.
                         //yoksa bussuru problem
-                        foreach (var item in DetayliSalesList.ToList())
+                        foreach (var item in BuyList.ToList())
                         {
                             item.sth_cari = _SelectedCustomerModel.cari_kod;
                         }
@@ -5745,19 +5728,19 @@ namespace KayaApp.ViewModels
 
 
                             //bu stok kartinin sth taki tum hareketlerini siliyoruz.
-                            foreach (var item in DetayliSalesList.ToList())
+                            foreach (var item in BuyList.ToList())
                             {
                                 if (item.sth_stok_kod == _SelectedStockModel.sto_kod)
                                 {
-                                    DetayliSalesList.Remove(item);
+                                    BuyList.Remove(item);
                                 }
                             }
 
                             // kampanya tutari ve bedava verilecek miktar
                             var gelenkampanyamiktarlari = _SelectedStockModel.selectedKampanyabedavaitem.Split('+');
-                            DetayliSalesList.Add
+                            BuyList.Add
                               (
-                              new SatisSthModel
+                              new AlisSthModel
                               {
                                   sth_fiyat_gosterge = _SelectedStockModel.sto_fiyat.ToString(),
                                   sth_miktar_gosterge = gelenkampanyamiktarlari[0],
@@ -5776,9 +5759,9 @@ namespace KayaApp.ViewModels
                               }); ;
 
 
-                            DetayliSalesList.Add
+                            BuyList.Add
                               (
-                              new SatisSthModel
+                              new AlisSthModel
                               {
                                   sth_fiyat_gosterge = _SelectedStockModel.sto_fiyat.ToString(),
                                   sth_miktar_gosterge = gelenkampanyamiktarlari[1],
@@ -6002,7 +5985,7 @@ namespace KayaApp.ViewModels
                     GenelIndirimYUZDE = "0";
 
 
-                    foreach (var item in DetayliSalesList)
+                    foreach (var item in BuyList)
                     {
                         double stockfiyati = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sth_stok_kod).FirstOrDefault().sto_fiyat;
                         if (!AktarimTaraftanGeliyorum)
@@ -6096,6 +6079,5 @@ namespace KayaApp.ViewModels
         }
 
         #endregion
-
     }
 }

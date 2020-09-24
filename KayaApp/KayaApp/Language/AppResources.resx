@@ -225,6 +225,10 @@
     <value>Kullanıcı Adı</value>
     <comment>LoginPage</comment>
   </data>
+  <data name="xAlisFaturasi_2" xml:space="preserve">
+    <value>Alış Faturası</value>
+    <comment>AlisFaturasiPage</comment>
+  </data>
   <data name="xSatisFaturasi_1" xml:space="preserve">
     <value>Satış Faturası</value>
     <comment>SatisFaturasiPage</comment>

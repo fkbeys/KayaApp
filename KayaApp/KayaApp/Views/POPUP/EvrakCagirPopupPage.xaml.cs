@@ -1,4 +1,5 @@
-﻿using KayaApp.Views.SALES;
+﻿using KayaApp.ViewModels;
+using KayaApp.Views.SALES;
 using Rg.Plugins.Popup.Pages;
 using System;
 using Xamarin.Forms.Xaml;
@@ -8,16 +9,30 @@ namespace KayaApp.Views.POPUP
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class EvrakCagirPopupPage : PopupPage
     {
-        public EvrakCagirPopupPage()
+        public EvrakCagirPopupPage(object bindingcontext)
         {
             InitializeComponent();
-            if (SatisFaturasiPage.SATVMZ != null)
+            BindingContext = bindingcontext;
+
+            try
             {
-                BindingContext = SatisFaturasiPage.SATVMZ;
+                if (BindingContext == (AlisVM)bindingcontext)
+                {
+                    BtnPaket.IsVisible = false;
+                    BtnSiparisEvrak.Text = "Alınan Siparişler";
+                    BtnSiparisSatir.Text = "Alınan Sipariş Satır";
+                }
             }
+            catch (Exception)
+            {
+
+               
+            }
+            
+
             StokPaketleriList.IsVisible = false;
-            StokPaketleriList.IsVisible = false;
-            StokPaketleriList.IsVisible = false;
+            SipariSatirlariList.IsVisible = false;
+            SipariEvraklariList.IsVisible = false;
         }
 
         private void Button_Clicked(object sender, EventArgs e)

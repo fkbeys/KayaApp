@@ -133,6 +133,42 @@ namespace KayaApp.GetData
             }
             return false;
         }
+
+        public static async Task<bool> AlisFaturasi(List<KirilimliSth> Kirilimli, List<AlisFatModel> fatura)
+        {
+            var CompanyInfo = DataClass._LSTMANAGER.ACTIVECOMPANY;
+
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                await HelpME.MessageShow("Veri Gonderilemedi", "Alis Faturasi Gonderilemedi.Internet Baglantinizda Problem Var. Lutfen Once internete bagli oldugunuzdan emin olunz.Dahasonra Tekrar Deneyiniz...", "OK");
+                return false;
+            }
+            try
+            {
+                var urlFATURA = SabitUrl.SendInvoice(CompanyInfo.COMPANY_IP.ToString(), CompanyInfo.COMPANY_PORT.ToString(), CompanyInfo.COMPANY_DB_NAME);
+
+                var urlSTH = SabitUrl.NEWSendSTH(CompanyInfo.COMPANY_IP.ToString(), CompanyInfo.COMPANY_PORT.ToString(), CompanyInfo.COMPANY_DB_NAME);
+
+                if (urlFATURA != null && urlSTH != null)
+                {
+                    var ISbir = await ApiBaglan<AlisFatModel>.VeriGonder(urlFATURA, fatura);
+                    var ISiki = await ApiBaglan<KirilimliSth>.VeriGonder(urlSTH, Kirilimli);
+                    if (ISbir && ISiki)
+                    {
+                        await LocalSQL<AlisFatModel>.DBIslem("UPDATE AlisFatModel set fat_sent=1 where fat_id=" + fatura[0].fat_id);
+                        await LocalSQL<AktarimModel>.DBIslem("UPDATE AktarimModel set Aktarim_Sent=1 where Aktarim_Baglanti_guid='" + fatura[0].fat_sth_baglanti + "'");
+                    }
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                await HelpME.MessageShow("SEND DATA ERROR", "The system couldnt send the data to server..." + ex, "OK");
+            }
+            return false;
+        }
+
         public static async Task<bool> SendSarfCikisFisi(List<KirilimliSth> Kirilimli)
         {
 

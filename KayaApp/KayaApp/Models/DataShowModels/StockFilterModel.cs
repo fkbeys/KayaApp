@@ -58,7 +58,6 @@ namespace KayaApp.Models.DataShowModels
                 INotifyPropertyChanged();
             }
         }
-
         public string filteritem_aciklama { get; set; }
         public int filteritem_nereyeait { get; set; }
     }

@@ -119,7 +119,7 @@ namespace KayaApp.Views.REPORT
                         var AlisMyfatura = AlisFaturayiGetir.ToList().Where(x => x.fat_id == gelendeger.Aktarim_IslemRecNo).FirstOrDefault();
 
 
-                        var AlisSTHGetir = await LocalSQL<AlisSthModelXXX>.GETLISTALL();
+                        var AlisSTHGetir = await LocalSQL<AlisSthModel>.GETLISTALL();
                         var AlisMySTH = AlisSTHGetir.ToList().Where(x => x.sth_fat_baglanti == gelendeger.Aktarim_Baglanti_guid).ToList();
 
                         var ss = await LocalSQL<DepolarArasiNakliyeSthModel>.GETLISTALL();

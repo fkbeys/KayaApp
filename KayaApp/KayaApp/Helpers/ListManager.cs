@@ -327,14 +327,14 @@ namespace KayaApp.Helpers
             }
         }
 
-        private ObservableCollection<AlisSthModelXXX> _BUYLIST;
-        public ObservableCollection<AlisSthModelXXX> BUYLIST
+        private ObservableCollection<AlisSthModel> _BUYLIST;
+        public ObservableCollection<AlisSthModel> BUYLIST
         {
             get
             {
                 if (_BUYLIST == null)
                 {
-                    _BUYLIST = new ObservableCollection<AlisSthModelXXX>();
+                    _BUYLIST = new ObservableCollection<AlisSthModel>();
                 }
                 return _BUYLIST;
             }

@@ -304,6 +304,15 @@ namespace KayaApp.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alış Faturası.
+        /// </summary>
+        internal static string xAlisFaturasi_2 {
+            get {
+                return ResourceManager.GetString("xAlisFaturasi_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Satış Faturası.
         /// </summary>
         internal static string xSatisFaturasi_1 {

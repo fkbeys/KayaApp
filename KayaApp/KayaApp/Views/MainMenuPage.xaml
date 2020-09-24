@@ -86,7 +86,7 @@
                             </yummy:GradientStopCollection>
                         </yummy:PancakeView.BackgroundGradientStops>
 
-                        <Button x:Name="BtnPurchaseInvoice"  Text="{x:Static dil:AppResources.MAINMENU_PURCHASE}" ImageSource="purchase.png"  VerticalOptions="FillAndExpand"      BackgroundColor="Transparent"    TextColor="White"     CornerRadius="10"   Command="{Binding PURCHASE_INVOICE_COMMAND}"          ContentLayout="left,0"   />
+                        <Button x:Name="BtnPurchaseInvoice"  Text="{x:Static dil:AppResources.MAINMENU_PURCHASE}" Clicked="BtnPurchaseInvoice_Clicked" ImageSource="purchase.png"  VerticalOptions="FillAndExpand"      BackgroundColor="Transparent"    TextColor="White"     CornerRadius="10"   Command="{Binding PURCHASE_INVOICE_COMMAND}"          ContentLayout="left,0"   />
 
                     </yummy:PancakeView>
 

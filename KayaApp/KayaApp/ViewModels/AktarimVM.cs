@@ -2,6 +2,7 @@
 using KayaApp.Helpers;
 using KayaApp.Models;
 using KayaApp.ViewModels;
+using KayaApp.Views.PURCHASE;
 using KayaApp.Views.SALES;
 using System;
 using System.Collections.ObjectModel;
@@ -51,7 +52,7 @@ namespace KayaApp.Views.REPORT
 
                         await HelpME.SayfaKapat();
                         await HelpME.SayfaKapat();
-                        //  await HelpME.SayfaAc(satissayfasi);
+
                         await Application.Current.MainPage.Navigation.PushAsync(satissayfasi);
 
                         SatisFaturasiPage.SATVMZ.SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == gelendeger.Aktarim_Cari_Kod).FirstOrDefault();
@@ -97,51 +98,56 @@ namespace KayaApp.Views.REPORT
 
                 #region ALIS FATURASI
                 case 2:
-                    //try
-                    //{
+                    try
+                    {
 
-                    //    //instance alma durumu. cok onemli...
-                    //    BuyVM ss = new BuyVM();
-                    //    BuyPage AlisSayfasi = new BuyPage();
+                        //instance alma durumu. cok onemli...
+                        AlisVM ss = new AlisVM();
+                        AlisFaturasiPage alissayfasi = new AlisFaturasiPage();
 
-                    //    await HelpME.SayfaKapat();
-                    //    await HelpME.SayfaKapat();
-                    //    await HelpME.SayfaAc(AlisSayfasi);
+                        await HelpME.SayfaKapat();
+                        await HelpME.SayfaKapat();
 
-                    //    _LSTMANAGER.BUYLIST.Clear();
+                        await Application.Current.MainPage.Navigation.PushAsync(alissayfasi);
 
-                    //    var AlisFatList = await LocalSQL<AlisFatModel>.GETLISTALL();
-                    //    var secimFatura = AlisFatList.Where(x => x.fat_sth_baglanti == gelendeger.Aktarim_Baglanti_guid).FirstOrDefault();
+                        AlisFaturasiPage.ALVMZ.SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == gelendeger.Aktarim_Cari_Kod).FirstOrDefault();
 
-                    //    var AlisSth = await LocalSQL<AlisSthModelXXX>.GETLISTALL();
-                    //    var selectedstocks = AlisSth.Where(x => x.sth_fat_baglanti == gelendeger.Aktarim_Baglanti_guid);
+                        _LSTMANAGER.BUYLIST.Clear();
 
-                    //    BuyVM.AktarimTaraftanGeliyorum = true;
+                        var AlisFatList = await LocalSQL<AlisFatModel>.GETLISTALL();
+                        var secimFatura = AlisFatList.Where(x => x.fat_sth_baglanti == gelendeger.Aktarim_Baglanti_guid).FirstOrDefault();
 
-                    //    foreach (var item in selectedstocks.ToList())
-                    //    {
-                    //        ss.BuyList.Add(item);
-                    //        await LocalSQL<AlisSthModelXXX>.DELETEROW(item);
-                    //    }
+                        var AlisSth = await LocalSQL<AlisSthModel>.GETLISTALL();
+                        var selectedstocks = AlisSth.Where(x => x.sth_fat_baglanti == gelendeger.Aktarim_Baglanti_guid);
+
+                        AlisVM.AktarimTaraftanGeliyorum = true;
+
+                        foreach (var item in selectedstocks.ToList())
+                        {
+                            ss.BuyList.Add(item);
+                            // await LocalSQL<SatisSthModel>.DELETEROW(item);
+                        }
+
+                        AlisFaturasiPage.ALVMZ.GenelIndirimYUZDE = gelendeger.Aktarim_IndirimYuzde;
+                        AlisFaturasiPage.ALVMZ.GenelIndirimTL = gelendeger.Aktarim_IndirimTL;
 
 
-                    //    BuyPage.BUYVMzz.GenelIndirimYUZDE = gelendeger.Aktarim_IndirimYuzde;
-                    //    BuyPage.BUYVMzz.GenelIndirimTL = gelendeger.Aktarim_IndirimTL;
+                        AlisFaturasiPage.ALVMZ.SelectedDovizKuru = _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == secimFatura.fat_d_cins).FirstOrDefault();
+                        AlisFaturasiPage.ALVMZ.SelectedDepo = _LSTMANAGER.DEPOISIMLERILIST.Where(x => x.dep_no == selectedstocks.ToList()[0].sth_cikis_depo_no).FirstOrDefault();
 
-                    //    BuyPage.BUYVMzz.SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == gelendeger.Aktarim_Cari_Kod).FirstOrDefault();
+                        AlisVM.AktarimTaraftanGeliyorum = false;
 
-                    //    BuyPage.BUYVMzz.SelectedDovizKurlari = _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == secimFatura.fat_d_cins).FirstOrDefault();
 
-                    //    BuyVM.AktarimTaraftanGeliyorum = false;
-                    //    await LocalSQL<AlisFatModel>.DELETEROW(secimFatura);
-                    //    await LocalSQL<AktarimModel>.DELETEROW(gelendeger);
+                        //   await LocalSQL<SatisFatModel>.DELETEROW(secimFatura);
+                        //await LocalSQL<AktarimModel>.DELETEROW(gelendeger);
 
-                    //}
+                    }
 
-                    //catch (Exception ex)
-                    //{
-                    //    await HelpME.MessageShow("hata", ex.Message, "ok");
-                    //}
+                    catch (Exception ex)
+                    {
+                        await HelpME.MessageShow("hata", ex.Message, "ok");
+                    }
+                   
                     break;
                 #endregion
 
@@ -859,7 +865,7 @@ namespace KayaApp.Views.REPORT
             await LocalSQL<SatisFatModel>.DELETEALL();
             await LocalSQL<SatisSthModel>.DELETEALL();
             await LocalSQL<AlisFatModel>.DELETEALL();
-            await LocalSQL<AlisSthModelXXX>.DELETEALL();
+            await LocalSQL<AlisSthModel>.DELETEALL();
             await LocalSQL<NormalAlinanSiparisFatModel>.DELETEALL();
             await LocalSQL<NormalAlinanSiparisSthModel>.DELETEALL();
 
@@ -933,14 +939,14 @@ namespace KayaApp.Views.REPORT
                             var AlisFaturayiGetir = await LocalSQL<AlisFatModel>.GETLISTALL();
                             var AlisMyfatura = AlisFaturayiGetir.ToList().Where(x => x.fat_id == gelendeger.Aktarim_IslemRecNo).FirstOrDefault();
 
-                            var AlisSTHGetir = await LocalSQL<AlisSthModelXXX>.GETLISTALL();
+                            var AlisSTHGetir = await LocalSQL<AlisSthModel>.GETLISTALL();
                             var AlisMySTH = AlisSTHGetir.ToList().Where(x => x.sth_fat_baglanti == AlisMyfatura.fat_sth_baglanti).ToList();
 
                             int AlisSth_sonuc = 0;
                             var AlisFat_sonuc = await LocalSQL<AlisFatModel>.DELETEROW(AlisMyfatura);
                             foreach (var item in AlisMySTH)
                             {
-                                AlisSth_sonuc += await LocalSQL<AlisSthModelXXX>.DELETEROW(item);
+                                AlisSth_sonuc += await LocalSQL<AlisSthModel>.DELETEROW(item);
                             }
 
                             if (AlisMySTH.Count == AlisSth_sonuc && AlisFat_sonuc != 0)

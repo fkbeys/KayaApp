@@ -13,9 +13,7 @@
  
     <ContentPage.Content>
 
-        <ScrollView>
-
-
+        <ScrollView> 
             <yummy:PancakeView BackgroundGradientStartPoint="0.5,0.0" BackgroundGradientEndPoint="0.5,1">
                 <yummy:PancakeView.BackgroundGradientStops>
                     <yummy:GradientStopCollection>
