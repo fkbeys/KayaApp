@@ -89,7 +89,7 @@ namespace KayaApp.ViewModels
         public ICommand Amount_Decrease_Sade { get; set; }
         public ICommand Amount_Increase_Sade { get; set; }
         public ICommand Stock_Add_Sade { get; set; }
-
+         
         #endregion
 
         public SatisVM()
@@ -164,9 +164,8 @@ namespace KayaApp.ViewModels
             SelectedStockPaketi = new Command(SelectedStockPaketiGO);
 
             Amount_Decrease_Sade = new Command(Amount_Decrease_SadeGO);
-            Amount_Increase_Sade = new Command(Amount_Increase_SadeGO);
-
-            Stock_Add_Sade = new Command(Stock_Add_SadeGO);
+            Amount_Increase_Sade = new Command(Amount_Increase_SadeGO); 
+            Stock_Add_Sade = new Command(Stock_Add_SadeGO); 
 
             Firmalar_list = _LSTMANAGER.FirmalarList;
             Subeler_list = _LSTMANAGER.SubelerList;
@@ -205,6 +204,7 @@ namespace KayaApp.ViewModels
 
 
         }
+ 
 
         #region GO METHODS
         private void CalculateSumGO(object obj)

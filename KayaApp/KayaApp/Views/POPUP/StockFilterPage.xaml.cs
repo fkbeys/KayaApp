@@ -1,5 +1,6 @@
 ﻿using KayaApp.Helpers;
 using KayaApp.Models.DataShowModels;
+using KayaApp.ViewModels;
 using KayaApp.Views.PURCHASE;
 using KayaApp.Views.SALES;
 using Rg.Plugins.Popup.Pages;
@@ -15,14 +16,12 @@ namespace KayaApp.Views.POPUP
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class StockFilterPage : PopupPage
     {
+        public object mybinding;
         public StockFilterPage(object binding)
         {
             InitializeComponent();
-            //if (SatisFaturasiPage.SATVMZ != null)
-            //{
-            //    BindingContext = SatisFaturasiPage.SATVMZ;
-            //}
-            BindingContext = binding;
+            BindingContext= mybinding = binding;
+          
 
         }
 
@@ -37,18 +36,17 @@ namespace KayaApp.Views.POPUP
             {
                 var tt = e.Item as FilterItems;
                 List<StockFilterModel> list =  null;
-
-                if (SatisFaturasiPage.SATVMZ != null)
+                  
+                if (BindingContext is SatisVM   )
                 {
                     list = SatisFaturasiPage.SATVMZ.StockFilter;
                 }
-
-                if (AlisFaturasiPage.ALVMZ != null)
+                else
+               if (BindingContext is AlisVM)
                 {
                     list = AlisFaturasiPage.ALVMZ.StockFilter;
                 }
-
-
+                 
                 if (list.Any())
                 {
                     foreach (var item in list)
@@ -63,16 +61,14 @@ namespace KayaApp.Views.POPUP
                             else
                             {
                                 bulunan.FirstOrDefault().filteritem_isselected = false;
-                            }
-
-                        }
-
+                            } 
+                        } 
                     }
                 } 
             }
             catch (Exception ex)
             {
-                await HelpME.MessageShow("Filtre item secim hatasi", ex.Message, "ok");
+              //  await HelpME.MessageShow("Filtre item secim hatasi", ex.Message, "ok");
             }
         } 
     }

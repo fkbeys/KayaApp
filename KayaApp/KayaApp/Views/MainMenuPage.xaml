@@ -98,7 +98,7 @@
                             </yummy:GradientStopCollection>
                         </yummy:PancakeView.BackgroundGradientStops>
 
-                        <Button  x:Name="BtnWareHouse"  Text="{x:Static dil:AppResources.MAINMENU_WAREHOUSE}" ImageSource="warehouse.png"  VerticalOptions="FillAndExpand"     BackgroundColor="Transparent"       TextColor="White"       CornerRadius="10"         ContentLayout="left,0"   />
+                        <Button  x:Name="BtnWareHouse"  Text="{x:Static dil:AppResources.MAINMENU_WAREHOUSE}" Clicked="BtnWareHouse_Clicked" ImageSource="warehouse.png"  VerticalOptions="FillAndExpand"     BackgroundColor="Transparent"       TextColor="White"       CornerRadius="10"         ContentLayout="left,0"   />
 
                     </yummy:PancakeView>
 
@@ -109,7 +109,7 @@
                                 <yummy:GradientStop Color="IndianRed" Offset="1.0" />
                             </yummy:GradientStopCollection>
                         </yummy:PancakeView.BackgroundGradientStops>
-                        <Button  x:Name="BtnOrders"  Text="{x:Static dil:AppResources.MAINMENU_ORDERS}" ImageSource="order.png"  VerticalOptions="FillAndExpand"     BackgroundColor="Transparent"        CornerRadius="10"     Command="{Binding ORDERS_COMMAND}"           TextColor="White"      ContentLayout="left,0"   />
+                        <Button  x:Name="BtnOrders"  Text="{x:Static dil:AppResources.MAINMENU_ORDERS}" Clicked="BtnOrders_Clicked" ImageSource="order.png"  VerticalOptions="FillAndExpand"     BackgroundColor="Transparent"        CornerRadius="10"     Command="{Binding ORDERS_COMMAND}"           TextColor="White"      ContentLayout="left,0"   />
                     </yummy:PancakeView>
 
                     <yummy:PancakeView   Grid.Row="3" Grid.Column="0"  Grid.ColumnSpan="2"  CornerRadius="10,10,10,10"   Border="{yummy:BorderMarkup Color=White, Thickness='3'}" >
@@ -120,7 +120,7 @@
                             </yummy:GradientStopCollection>
                         </yummy:PancakeView.BackgroundGradientStops>
 
-                        <Button  x:Name="BtnChash"  Text="{x:Static dil:AppResources.MAINMENU_CHASH}" ImageSource="cash.png"  VerticalOptions="FillAndExpand"             BackgroundColor="Transparent"               CornerRadius="10"      TextColor="White"               ContentLayout="left,0"   />
+                        <Button  x:Name="BtnChash"  Text="{x:Static dil:AppResources.MAINMENU_CHASH}" Clicked="BtnChash_Clicked" ImageSource="cash.png"  VerticalOptions="FillAndExpand"             BackgroundColor="Transparent"               CornerRadius="10"      TextColor="White"               ContentLayout="left,0"   />
 
                     </yummy:PancakeView>
 

@@ -1,5 +1,8 @@
 ﻿using KayaApp.Helpers;
 using KayaApp.Views.CUSTOMERS;
+using KayaApp.Views.DEPOLAR;
+using KayaApp.Views.FINANS;
+using KayaApp.Views.ORDERS;
 using KayaApp.Views.PURCHASE;
 using KayaApp.Views.REPORT;
 using KayaApp.Views.SALES;
@@ -48,7 +51,9 @@ namespace KayaApp.Views
 
         private async void BtnReports_Clicked(object sender, System.EventArgs e)
         {
-            await HelpME.SayfaAc(new ReportMenu());
+             await HelpME.SayfaAc(new ReportMenu());
+            //await HelpME.PopAc(new ReportMenu());
+            //await HelpME.PopKapat()
         }
 
         private async void BtnPurchaseInvoice_Clicked(object sender, System.EventArgs e)
@@ -56,6 +61,22 @@ namespace KayaApp.Views
             await BtnPurchaseInvoice.ScaleTo(0.975, 200, Easing.Linear);
             await BtnPurchaseInvoice.ScaleTo(1, 200, Easing.Linear);
             await Application.Current.MainPage.Navigation.PushAsync(new AlisFaturasiPage());
+        }
+
+        private async void BtnOrders_Clicked(object sender, System.EventArgs e)
+        {
+            await HelpME.PopAc(new SiparislerMenuPage());
+        }
+
+        private async void BtnWareHouse_Clicked(object sender, System.EventArgs e)
+        {
+            await HelpME.PopAc(new DepolarMenuPage());
+        }
+
+        private async void BtnChash_Clicked(object sender, System.EventArgs e)
+        {
+            await HelpME.PopAc(new FinansMenuPage());
+            
         }
     }
 }

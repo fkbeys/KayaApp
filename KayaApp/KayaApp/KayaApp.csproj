@@ -50,6 +50,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\DEPOLAR\DepolarMenuPage.xaml.cs">
+      <DependentUpon>DepolarMenuPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SIPARISLER\SiparislerMenuPage.xaml.cs">
+      <DependentUpon>SiparislerMenuPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\POPUP\CustomerSelectPopUp.xaml.cs">
       <DependentUpon>CustomerSelectPopUp.xaml</DependentUpon>
     </Compile>
@@ -72,10 +78,19 @@
     <EmbeddedResource Update="Views\CUSTOMERS\CustomerListPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\DEPOLAR\DepolarMenuPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\FINANS\FinansMenuPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\LoginPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\MainMenuPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\SIPARISLER\SiparislerMenuPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\POPUP\CustomerSelectPopUp.xaml">
