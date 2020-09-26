@@ -4,7 +4,9 @@ using KayaApp.Models;
 using KayaApp.ViewModels;
 using KayaApp.Views.PURCHASE;
 using KayaApp.Views.SALES;
+using KayaApp.Views.SIPARISLER;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -65,6 +67,12 @@ namespace KayaApp.Views.REPORT
                         var SatisSth = await LocalSQL<SatisSthModel>.GETLISTALL();
                         var selectedstocks = SatisSth.Where(x => x.sth_fat_baglanti == gelendeger.Aktarim_Baglanti_guid);
 
+                          
+                        var renkbedenler = await LocalSQL<OlusanRenkBedenSeriHareketleriModel>.GETLISTALL();
+                        var selectedrenkbedens = renkbedenler.Where(x => x.Olusan_Baglantisi_fat == secimFatura.fat_sth_baglanti );
+                        _LSTMANAGER.DETAYLI_SATIS_RENK_BEDEN_SERI_HAREKETLERI = new List<OlusanRenkBedenSeriHareketleriModel>(selectedrenkbedens);
+
+
                         SatisVM.AktarimTaraftanGeliyorum = true;
 
                         foreach (var item in selectedstocks.ToList())
@@ -119,6 +127,10 @@ namespace KayaApp.Views.REPORT
 
                         var AlisSth = await LocalSQL<AlisSthModel>.GETLISTALL();
                         var selectedstocks = AlisSth.Where(x => x.sth_fat_baglanti == gelendeger.Aktarim_Baglanti_guid);
+                       
+                        var renkbedenler = await LocalSQL<OlusanRenkBedenSeriHareketleriModel>.GETLISTALL();
+                        var selectedrenkbedens = renkbedenler.Where(x => x.Olusan_Baglantisi_fat == secimFatura.fat_sth_baglanti);
+                        _LSTMANAGER.ALISFATURASI_RENK_BEDEN_SERI_HAREKETLERI = new List<OlusanRenkBedenSeriHareketleriModel>(selectedrenkbedens);
 
                         AlisVM.AktarimTaraftanGeliyorum = true;
 
@@ -154,67 +166,87 @@ namespace KayaApp.Views.REPORT
                 #region Normal Alinan Siparis
                 case 3:
 
-                    //try
-                    //{
+                    try
+                    {
 
-                    //    //instance alma durumu. cok onemli...
-                    //    OrderVM ss = new OrderVM();
-                    //    NormalAlinanSiparis NormalAlinanSiparisPage = new NormalAlinanSiparis();
+                        //instance alma durumu. cok onemli...
+                        NormalSiparislerVM ss = new NormalSiparislerVM();
+                        NormalAlinanSiparisPage NormalAlinanSiparisPagex = new NormalAlinanSiparisPage();
 
-                    //    await HelpME.SayfaKapat();
-                    //    await HelpME.SayfaKapat();
-                    //    await HelpME.SayfaAc(NormalAlinanSiparisPage);
+                      
+                        _LSTMANAGER.ORDERLIST.Clear();
 
-                    //    _LSTMANAGER.ORDERLIST.Clear();
+                        var NormalAlinanSiparisSth = await LocalSQL<NormalAlinanSiparisFatModel>.GETLISTALL();
+                        var selectedstocks = NormalAlinanSiparisSth.Where(x => x.sip_islem_baglanti == gelendeger.Aktarim_Baglanti_guid).ToList();
 
-                    //    var NormalAlinanSiparisSth = await LocalSQL<NormalAlinanSiparisFatModel>.GETLISTALL();
-                    //    var selectedstocks = NormalAlinanSiparisSth.Where(x => x.sip_islem_baglanti == gelendeger.Aktarim_Baglanti_guid).ToList();
 
-                    //    OrderVM.AktarimTaraftanGeliyorum = true;
 
-                    //    foreach (var item in selectedstocks.ToList())
-                    //    {
-                    //        NormalAlinanSiparisSthModel NormAlinanSiparisSTHH = new NormalAlinanSiparisSthModel
-                    //        {
-                    //            sth_resim_url = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sip_stok_kod).FirstOrDefault().stok_resim_url,
-                    //            sth_birim_ad = item.sip_birim_ad,
-                    //            sth_tarih = item.sip_tarih,
-                    //            sth_cari = item.sip_cari_kod,
-                    //            sth_tutar = item.sip_tutar,
-                    //            sth_stok_kod = item.sip_stok_kod,
-                    //            sth_stok_isim = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sip_stok_kod).FirstOrDefault().sto_isim,
-                    //            sth_fiyat_gosterge = item.sip_birim_fiyat.ToString(),
-                    //            sth_miktar_gosterge = item.sip_miktar.ToString(),
-                    //            sth_iskonto1 = item.sip_iskonto1,
-                    //            sth_vergi_pntr = item.sip_vergi_pntr,
-                    //            sth_vergi = item.sip_vergi,
-                    //            sth_doviz_cins = item.sip_doviz_cinsi,
-                    //            sth_har_doviz_kur = item.sip_doviz_kuru,
-                    //            sth_teslim_tarih = item.sip_teslim_tarih,
-                    //            sth_cikis_depo_no = item.sip_depo_no,
-                    //            sth_fiyat_liste_no = item.sip_fiyat_liste_no,
-                    //            sth_vryuzde = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sip_stok_kod).FirstOrDefault().vryuzde,
-                    //            sth_doviz_ismi = item.sip_doviz_ismi,
-                    //        };
+                        var renkbedenler = await LocalSQL<OlusanRenkBedenSeriHareketleriModel>.GETLISTALL();
+                        var selectedrenkbedens = renkbedenler.Where(x => x.Olusan_Baglantisi_fat == selectedstocks[0].sip_islem_baglanti);
+                        _LSTMANAGER.NORMALALINANSIPARIS_RENK_BEDEN_SERI_HAREKETLERI = new List<OlusanRenkBedenSeriHareketleriModel>(selectedrenkbedens);
 
-                    //        ss.OrderList.Add(NormAlinanSiparisSTHH);
-                    //        await LocalSQL<NormalAlinanSiparisFatModel>.DELETEROW(item);
-                    //    }
-                    //    NormalAlinanSiparis.ORDERVMzz.SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == gelendeger.Aktarim_Cari_Kod).FirstOrDefault();
-                    //    NormalAlinanSiparis.ORDERVMzz.SelectedDovizKurlari = _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == selectedstocks[0].sip_doviz_cinsi).FirstOrDefault();
-                    //    NormalAlinanSiparis.ORDERVMzz.GenelIndirimYUZDE = gelendeger.Aktarim_IndirimYuzde;
-                    //    NormalAlinanSiparis.ORDERVMzz.GenelIndirimTL = gelendeger.Aktarim_IndirimTL;
+                        ////cok tehlikeli kod. rastgele calisan bisey silmek lazim
+                        //foreach (var item in _LSTMANAGER.NORMALALINANSIPARIS_RENK_BEDEN_SERI_HAREKETLERI)
+                        //{
+                        //    item.Olusan_Baglantisi_sth = item.Olusan_Baglantisi_fat;
+                        //}
+                        ////cok tehlikeli kod. rastgele calisan bisey silmek lazim
 
-                    //    OrderVM.AktarimTaraftanGeliyorum = false;
 
-                    //    await LocalSQL<AktarimModel>.DELETEROW(gelendeger);
+                        await HelpME.SayfaKapat();
+                        await HelpME.SayfaKapat();
+                        await Application.Current.MainPage.Navigation.PushAsync(NormalAlinanSiparisPagex);
 
-                    //}
 
-                    //catch (Exception ex)
-                    //{
-                    //    await HelpME.MessageShow("hata", ex.Message, "ok");
-                    //}
+                        NormalSiparislerVM.AktarimTaraftanGeliyorum = true;
+
+                        foreach (var item in selectedstocks.ToList())
+                        {
+                            NormalAlinanSiparisSthModel NormAlinanSiparisSTHH = new NormalAlinanSiparisSthModel
+                            {
+                                sth_resim_url = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sip_stok_kod).FirstOrDefault().stok_resim_url,
+                                sth_birim_ad = item.sip_birim_ad,
+                                sth_tarih = item.sip_tarih,
+                                sth_cari = item.sip_cari_kod,
+                                sth_tutar = item.sip_tutar,
+                                sth_stok_kod = item.sip_stok_kod,
+                                sth_stok_isim = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sip_stok_kod).FirstOrDefault().sto_isim,
+                                sth_fiyat_gosterge = item.sip_birim_fiyat.ToString(),
+                                sth_miktar_gosterge = item.sip_miktar.ToString(),
+                                sth_iskonto1 = item.sip_iskonto1,
+                                sth_vergi_pntr = item.sip_vergi_pntr,
+                                sth_vergi = item.sip_vergi,
+                                sth_doviz_cins = item.sip_doviz_cinsi,
+                                sth_har_doviz_kur = item.sip_doviz_kuru,
+                                sth_teslim_tarih = item.sip_teslim_tarih,
+                                sth_cikis_depo_no = item.sip_depo_no,
+                                sth_fiyat_liste_no = item.sip_fiyat_liste_no,
+                                sth_vryuzde = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sip_stok_kod).FirstOrDefault().vryuzde,
+                                sth_doviz_ismi = item.sip_doviz_ismi,
+                                Renk_beden_full_bilgi=item.Renk_beden_full_bilgi,
+                                sth_renk_beden_seri_baglanti=item.sip_islem_baglanti,
+                                sth_fat_baglanti = item.sip_islem_baglanti,
+
+                            };
+
+                            ss.OrderList.Add(NormAlinanSiparisSTHH);
+                          //  await LocalSQL<NormalAlinanSiparisFatModel>.DELETEROW(item);
+                        }
+                        NormalAlinanSiparisPage.NormalSiparisVMZ.SelectedCustomerModel = _LSTMANAGER.CUSTOMERLIST.Where(x => x.cari_kod == gelendeger.Aktarim_Cari_Kod).FirstOrDefault();
+                        NormalAlinanSiparisPage.NormalSiparisVMZ.SelectedDovizKuru = _LSTMANAGER.KURLARLISTE.Where(x => x.Kur_no == selectedstocks[0].sip_doviz_cinsi).FirstOrDefault();
+                        NormalAlinanSiparisPage.NormalSiparisVMZ.GenelIndirimYUZDE = gelendeger.Aktarim_IndirimYuzde;
+                        NormalAlinanSiparisPage.NormalSiparisVMZ.GenelIndirimTL = gelendeger.Aktarim_IndirimTL;
+
+                        NormalSiparislerVM.AktarimTaraftanGeliyorum = false;
+
+                       // await LocalSQL<AktarimModel>.DELETEROW(gelendeger);
+
+                    }
+
+                    catch (Exception ex)
+                    {
+                        await HelpME.MessageShow("hata", ex.Message, "ok");
+                    }
 
 
                     break;

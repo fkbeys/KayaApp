@@ -24,16 +24,16 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
+        <StackLayout Grid.Row="0"      Padding="5,5,5,5"  >
+            <Button x:Name="BtnAlinanSiparis" Clicked="BtnAlinanSiparis_Clicked"    ImageSource="order"   Text="Normal Alinan Siparis"   VerticalOptions="FillAndExpand"  BorderWidth="2"             BorderColor="Black"    BackgroundColor="#d1d8e0"  CornerRadius="10"        ContentLayout="left,0"     />
+        </StackLayout>
 
-               
-        <StackLayout Grid.Row="0"   Padding="5,5,5,5"  >
+        <StackLayout Grid.Row="1"   Padding="5,5,5,5"  >
             <Button x:Name="BtnProformaAlinanSip" Clicked="BtnProformaAlinanSip_Clicked"   ImageSource="order" 
                     Text="Proforma Alinan Siparis"   VerticalOptions="FillAndExpand"  BorderWidth="2"             BorderColor="Black"    BackgroundColor="#d1d8e0"  CornerRadius="10"        ContentLayout="left,0"     />
         </StackLayout>
 
-        <StackLayout Grid.Row="1"      Padding="5,5,5,5"  >
-                    <Button x:Name="BtnAlinanSiparis" Clicked="BtnAlinanSiparis_Clicked"    ImageSource="order"   Text="Normal Alinan Siparis"   VerticalOptions="FillAndExpand"  BorderWidth="2"             BorderColor="Black"    BackgroundColor="#d1d8e0"  CornerRadius="10"        ContentLayout="left,0"     />
-                </StackLayout>
+      
  
  
             </Grid>

@@ -1,10 +1,7 @@
-﻿using Rg.Plugins.Popup.Pages;
+﻿using KayaApp.Helpers;
+using KayaApp.Views.SIPARISLER;
+using Rg.Plugins.Popup.Pages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -19,14 +16,15 @@ namespace KayaApp.Views.ORDERS
         }
 
      
-        private void BtnAlinanSiparis_Clicked(object sender, EventArgs e)
+        private async void BtnAlinanSiparis_Clicked(object sender, EventArgs e)
         {
-
+            await HelpME.PopKapat(); 
+            await Application.Current.MainPage.Navigation.PushAsync(new NormalAlinanSiparisPage());
         }
 
-        private void BtnProformaAlinanSip_Clicked(object sender, EventArgs e)
+        private async void BtnProformaAlinanSip_Clicked(object sender, EventArgs e)
         {
-
+           
         }
     }
 }

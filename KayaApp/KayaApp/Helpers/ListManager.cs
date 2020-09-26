@@ -818,6 +818,42 @@ namespace KayaApp.Helpers
         }
 
 
+        private List<OlusanRenkBedenSeriHareketleriModel> _ALISFATURASI_RENK_BEDEN_SERI_HAREKETLERI;
+
+        public List<OlusanRenkBedenSeriHareketleriModel> ALISFATURASI_RENK_BEDEN_SERI_HAREKETLERI
+        {
+            get
+            {
+                if (_ALISFATURASI_RENK_BEDEN_SERI_HAREKETLERI == null)
+                {
+                    _ALISFATURASI_RENK_BEDEN_SERI_HAREKETLERI = new List<OlusanRenkBedenSeriHareketleriModel>();
+                }
+                return _ALISFATURASI_RENK_BEDEN_SERI_HAREKETLERI;
+            }
+            set { _ALISFATURASI_RENK_BEDEN_SERI_HAREKETLERI = value; }
+        }
+
+
+        private List<OlusanRenkBedenSeriHareketleriModel> _NORMALALINANSIPARIS_RENK_BEDEN_SERI_HAREKETLERI;
+
+        public List<OlusanRenkBedenSeriHareketleriModel> NORMALALINANSIPARIS_RENK_BEDEN_SERI_HAREKETLERI
+        {
+            get
+            {
+                if (_NORMALALINANSIPARIS_RENK_BEDEN_SERI_HAREKETLERI == null)
+                {
+                    _NORMALALINANSIPARIS_RENK_BEDEN_SERI_HAREKETLERI = new List<OlusanRenkBedenSeriHareketleriModel>();
+                }
+                return _NORMALALINANSIPARIS_RENK_BEDEN_SERI_HAREKETLERI;
+            }
+            set { _NORMALALINANSIPARIS_RENK_BEDEN_SERI_HAREKETLERI = value; }
+        }
+
+
+
+
+
+
         private List<OlusanRenkBedenSeriHareketleriModel> _SARF_CIKIS_RENK_BEDEN_SERI_HAREKETLERI;
 
         public List<OlusanRenkBedenSeriHareketleriModel> SARF_CIKIS_RENK_BEDEN_SERI_HAREKETLERI

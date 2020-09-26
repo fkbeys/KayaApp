@@ -10,6 +10,7 @@
                   x:Name="StockAddXXX"
                 BackgroundInputTransparent="False"
                   Opacity="50" 
+                  CloseWhenBackgroundIsClicked="True"
              x:Class="KayaApp.Views.POPUP.StockADDNEW">
 
     <pages:PopupPage.Animation  >

@@ -229,12 +229,16 @@
     <value>Alış Faturası</value>
     <comment>AlisFaturasiPage</comment>
   </data>
+  <data name="xNormalAlinanSiparis_3" xml:space="preserve">
+    <value>Normal Alınan Sipariş</value>
+    <comment>NormalAlinanSiparisPage</comment>
+  </data>
   <data name="xSatisFaturasi_1" xml:space="preserve">
     <value>Satış Faturası</value>
     <comment>SatisFaturasiPage</comment>
   </data>
   <data name="Yok" xml:space="preserve">
     <value>Yok</value>
-    <comment>StockSelectPopUp</comment>
+    <comment>SatisFaturasiPage</comment>
   </data>
 </root>

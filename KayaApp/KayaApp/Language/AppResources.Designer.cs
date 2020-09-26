@@ -313,6 +313,15 @@ namespace KayaApp.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Normal Alınan Sipariş.
+        /// </summary>
+        internal static string xNormalAlinanSiparis_3 {
+            get {
+                return ResourceManager.GetString("xNormalAlinanSiparis_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Satış Faturası.
         /// </summary>
         internal static string xSatisFaturasi_1 {

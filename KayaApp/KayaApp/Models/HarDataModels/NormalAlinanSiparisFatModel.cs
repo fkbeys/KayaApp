@@ -3,7 +3,7 @@ using System;
 
 namespace KayaApp.Models
 {
-    public class NormalAlinanSiparisFatModel
+    public class NormalAlinanSiparisFatModel  //:SatisFatModel
     {
         [PrimaryKey, AutoIncrement]
         public int sip_local_id { get; set; }               //ok
@@ -51,6 +51,6 @@ namespace KayaApp.Models
 
         public int mikro_user_id { get; set; }           //ok
 
-
+        public string Renk_beden_full_bilgi { get; set; }
     }
 }

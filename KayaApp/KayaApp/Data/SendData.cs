@@ -169,6 +169,46 @@ namespace KayaApp.GetData
             return false;
         }
 
+        public static async Task<bool> NormalAlinanSiparis(List<KirilimliSiparis> Kirilimli)
+        {
+            var CompanyInfo = DataClass._LSTMANAGER.ACTIVECOMPANY;
+
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                await HelpME.MessageShow("Veri Gonderilemedi", "Normal Alinan Siparis Gonderilemedi.Internet Baglantinizda Problem Var. Lutfen Once internete bagli oldugunuzdan emin olunz.Dahasonra Tekrar Deneyiniz...", "OK");
+                return false;
+            }
+            try
+            {
+                var urlSiparis = SabitUrl.SendOrders(CompanyInfo.COMPANY_IP.ToString(), CompanyInfo.COMPANY_PORT.ToString(), CompanyInfo.COMPANY_DB_NAME);
+                 
+
+                if (urlSiparis != null )
+                {
+                     
+                        var SiparisGonder = await ApiBaglan<KirilimliSiparis>.VeriGonder(urlSiparis, Kirilimli);
+                       
+
+                    //var ISbir = await ApiBaglan<NormalAlinanSiparisFatModel>.VeriGonder(urlFATURA, fatura);
+                    //var ISiki = await ApiBaglan<KirilimliSth>.VeriGonder(urlSTH, Kirilimli);
+
+                    //if (ISbir && ISiki)
+                    //{
+                    //    await LocalSQL<NormalAlinanSiparisFatModel>.DBIslem("UPDATE NormalAlinanSiparisFatModel set fat_sent=1 where fat_id=" + fatura[0].fat_id);
+                    //    await LocalSQL<AktarimModel>.DBIslem("UPDATE AktarimModel set Aktarim_Sent=1 where Aktarim_Baglanti_guid='" + fatura[0].fat_sth_baglanti + "'");
+                    //}
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                await HelpME.MessageShow("SEND DATA ERROR", "The system couldnt send the data to server..." + ex, "OK");
+            }
+            return false;
+        }
+
+
         public static async Task<bool> SendSarfCikisFisi(List<KirilimliSth> Kirilimli)
         {
 
