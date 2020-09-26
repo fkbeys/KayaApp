@@ -2362,7 +2362,9 @@ namespace KayaApp.ViewModels
                 foreach (var item in renkbedenseriliste)
                 {
                     item.Olusan_Baglantisi_fat = islem_baglanti_guidi;
-                    item.Olusan_Baglantisi_sth = islem_baglanti_guidi;
+
+
+                    //item.Olusan_Baglantisi_sth = islem_baglanti_guidi;
                     //tehlikeli kod bi karisiklik var ama cozemedim
                 }
 
