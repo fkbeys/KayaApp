@@ -46,6 +46,8 @@ namespace KayaApp.Models
 
         public string sip_islem_baglanti { get; set; }
 
+        public string sip_renk_beden_seri_baglanti { get; set; }
+
         public int sip_firma { get; set; }
         public int sip_sube { get; set; }
 

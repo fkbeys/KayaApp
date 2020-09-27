@@ -1760,13 +1760,7 @@ namespace KayaApp.ViewModels
                 MainMiktar = gelenSthHar.sth_miktar_gosterge;
                 MainFiyat = gelenSthHar.sth_fiyat_gosterge;
                 MainTutar = gelenSthHar.sth_tutar_gosterge;
-
-
-
-
-
-             
-
+                 
 
 
                 var renkbedenseridegerleri = _LSTMANAGER.NORMALALINANSIPARIS_RENK_BEDEN_SERI_HAREKETLERI.Where(x => x.Olusan_Baglantisi_sth == gelenSthHar.sth_renk_beden_seri_baglanti).ToList();
@@ -2346,6 +2340,7 @@ namespace KayaApp.ViewModels
                         sip_islem_baglanti = islem_baglanti_guidi,
                         mikro_user_id = _LSTMANAGER.ACTIVEUSER.USERS_MIKROID,
                         Renk_beden_full_bilgi = OrderList[i].Renk_beden_full_bilgi,
+                        sip_renk_beden_seri_baglanti=OrderList[i].sth_renk_beden_seri_baglanti
                     });
                 }
                  
@@ -2419,6 +2414,7 @@ namespace KayaApp.ViewModels
                 });
 
                 await LocalSQL<AktarimModel>.DBINSERTALL(AktarimLogOlustur);
+                 
 
                 OrderList.Clear();
                 temizlikisleri();

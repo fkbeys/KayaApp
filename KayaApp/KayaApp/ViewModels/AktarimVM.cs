@@ -224,8 +224,9 @@ namespace KayaApp.Views.REPORT
                                 sth_vryuzde = _LSTMANAGER.STOCKLIST.Where(x => x.sto_kod == item.sip_stok_kod).FirstOrDefault().vryuzde,
                                 sth_doviz_ismi = item.sip_doviz_ismi,
                                 Renk_beden_full_bilgi=item.Renk_beden_full_bilgi,
-                                sth_renk_beden_seri_baglanti=item.sip_islem_baglanti,
+                             
                                 sth_fat_baglanti = item.sip_islem_baglanti,
+                                sth_renk_beden_seri_baglanti = item.sip_renk_beden_seri_baglanti,
 
                             };
 
