@@ -89,7 +89,7 @@ namespace KayaApp.ViewModels
         public ICommand Amount_Decrease_Sade { get; set; }
         public ICommand Amount_Increase_Sade { get; set; }
         public ICommand Stock_Add_Sade { get; set; }
-         
+
         #endregion
 
         public SatisVM()
@@ -159,13 +159,13 @@ namespace KayaApp.ViewModels
             FilitreUygula = new Command(FilitreUygulaGO);
             FilitreTemizle = new Command(FilitreTemizleGO);
 
-            EvrakCagirBtn = new Command(EvrakCagirBtnGO);
+           
 
             SelectedStockPaketi = new Command(SelectedStockPaketiGO);
 
             Amount_Decrease_Sade = new Command(Amount_Decrease_SadeGO);
-            Amount_Increase_Sade = new Command(Amount_Increase_SadeGO); 
-            Stock_Add_Sade = new Command(Stock_Add_SadeGO); 
+            Amount_Increase_Sade = new Command(Amount_Increase_SadeGO);
+            Stock_Add_Sade = new Command(Stock_Add_SadeGO);
 
             Firmalar_list = _LSTMANAGER.FirmalarList;
             Subeler_list = _LSTMANAGER.SubelerList;
@@ -202,9 +202,41 @@ namespace KayaApp.ViewModels
             isVisibleGRID = true;
             PartiLotList = _LSTMANAGER.PartiLotList;
 
+            EvrakCagirBtn = new Command(EvrakCagirBtnGO);
+
 
         }
- 
+
+        public async Task SiparisleriCagir()
+        {
+            if (SelectedCustomerModel.cari_kod == null  )
+            {
+                return;
+            }
+            SipariEvraklariList.Clear();
+
+            //sth_tip=0 yani satis siparis tipi
+            var sonuc= await LocalSQL<NormalAlinanSiparisFatModel>.GETLISTALL();
+            var filtered_result = sonuc.Where(x => x.sip_tip==0 && ( x.sip_cari_kod==SelectedCustomerModel.cari_kod ) && (x.sip_depo_no==SelectedDepo.dep_no) &&  ( x.sip_miktar - x.sip_teslim_miktar> 0)).ToList();
+            
+            if (sonuc.Any())
+            {
+                //fff
+                foreach (var item in sonuc)
+                {
+                    var stock_name = await LocalSQL<StockModel>.GetStockByStockCode(item.sip_stok_kod);
+                    var stok_adi_getir = await LocalSQL<StockModel>.GETLISTALL();
+                    SipariSatirlariList.Add(new SiparisDetayModel { StokKod = item.sip_stok_kod,StokAdi= stock_name.sto_isim, Miktar = item.sip_miktar, TeslimEdilen=item.sip_teslim_miktar, KalanMiktar=item.sip_miktar-item.sip_teslim_miktar, SipTarih=item.sip_tarih,TeslimTarih=item.sip_teslim_tarih});
+                } 
+            }
+
+        }
+        private async void EvrakCagirBtnGO(object obj)
+        {
+            await SiparisleriCagir();
+            await HelpME.PopAc(new EvrakCagirPopupPage(this));
+        }
+
 
         #region GO METHODS
         private void CalculateSumGO(object obj)
@@ -1623,10 +1655,7 @@ namespace KayaApp.ViewModels
             CalculateSumGO(this);
         }
 
-        private async void EvrakCagirBtnGO(object obj)
-        {
-            await HelpME.PopAc(new EvrakCagirPopupPage(this));
-        }
+     
 
         private async void FilitreUygulaGO(object obj)
         {
@@ -3511,7 +3540,6 @@ namespace KayaApp.ViewModels
             }
             set
             {
-                //_selectedStockFilter.FilterHeaderIsVisible = true;
                 _selectedStockFilter = value;
                 if (value != null)
                 {
@@ -3703,6 +3731,42 @@ namespace KayaApp.ViewModels
             set { _StokPaketleriHeaders = value; }
         }
 
+        private ObservableCollection<SiparisDetayModel> _SipariSatirlariList;
+
+        public ObservableCollection<SiparisDetayModel> SipariSatirlariList
+        {
+            get
+            {
+                if (_SipariSatirlariList==null)
+                {
+                    _SipariSatirlariList = _LSTMANAGER.SipariSatirlariList;
+
+                }
+                return _SipariSatirlariList;
+            }
+            set
+            {
+                _SipariSatirlariList = value;
+            }
+        }
+
+        private ObservableCollection<int> _SipariEvraklariList;
+
+        public ObservableCollection<int> SipariEvraklariList
+        {
+            get
+            {
+                if (_SipariEvraklariList==null)
+                {
+                    _SipariEvraklariList = _LSTMANAGER.SipariEvraklariList;
+                }
+                return _SipariEvraklariList;
+            }
+            set
+            {
+                _SipariEvraklariList = value;
+            }
+        }
 
         private ObservableCollection<SatisSthModel> _DetayliSalesList;
         public ObservableCollection<SatisSthModel> DetayliSalesList

@@ -2264,7 +2264,7 @@ namespace KayaApp.ViewModels
                     if (vergi_karsilastirmasi == 10)
                     {
                         vergi10 += OrderList[i].sth_vergi;
-                    }
+                    } 
                 }
 
 
@@ -2357,9 +2357,6 @@ namespace KayaApp.ViewModels
                 foreach (var item in renkbedenseriliste)
                 {
                     item.Olusan_Baglantisi_fat = islem_baglanti_guidi;
-
-                    
-                    //item.Olusan_Baglantisi_sth = islem_baglanti_guidi;
                     //tehlikeli kod bi karisiklik var ama cozemedim
                 }
 

@@ -23,6 +23,7 @@ namespace KayaApp.Models
         public int sip_birim_pntr { get; set; } //ok
         public double sip_birim_fiyat { get; set; } //ok
         public double sip_miktar { get; set; }//ok
+        public double sip_teslim_miktar { get; set; }
         public double sip_tutar { get; set; }//ok
         public double sip_iskonto1 { get; set; }//ok
         public double sip_iskonto2 { get; set; }//ok

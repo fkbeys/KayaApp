@@ -1,5 +1,6 @@
 ﻿using KayaApp.GetData;
 using KayaApp.Models;
+using KayaApp.Models.DataShowModels;
 using KayaApp.Models.GetDataModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -962,6 +963,43 @@ namespace KayaApp.Helpers
             {
                 _STOKPAKETLERI = value;
                 INotifyPropertyChanged();
+            }
+        }
+
+
+        private ObservableCollection<SiparisDetayModel> _SipariSatirlariList;
+
+        public ObservableCollection<SiparisDetayModel> SipariSatirlariList
+        {
+            get
+            {
+                if (_SipariSatirlariList == null)
+                {
+                    _SipariSatirlariList = new ObservableCollection<SiparisDetayModel>();
+                }
+                return _SipariSatirlariList;
+            }
+            set
+            {
+                _SipariSatirlariList = value;
+            }
+        }
+
+        private ObservableCollection<int> _SipariEvraklariList;
+
+        public ObservableCollection<int> SipariEvraklariList
+        {
+            get
+            {
+                if (_SipariEvraklariList == null)
+                {
+                    _SipariEvraklariList = new ObservableCollection<int>();
+                }
+                return _SipariEvraklariList;
+            }
+            set
+            {
+                _SipariEvraklariList = value;
             }
         }
 

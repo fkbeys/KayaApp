@@ -1,16 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<pages:PopupPage  
-    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup" 
+<pages:PopupPage
     xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:Fim="clr-namespace:KayaApp.Fonts"
-             xmlns:dil="clr-namespace:KayaApp.Language"
-             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:customrenderer="clr-namespace:KayaApp.CustomRenderer"
     xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
     x:Class="KayaApp.Views.POPUP.EvrakCagirPopupPage"
-     CloseWhenBackgroundIsClicked="True"
+    CloseWhenBackgroundIsClicked="True"
     BackgroundInputTransparent="True"
-     xmlns:customrenderer="clr-namespace:KayaApp.CustomRenderer"
     x:Name="EvrakCagirPagexxx"
     >
 
@@ -81,7 +78,7 @@
 
             </ListView>
 
-            <ListView x:Name="SipariSatirlariList"  Grid.Row="1" Grid.ColumnSpan="3"  BackgroundColor="IndianRed">
+            <ListView x:Name="SipariSatirlariList"  Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding SipariSatirlariList}"  CachingStrategy="RecycleElement" BackgroundColor="IndianRed">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -92,7 +89,7 @@
 
             </ListView>
 
-            <ListView x:Name="SipariEvraklariList"  Grid.Row="1" Grid.ColumnSpan="3"  BackgroundColor="Yellow">
+            <ListView x:Name="SipariEvraklariList"  Grid.Row="1" Grid.ColumnSpan="3" BindingContext="{Binding SipariEvraklariList}"  CachingStrategy="RecycleElement" BackgroundColor="Yellow">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

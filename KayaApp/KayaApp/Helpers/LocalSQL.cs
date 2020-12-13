@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using KayaApp.Models;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -137,7 +138,23 @@ namespace KayaApp.Helpers
 
         #region custom selects
 
-
+        public static async Task<StockModel> GetStockByStockCode(string StokKodu)
+        {
+            var result_stock = new List<StockModel>();
+            try
+            {
+                await Baglan();
+                result_stock = await conn.QueryAsync<StockModel>("select * from STOCKMODEL where sto_kod='" + StokKodu + "'");
+                return result_stock[0];
+            }
+            catch (Exception ex)
+            {
+                await HelpME.MessageShow("ERROR", "StokAdiGetir sql error:"+ex.Message, "OK");
+                return new StockModel { };
+            }
+           
+             
+        }
 
 
         #endregion
